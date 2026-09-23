@@ -729,18 +729,26 @@ async function preproductionReview(state) {
         const fixRes = await runAgent(state, dept, revisionPrompt(state, dept, issues, priorForPrompt), { schema: envelopeSchema(DEPT_SCHEMA[dept]), phase: 'Pre-production Review', emptyContent: prior ? prior.content : {} })
         if (state.limit_reached) return
         if (dept === 'storyboard_artist') {
-          const updatedStoryboard = makeArtifact(state, 'storyboard', dept, '09_preproduction_review_revision', prior ? [prior.artifact_id] : [], { ...fixRes, content: { panels: fixRes.content.panels, contradictions_flagged: fixRes.content.contradictions_flagged } })
+          const updatedStoryboard = makeArtifact(state, (prior && prior.kind) || 'storyboard', dept, '09_preproduction_review_revision', prior ? [prior.artifact_id] : [], { ...fixRes, content: { panels: fixRes.content.panels, contradictions_flagged: fixRes.content.contradictions_flagged } })
           updatedStoryboard.revision = (prior ? prior.revision : 0) + 1
           state.artifacts.storyboard = updatedStoryboard
           const priorContinuity = state.artifacts.continuity_bible
-          const updatedContinuity = makeArtifact(state, 'continuity_bible', dept, '09_preproduction_review_revision', priorContinuity ? [priorContinuity.artifact_id] : [], { ...fixRes, content: { tracked_elements: fixRes.content.tracked_elements } })
+          const updatedContinuity = makeArtifact(state, (priorContinuity && priorContinuity.kind) || 'continuity_bible', dept, '09_preproduction_review_revision', priorContinuity ? [priorContinuity.artifact_id] : [], { ...fixRes, content: { tracked_elements: fixRes.content.tracked_elements } })
           updatedContinuity.revision = (priorContinuity ? priorContinuity.revision : 0) + 1
           state.artifacts.continuity_bible = updatedContinuity
+          ;(DEPENDENTS.storyboard || []).forEach(dep => {
+            if (state.artifacts[dep]) state.artifacts[dep] = { ...state.artifacts[dep], status: 'stale' }
+          })
           return
         }
-        const updated = makeArtifact(state, kind, dept, '09_preproduction_review_revision', prior ? [prior.artifact_id] : [], fixRes)
+        // kind param uses the artifact's own recorded kind (not the KIND_BY_DEPT lookup key,
+        // which can differ from it, e.g. creative_director's dict key is 'concepts' but its kind is 'concept_options')
+        const updated = makeArtifact(state, (prior && prior.kind) || kind, dept, '09_preproduction_review_revision', prior ? [prior.artifact_id] : [], fixRes)
         updated.revision = (prior ? prior.revision : 0) + 1
         state.artifacts[kind] = updated
+        ;(DEPENDENTS[kind] || []).forEach(dep => {
+          if (state.artifacts[dep]) state.artifacts[dep] = { ...state.artifacts[dep], status: 'stale' }
+        })
       }))
     }
     state.decision_log.push({ stage: '09_preproduction_review', summary: `Revision round ${round}: routed ${critical.length} critical issue(s) to ${Object.keys(byDept).join(', ')}`, round })
@@ -848,11 +856,25 @@ async function runProductionStages(state) {
 
 // ---- REVISE support ----
 
+const GATE_COVERAGE = {
+  concept: ['brief', 'strategy', 'concepts'],
+  production_plan: ['script', 'casting_bible', 'world_bible', 'directors_treatment', 'style_bible', 'sound_plan', 'camera_plan', 'storyboard', 'continuity_bible', 'generation_plan', 'quality_reports'],
+  visual_lock: ['reference_stills'],
+  final_cut: ['edit_timeline', 'final_review'],
+}
+
 function applyRevision(state, revision) {
   const kind = revision && revision.target_kind
   if (!kind) return
   markStale(state, kind)
-  if (state.approvals.production_plan) state.approvals.production_plan = { approved: false, note: 'invalidated by revision' }
+  const affected = new Set([kind, ...(DEPENDENTS[kind] || [])])
+  const invalidatedGates = []
+  Object.entries(GATE_COVERAGE).forEach(([gateId, kinds]) => {
+    if (state.approvals[gateId] && kinds.some(k => affected.has(k))) {
+      state.approvals[gateId] = { approved: false, note: 'invalidated by revision' }
+      invalidatedGates.push(gateId)
+    }
+  })
   state.decision_log.push({
     stage: 'revision_request',
     note: revision.note,
@@ -860,7 +882,7 @@ function applyRevision(state, revision) {
     reason: revision.reason,
     affected_departments: REVISION_ROUTING[revision.routing_key] || [],
     estimated_cost_impact: revision.estimated_cost_impact || 'not estimated',
-    required_reapprovals: ['production_plan'],
+    required_reapprovals: invalidatedGates,
   })
 }
 
@@ -969,13 +991,24 @@ async function runPipeline(state) {
   state.stage_reached = '09_preproduction_review'
   if (state.limit_reached) return
 
+  // A revision-loop fix can leave downstream artifacts 'stale' (see preproductionReview);
+  // approving over a known-inconsistent package would defeat that signal, so stale artifacts
+  // block this gate even if the caller already marked it approved. Re-running (same command,
+  // no new approval needed) regenerates them via the isPresent() checks above, then re-reaches this gate.
+  const staleKinds = Object.entries(state.artifacts).filter(([, a]) => a.status === 'stale').map(([k]) => k)
+  if (staleKinds.length) {
+    state.pending_gate = gateInfo('production_plan', Object.values(state.artifacts))
+    state.decision_log.push({ stage: '09_preproduction_review', summary: `Cannot request production_plan approval yet: ${staleKinds.join(', ')} were invalidated by an in-run revision and must be regenerated first. Re-run this project (same priorState) to regenerate them, then re-request approval.`, stale: staleKinds })
+    recordPendingApproval(state, 'production_plan')
+    return
+  }
   const prodGate = state.approvals.production_plan
   if (!prodGate || !prodGate.approved) {
     state.pending_gate = gateInfo('production_plan', Object.values(state.artifacts))
     recordPendingApproval(state, 'production_plan')
     return
   }
-  Object.values(state.artifacts).forEach(a => { if (a.status !== 'blocked') a.status = 'approved' })
+  Object.values(state.artifacts).forEach(a => { if (a.status !== 'blocked' && a.status !== 'stale') a.status = 'approved' })
   state.approval_log.push({ gate_id: 'production_plan', decision: 'approved', scope: Object.values(state.artifacts).map(a => a.artifact_id) })
 
   await runProductionStages(state)
