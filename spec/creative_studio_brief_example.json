@@ -1,0 +1,71 @@
+{
+  "example_only": true,
+  "instruction": "Replace the fictional example values with your real client brief and merge into the studio project. These example values authorize no spending or use of real brands or talent.",
+  "project": {
+    "id": "PROJECT_001",
+    "name": "Essential, Not Expensive",
+    "brand": "REPLACE_WITH_BRAND",
+    "product_or_subject": "REPLACE_WITH_PRODUCT",
+    "one_line_brief": "Make the product feel essential, not just expensive.",
+    "objective": "Create a product-led campaign that makes everyday usefulness emotionally compelling.",
+    "audience": "REPLACE_WITH_AUDIENCE",
+    "key_message": "REPLACE_WITH_A_VERIFIED_PRODUCT_BENEFIT",
+    "tone": [
+      "cinematic",
+      "confident",
+      "human",
+      "restrained"
+    ],
+    "verified_product_facts": [],
+    "references": [],
+    "deliverables": [
+      {
+        "id": "D01",
+        "type": "video",
+        "duration_seconds": 30,
+        "aspect_ratio": "9:16",
+        "width": 1080,
+        "height": 1920,
+        "fps": 24,
+        "language": "en",
+        "audio_spec": "To be confirmed"
+      },
+      {
+        "id": "D02",
+        "type": "video",
+        "duration_seconds": 15,
+        "aspect_ratio": "9:16",
+        "width": 1080,
+        "height": 1920,
+        "fps": 24,
+        "language": "en",
+        "audio_spec": "To be confirmed"
+      },
+      {
+        "id": "D03",
+        "type": "still",
+        "count": 3,
+        "aspect_ratio": "4:5",
+        "width": 1080,
+        "height": 1350
+      }
+    ],
+    "must_include": [
+      "A clear product role in the story",
+      "A readable closing product moment"
+    ],
+    "must_avoid": [
+      "Generic luxury imagery without a story",
+      "Unsupported performance claims",
+      "Unexplained continuity changes"
+    ],
+    "deadline": null,
+    "budget": {
+      "currency": "USD",
+      "runner_llm_cap": null,
+      "media_and_render_cap": null,
+      "spent": 0,
+      "reserved": 0
+    }
+  }
+}
