@@ -55,12 +55,30 @@ Workflow({
 - `priorState` — the `project_state` object returned by a previous run, required for every
   command except `START`. This workflow has no storage binding, so the caller carries state
   between runs (per the blueprint's `storage_binding: null` rule).
-- `approvals` — e.g. `{ concept: { approved: true, selected_route_id: 'R1' } }`, merged into
-  `priorState.approvals`. `APPROVE` is just `START` with `priorState` plus a new approval.
+- `approvals` — e.g. `{ concept: { approved: true, selected_route_id: 'R1', approver_id, decided_at,
+  comment, decision_id } }`, merged into `priorState.approvals`. `APPROVE` is just `START` with
+  `priorState` plus a new approval. Approvals come from the Approval Desk (below); one without an
+  `approver_id` is logged as `verified: false`. A `comment` becomes binding direction in every later
+  agent's prompt.
 - `revision` — `{ target_kind, routing_key, note, reason, estimated_cost_impact }` for `REVISE`;
   marks the target artifact and its dependents stale and invalidates the approval gate(s) that
   covered them, so the next run regenerates exactly what changed.
 - `mode` / `toolBindings` — opt into the connected-tools production stages (see above).
 
 Each run returns `project_state` — pass it back in as `priorState` on the next call to resume,
-check `STATUS`, or `EXPORT_PLAN`/`EXPORT_STATE` once the campaign is done.
+check `STATUS`, or `EXPORT_PLAN`/`EXPORT_STATE` once the campaign is done. Each project's latest
+state is kept under `projects/<name>/state.json` (e.g. `projects/quiet-mornings/state.json`, which
+is waiting at the concept gate).
+
+### Approving work
+
+Gates are decided on the **Approval Desk**, a private claude.ai page
+(<https://claude.ai/artifact/G3FEdafakQmFDsCStZQJmh>). It shows every gate that's waiting, the exact
+versions up for review, and for the concept gate the three routes to pick from. Only the page's
+owner can approve or request changes; each decision stores the approver's account id, the time, the
+reviewed versions and any note. Anyone the page is shared with can read it but not decide.
+
+After deciding, tell Claude **"pick up my approvals"**. Claude reads new decisions from the desk,
+marks them picked up, resumes `creative-studio.js` from `projects/<name>/state.json` with the
+decision as `approvals`, and puts the next gate back on the desk. A decision can be undone on the
+desk until Claude picks it up.

@@ -605,6 +605,25 @@ function gateInfo(gateId, artifactList) {
   }
 }
 
+// approval_policy.record_fields: who decided, when, on which exact versions, with what comment.
+// An approval without an approver_id did not come from the Approval Desk and is logged as unverified.
+function approvedEntry(state, gateId, approval, scope, extra) {
+  if (approval.comment && !(state.human_notes || []).some(n => n.decision_id === approval.decision_id && n.gate_id === gateId)) {
+    state.human_notes = (state.human_notes || []).concat([{ gate_id: gateId, note: approval.comment, decision_id: approval.decision_id || null }])
+  }
+  return {
+    gate_id: gateId,
+    decision: 'approved',
+    approver_id: approval.approver_id || null,
+    decided_at: approval.decided_at || null,
+    comment: approval.comment || '',
+    decision_id: approval.decision_id || null,
+    verified: !!approval.approver_id,
+    artifact_ids_and_revisions: scope,
+    ...(extra || {}),
+  }
+}
+
 function recordPendingApproval(state, gateId) {
   state.approval_log.push({ gate_id: gateId, decision: 'pending' })
   state.decision_log.push({ stage: state.stage_reached, summary: `Stopped for required human approval: ${gateId}` })
@@ -635,7 +654,7 @@ Deliverables: ${JSON.stringify(state.brief.deliverables)}
 Must include: ${JSON.stringify(state.brief.must_include)}
 Must avoid: ${JSON.stringify(state.brief.must_avoid)}
 Verified product facts (the ONLY claims you may state as fact): ${JSON.stringify(state.brief.verified_product_facts)}
-Rules: never invent product performance claims, statistics, or research beyond the verified facts above — label anything else as a hypothesis or assumption. Never assume a real person's likeness, availability, or rights; use fictional cast by default. No reference_reader tool is bound in this run, so do not claim to have visually inspected any reference — treat named references only as context and flag as an assumption if inspection was required. If you cannot complete this task from the given context, set status "blocked" and list exactly what is missing in blockers.`
+${(state.human_notes || []).length ? `Notes from the human creative director at approval gates (binding direction; follow them unless one conflicts with the verified facts, and say so if it does): ${JSON.stringify(state.human_notes.map(n => `[${n.gate_id}] ${n.note}`))}\n` : ''}Rules: never invent product performance claims, statistics, or research beyond the verified facts above — label anything else as a hypothesis or assumption. Never assume a real person's likeness, availability, or rights; use fictional cast by default. No reference_reader tool is bound in this run, so do not claim to have visually inspected any reference — treat named references only as context and flag as an assumption if inspection was required. If you cannot complete this task from the given context, set status "blocked" and list exactly what is missing in blockers.`
 }
 
 function rolePrompt(state, role, task, upstream) {
@@ -808,7 +827,7 @@ async function runProductionStages(state) {
     return
   }
   state.artifacts.reference_stills.status = 'approved'
-  state.approval_log.push({ gate_id: 'visual_lock', decision: 'approved', scope: [state.artifacts.reference_stills.artifact_id] })
+  state.approval_log.push(approvedEntry(state, 'visual_lock', visualLock, [`${state.artifacts.reference_stills.artifact_id}@r${state.artifacts.reference_stills.revision}`]))
 
   if (!isPresent(state, 'motion_assets')) {
     const res = await runAgent(state, 'generation_supervisor', rolePrompt(state, 'generation_supervisor', 'Generate approved motion shots and requested campaign stills using the exact approved reference asset versions only.', { generation_plan: state.artifacts.generation_plan.content, reference_stills: state.artifacts.reference_stills.content }), { schema: envelopeSchema(JOB_RESULT_CONTENT), phase: 'Production', emptyContent: { job_results: [] } })
@@ -845,7 +864,7 @@ async function runProductionStages(state) {
     return
   }
   state.artifacts.final_review.status = 'approved'
-  state.approval_log.push({ gate_id: 'final_cut', decision: 'approved', scope: [state.artifacts.edit_timeline.artifact_id] })
+  state.approval_log.push(approvedEntry(state, 'final_cut', finalCut, [`${state.artifacts.edit_timeline.artifact_id}@r${state.artifacts.edit_timeline.revision}`]))
 
   if (!isPresent(state, 'final_delivery')) {
     const res = await runAgent(state, 'editor', rolePrompt(state, 'editor', 'Export only the approved timelines and stills, verify every final file against its deliverable spec, and assemble the delivery manifest.', { edit_timeline: state.artifacts.edit_timeline.content, final_review: state.artifacts.final_review.content }), { schema: envelopeSchema(DELIVERY_CONTENT), phase: 'Production', emptyContent: { manifest: [] } })
@@ -916,7 +935,9 @@ async function runPipeline(state) {
   if (state.artifacts.concepts.status !== 'approved') {
     state.selected_concept_id = conceptGate.selected_route_id || state.artifacts.concepts.content.recommended_route_id
     state.artifacts.concepts.status = 'approved'
-    state.approval_log.push({ gate_id: 'concept', decision: 'approved', selected_route_id: state.selected_concept_id, scope: [state.artifacts.concepts.artifact_id] })
+    state.approval_log.push(approvedEntry(state, 'concept', conceptGate,
+      [state.artifacts.brief, state.artifacts.strategy, state.artifacts.concepts].map(a => `${a.artifact_id}@r${a.revision}`),
+      { selected_route_id: state.selected_concept_id }))
   }
 
   phase('Script, Cast & World')
@@ -970,8 +991,17 @@ async function runPipeline(state) {
 
   phase('Storyboard')
   if (!isPresent(state, 'storyboard') || !isPresent(state, 'continuity_bible')) {
-    const basedOn = [state.artifacts.camera_plan.artifact_id, state.artifacts.sound_plan.artifact_id]
-    const res = await runAgent(state, 'storyboard_artist', rolePrompt(state, 'storyboard_artist', 'Combine the approved script, cast, wardrobe, world, direction, camera plan, and sound plan into ordered, timed text panels, and track continuity state per persistent element across shots. Flag contradictions.', { camera_plan: state.artifacts.camera_plan.content, sound_plan: state.artifacts.sound_plan.content }), { schema: envelopeSchema(STORYBOARD_AND_CONTINUITY_CONTENT), phase: 'Storyboard', emptyContent: { panels: [], contradictions_flagged: [], tracked_elements: [] } })
+    const basedOn = ['script', 'casting_bible', 'style_bible', 'world_bible', 'directors_treatment', 'camera_plan', 'sound_plan']
+      .map(k => state.artifacts[k].artifact_id)
+    const res = await runAgent(state, 'storyboard_artist', rolePrompt(state, 'storyboard_artist', 'Combine the approved script, cast, wardrobe, world, direction, camera plan, and sound plan into ordered, timed text panels, and track continuity state per persistent element across shots. Flag contradictions.', {
+      script: state.artifacts.script.content,
+      casting_bible: state.artifacts.casting_bible.content,
+      style_bible: state.artifacts.style_bible.content,
+      world_bible: state.artifacts.world_bible.content,
+      directors_treatment: state.artifacts.directors_treatment.content,
+      camera_plan: state.artifacts.camera_plan.content,
+      sound_plan: state.artifacts.sound_plan.content,
+    }), { schema: envelopeSchema(STORYBOARD_AND_CONTINUITY_CONTENT), phase: 'Storyboard', emptyContent: { panels: [], contradictions_flagged: [], tracked_elements: [] } })
     state.artifacts.storyboard = makeArtifact(state, 'storyboard', 'storyboard_artist', '07_storyboard', basedOn, { ...res, content: { panels: res.content.panels, contradictions_flagged: res.content.contradictions_flagged } })
     state.artifacts.continuity_bible = makeArtifact(state, 'continuity_bible', 'storyboard_artist', '07_storyboard', basedOn, { ...res, content: { tracked_elements: res.content.tracked_elements } })
   }
@@ -1009,7 +1039,7 @@ async function runPipeline(state) {
     return
   }
   Object.values(state.artifacts).forEach(a => { if (a.status !== 'blocked' && a.status !== 'stale') a.status = 'approved' })
-  state.approval_log.push({ gate_id: 'production_plan', decision: 'approved', scope: Object.values(state.artifacts).map(a => a.artifact_id) })
+  state.approval_log.push(approvedEntry(state, 'production_plan', prodGate, Object.values(state.artifacts).map(a => `${a.artifact_id}@r${a.revision}`)))
 
   await runProductionStages(state)
 }
