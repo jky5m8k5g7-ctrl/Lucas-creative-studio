@@ -25,6 +25,13 @@ const DURATION = video.duration_seconds
 
 const CRAFT_BRIEF = 'spec/roles/copywriter.md'
 const TASTE_NOTES = 'spec/taste/notes.md'
+// When the caller passes the two files' text, every agent is isolated: it gets the text inline and
+// is told to use no tools. Without this, agents explore the repo on their own — in the first run the
+// baseline read the taste notes and the enhanced copywriter read this harness's scoring code.
+const CRAFT_TEXT = input.craftBrief || null
+const NOTES_TEXT = input.tasteNotes || null
+const ISOLATED = !!(CRAFT_TEXT && NOTES_TEXT)
+const NO_TOOLS = 'Work only from this prompt. Do not use any tool except the StructuredOutput tool that returns your answer: do not read files, search the repository, or run commands.'
 const MAX_RETRIES = 2
 const VO_WORDS_MAX = Math.floor(2.5 * DURATION)
 const BEAT_WPS_MAX = 3
@@ -109,6 +116,24 @@ function baselineScript(a) {
   return scripts.find(s => s.deliverable_id === video.id) || scripts[0] || { beats: [] }
 }
 
+// The baseline schema has one free-text field per beat, so agents often pack stage directions
+// into it ("VO: none. | Picture: ..."). Count only the quoted spoken/printed words.
+function spokenOnly(s) {
+  const str = String(s || '')
+  const seg = str.split('|').map(x => x.trim()).find(x => /^vo\b/i.test(x))
+  const body = seg !== undefined ? seg.replace(/^vo[^:]*:\s*/i, '') : str
+  if (/^(none|no vo|—|-)\b/i.test(body.trim())) return ''
+  const quoted = body.match(/["“]([^"”]+)["”]/g)
+  return quoted ? quoted.join(' ') : body
+}
+
+function printedOnly(s) {
+  const str = String(s || '').trim()
+  if (/^(none|—|-)\b/i.test(str)) return ''
+  const quoted = str.match(/["“]([^"”]+)["”]/g)
+  return quoted ? quoted.join(' ') : str
+}
+
 function baselineMetrics(s) {
   const beats = s.beats || []
   const ranges = beats.map(b => parseRange(b.timecode))
@@ -116,8 +141,8 @@ function baselineMetrics(s) {
   const parsed = ranges.every(Boolean)
   return {
     beats: beats.length,
-    vo_words: beats.reduce((n, b) => n + words(b.dialogue_or_vo), 0),
-    max_card_words: Math.max(0, ...beats.map(b => words(b.on_screen_copy))),
+    vo_words: beats.reduce((n, b) => n + words(spokenOnly(b.dialogue_or_vo)), 0),
+    max_card_words: Math.max(0, ...beats.map(b => words(printedOnly(b.on_screen_copy)))),
     banned_hits: bannedHits(text),
     picture_described: false,
     timing_exact: parsed && ranges.length > 0 && Math.abs(ranges[0][0]) < 0.01 && Math.abs(ranges[ranges.length - 1][1] - DURATION) < 0.01,
@@ -338,7 +363,7 @@ Rules: never invent product performance claims, statistics, or research beyond t
 Your role: Campaign Copywriter. Write timed scripts, dialogue or voiceover, on-screen copy, hooks, and calls to action for the approved route, one per deliverable duration, without changing the central promise. Use only approved factual claims.
 This task: Write the timed script (hook, beats, on-screen copy, CTA) for every video deliverable on the approved route.
 Upstream context: ${JSON.stringify({ selected_route_id: routeId, concepts })}
-Respond only via the required schema.`
+Respond only via the required schema.${ISOLATED ? `\n\n${NO_TOOLS}` : ''}`
 }
 
 function context() {
@@ -363,7 +388,26 @@ Visual language: ${route.visual_language}
 Execution example (ILLUSTRATIVE ONLY — you may depart from it wherever the craft brief or taste notes call for it, and must list every departure in route_deviations): ${route.execution_example}`
 }
 
+function inlineTaste() {
+  return `CRAFT BRIEF (${CRAFT_BRIEF}) — its rules are requirements:
+<<<
+${CRAFT_TEXT}
+>>>
+
+TASTE NOTES (${TASTE_NOTES}) — the studio's point of view:
+<<<
+${NOTES_TEXT}
+>>>`
+}
+
 function readFirst() {
+  if (ISOLATED) {
+    return `${NO_TOOLS}
+
+${inlineTaste()}
+
+Follow the taste notes, cite them in taste_note_applied and decisions, and say explicitly when you break one on purpose. In files_read, list "${CRAFT_BRIEF}" and "${TASTE_NOTES}" (both provided above).`
+  }
   return `Before writing anything, use the Read tool to read these two files, relative to the repository root, in full:
 - ${CRAFT_BRIEF} — the copywriter craft brief. Its rules are requirements.
 - ${TASTE_NOTES} — the studio's taste notes. They are the studio's point of view: follow them, cite them in taste_note_applied and decisions, and say explicitly when you break one on purpose.
@@ -406,7 +450,7 @@ Fix every failed check. Keep everything that already works; don't rewrite what i
 function notesPrompt(script) {
   return `You are the studio's creative director. A copywriter has handed you a script for review before it goes to the film director. Give notes the way a good creative director does in a real review: specific, actionable, and only about things that matter.
 
-Before reviewing, use the Read tool to read ${TASTE_NOTES} and ${CRAFT_BRIEF} (relative to the repository root). Your notes should come from them — they are the studio's taste — and from the approved route and brief below.
+${ISOLATED ? `${NO_TOOLS}\n\n${inlineTaste()}\n\nYour notes should come from these` : `Before reviewing, use the Read tool to read ${TASTE_NOTES} and ${CRAFT_BRIEF} (relative to the repository root). Your notes should come from them`} — they are the studio's taste — and from the approved route and brief below.
 
 ${context()}
 
@@ -438,7 +482,9 @@ ${checksClause()}`
 const LENSES = [
   {
     id: 'creative_director',
-    brief: `You are a senior creative director at a top independent agency, known for rejecting anything generic. Before judging, use the Read tool to read ${TASTE_NOTES} and ${CRAFT_BRIEF} (relative to the repository root): they define this studio's standard. Ask of each script: would I put this in front of the client today?`,
+    brief: ISOLATED
+      ? `You are a senior creative director at a top independent agency, known for rejecting anything generic. The two documents below define this studio's standard. Ask of each script: would I put this in front of the client today?\n\n${inlineTaste()}`
+      : `You are a senior creative director at a top independent agency, known for rejecting anything generic. Before judging, use the Read tool to read ${TASTE_NOTES} and ${CRAFT_BRIEF} (relative to the repository root): they define this studio's standard. Ask of each script: would I put this in front of the client today?`,
   },
   {
     id: 'film_director',
@@ -454,7 +500,7 @@ const PERMS = [[0, 1, 2], [2, 0, 1], [1, 2, 0]]
 const LABELS = ['X', 'Y', 'Z']
 
 function judgePrompt(lens, rendered) {
-  return `${lens.brief}
+  return `${lens.brief}${ISOLATED ? `\n\n${NO_TOOLS}` : ''}
 
 You are judging three scripts for the same approved route, blind. You don't know who wrote them or how. Judge only what is on the page.
 
@@ -564,6 +610,7 @@ const tasteLogEntry = {
 
 return {
   duration_s: DURATION,
+  isolated: ISOLATED,
   metrics: {
     A_baseline: baselineMetrics(A),
     B_enhanced: enhancedMetrics(B.script),
