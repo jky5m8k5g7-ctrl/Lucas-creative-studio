@@ -1,0 +1,129 @@
+// Behavior tests for .claude/workflows/creative-studio.js with stub agents (no model calls).
+// Run: node tests/creative-studio.test.mjs
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { loadWorkflow } from './load-workflow.mjs'
+import { makeStub } from './stub-agents.mjs'
+const run = await loadWorkflow(path.join(path.dirname(fileURLToPath(import.meta.url)), '../.claude/workflows/creative-studio.js'))
+const noop = () => {}
+const J = x => JSON.parse(JSON.stringify(x))
+let fails = 0
+const ok = (cond, msg) => { console.log((cond ? 'PASS ' : 'FAIL ') + msg); if (!cond) fails++ }
+const IDEA = 'Emberline makes a cast-iron skillet, pre-seasoned with flaxseed oil. A dad teaching his kid breakfast before school.'
+
+// 1. IDEA: script needs a revision to reach A; QC flags the camera once; panel sends a note to the copywriter once.
+const s1 = makeStub({
+  score: (dept, label) => (dept === 'copywriter' && label.endsWith('review 1') ? 6 : 8),
+  qc: (label, calls) => (calls.filter(c => /^integrity QC/.test(c.label)).length === 1 ? ['cinematographer'] : []),
+  panel: (lens, round) => (round === 1 && lens === 'client' ? { ok: false, notes: [{ responsible: 'copywriter', target: 'D01 B2', note: 'end on the product name', source: 'brief' }], questions: ['Should the brand name change?'] } : { ok: true }),
+})
+const r1 = await run({ command: 'IDEA', idea: IDEA, craft: { copywriter: 'CRAFT-COPY-MARKER' }, tasteNotes: 'TASTE-MARKER', qualityBar: 'BAR-MARKER' }, s1.agent, s1.parallel, noop, noop)
+ok(r1.pending_gate && r1.pending_gate.gate_id === 'production_plan', 'IDEA run stops at production_plan (one review at the end)')
+ok(r1.pending_gate.selected_route_id === 'R2' && r1.pending_gate.route_options.length === 3, 'gate carries the recommended route and all three options')
+ok(r1.package_review && r1.package_review.grade === 'A' && r1.package_review.round === 2, 'package panel reached A on round 2')
+ok(r1.department_grades.length === 12 && r1.department_grades.every(g => g.grade === 'A'), 'all 12 graded departments are A: ' + r1.department_grades.map(g => g.key + ':' + g.grade).join(' '))
+ok(r1.department_grades.find(g => g.key === 'script').rounds >= 2, 'script took more than one review round')
+ok(!Object.values(r1.project_state.artifacts).some(a => a.status === 'stale'), 'nothing stale in the package presented')
+ok(!r1.pending_gate.blocked_by_stale, 'gate not blocked by stale work')
+ok(r1.project_state.artifacts.quality_reports.content.recommendation === 'approve', 'final integrity report is clean and current')
+ok(r1.open_questions.some(q => q.includes('brand name')), 'panel direction question surfaced to Lucas')
+ok(r1.needs_human_input.includes('Is Emberline the final brand name?'), 'development questions surfaced')
+ok(r1.project_state.brief.verified_product_facts[0] === 'Pre-seasoned with flaxseed oil', 'verified fact carried into the brief')
+const cw = s1.calls.find(c => c.label === 'copywriter')
+ok(cw.prompt.includes('CRAFT-COPY-MARKER') && cw.prompt.includes('TASTE-MARKER') && cw.prompt.includes(IDEA), 'copywriter prompt has craft brief, taste notes and Lucas\'s idea')
+ok(s1.calls.some(c => /review/.test(c.label) && c.prompt.includes('BAR-MARKER')), 'critic prompt has the quality bar')
+ok(s1.calls.filter(c => /^panel/.test(c.label)).length === 6, 'panel ran two rounds of three lenses')
+ok(r1.approval_log.some(e => e.gate_id === 'concept' && e.decision === 'provisional'), 'route logged as provisional, not approved')
+ok(r1.budget_ledger.agent_calls_allowed_per_run === 220 && !r1.budget_ledger.limit_reached, 'quality budget 220, not exhausted')
+const rebuilt = s1.calls.filter(c => c.label === 'storyboard_artist' || c.label === 'generation_supervisor')
+ok(rebuilt.some(c => c.prompt.includes('Your last version')), 'stale departments rebuild from their last version')
+
+// 2. APPROVE same route: no agent calls for review; production blocked in planning_only.
+const s2 = makeStub()
+const r2 = await run({ command: 'APPROVE', priorState: J(r1.project_state), approvals: { production_plan: { approved: true, selected_route_id: 'R2', approver_id: 'u_LUCAS', decided_at: '2026-09-24T22:00:00Z', comment: 'Go.', decision_id: 'dec_1' } } }, s2.agent, s2.parallel, noop, noop)
+ok(s2.calls.length === 0, 'APPROVE makes no agent calls (got ' + s2.calls.length + ')')
+ok(r2.approval_log.some(e => e.gate_id === 'production_plan' && e.decision === 'approved' && e.verified), 'production_plan approval recorded and verified')
+ok(r2.approval_log.some(e => e.gate_id === 'concept' && e.decision === 'approved' && e.confirmed_at === 'production_plan' && e.selected_route_id === 'R2'), 'route confirmed with the package')
+ok(r2.project_state.artifacts.production_readiness && r2.project_state.artifacts.production_readiness.kind === 'blocked_capability_report', 'paid production stays blocked (planning_only)')
+
+// 3. APPROVE with a different route: rebuilds on R3 and comes back for review.
+const s3 = makeStub()
+const r3 = await run({ command: 'APPROVE', priorState: J(r1.project_state), approvals: { production_plan: { approved: true, selected_route_id: 'R3', approver_id: 'u_LUCAS', decision_id: 'dec_2' } } }, s3.agent, s3.parallel, noop, noop)
+ok(r3.project_state.selected_concept_id === 'R3', 'route switched to R3')
+ok(r3.pending_gate && r3.pending_gate.gate_id === 'production_plan' && r3.pending_gate.selected_route_id === 'R3', 'R3 package comes back for review, not auto-approved')
+ok(s3.calls.some(c => c.label === 'copywriter') && s3.calls.some(c => /^panel/.test(c.label)), 'R3 rebuilt and re-reviewed (' + s3.calls.length + ' calls)')
+ok(!r3.approval_log.some(e => e.gate_id === 'production_plan' && e.decision === 'approved'), 'no production approval recorded for unseen R3 work')
+
+// 4. NOTES: routed to departments, revised, re-checked, re-reviewed.
+const s4 = makeStub()
+const r4 = await run({ command: 'NOTES', priorState: J(r1.project_state), notes: 'Lose the window line. Make the kid older.' }, s4.agent, s4.parallel, noop, noop)
+ok(s4.calls[0].label === 'producer · route your notes', 'notes routed by the producer first')
+ok(s4.calls.some(c => c.label === 'copywriter · revise from notes'), 'copywriter revised from notes')
+ok(s4.calls.some(c => /^integrity QC/.test(c.label)) && s4.calls.some(c => /^panel/.test(c.label)), 'revised package re-checked and re-reviewed')
+ok(r4.pending_gate && r4.pending_gate.gate_id === 'production_plan', 'back to Lucas for review')
+ok(r4.project_state.human_notes.some(n => n.gate_id === 'package'), 'Lucas\'s notes kept as binding direction')
+ok(s4.calls.filter(c => c.label !== 'producer · route your notes').every(c => c.prompt.includes('Lose the window line')), 'every later prompt carries Lucas\'s notes')
+
+// 5. Budget: small budgets stop mid-way (mid-review, mid-panel); resumes finish with no lost work.
+for (const budget of [3, 5, 7, 11, 25]) {
+  let st = null, runs = 0
+  const s5 = makeStub({
+    score: (dept, label) => (['copywriter', 'cinematographer'].includes(dept) && label.endsWith('review 1') ? 6 : 8),
+    qc: (label, calls) => (calls.filter(c => /^integrity QC/.test(c.label)).length === 1 ? ['stylist'] : []),
+    panel: (lens, round, calls) => (calls.filter(c => /^panel · client/.test(c.label)).length === 1 && lens === 'client' ? { ok: false, notes: [{ responsible: 'world_bible' === 'x' ? '' : 'production_designer', target: 'L1', note: 'warmer tile', source: 'taste' }] } : { ok: true }),
+  })
+  let r
+  do {
+    r = await run(st ? { command: 'APPROVE', priorState: J(st), maxAgentCalls: budget } : { command: 'IDEA', idea: IDEA, maxAgentCalls: budget }, s5.agent, s5.parallel, noop, noop)
+    st = r.project_state; runs++
+  } while (r.budget_ledger.limit_reached && runs < 60)
+  ok(r.pending_gate && r.pending_gate.gate_id === 'production_plan' && !r.pending_gate.blocked_by_stale, `budget ${budget}: reaches review after ${runs} runs (${s5.calls.length} calls)`)
+  ok(!Object.values(st.artifacts).some(a => (a.quality && a.quality.incomplete) || a.status === 'stale' || a.status === 'blocked'), `budget ${budget}: no half-reviewed, stale or blocked work left`)
+  ok(r.package_review && r.package_review.grade === 'A' && !r.package_review.stale, `budget ${budget}: package review is A and current`)
+  ok(r.department_grades.every(g => g.grade === 'A'), `budget ${budget}: every department A`)
+}
+
+// 6. Approval against a changed package is not applied.
+const changed = J(r1.project_state)
+changed.artifacts.script.revision += 1
+const s6 = makeStub()
+const r6 = await run({ command: 'APPROVE', priorState: changed, approvals: { production_plan: { approved: true, approver_id: 'u_LUCAS', decision_id: 'dec_3' } } }, s6.agent, s6.parallel, noop, noop)
+ok(r6.approval_log.some(e => e.decision === 'not_applied') && r6.pending_gate.changed_since_review, 'approval on a changed package is refused and re-presented')
+
+// 7. START with gates: stops at the concept gate.
+const s7 = makeStub()
+const r7 = await run({ command: 'START', brief: { name: 'x', brand: 'Emberline', product_or_subject: 'skillet', audience: 'a', key_message: 'k', objective: 'o', deliverables: [{ id: 'D01', type: 'video', duration_seconds: 30, aspect_ratio: '9:16' }] } }, s7.agent, s7.parallel, noop, noop)
+ok(r7.pending_gate.gate_id === 'concept' && s7.calls.length === 2, 'START (gates) stops at concept after 2 calls, no quality loop by default')
+
+// 8. Agent failure on development: stops cleanly, resume retries.
+const s8 = makeStub({ fail: l => l.startsWith('development_producer') })
+const r8 = await run({ command: 'IDEA', idea: IDEA }, s8.agent, s8.parallel, noop, noop)
+ok(!r8.pending_gate && r8.decision_log.some(d => d.blocked) && s8.calls.length === 3, 'failed development stops without building on nothing, and skips review (' + s8.calls.map(c => c.label).join(', ') + ')')
+const s8b = makeStub()
+const r8b = await run({ command: 'APPROVE', priorState: J(r8.project_state) }, s8b.agent, s8b.parallel, noop, noop)
+ok(r8b.pending_gate && r8b.pending_gate.gate_id === 'production_plan', 'resume retries development and completes')
+
+// 9. Series pilot needs an outline and a screenwriter.
+const s9 = makeStub({ format: 'series_pilot' })
+const r9 = await run({ command: 'IDEA', idea: IDEA, maxAgentCalls: 12 }, s9.agent, s9.parallel, noop, noop)
+const devMakes = s9.calls.filter(c => /^development_producer( · fix checks \d)?$/.test(c.label))
+ok(devMakes.length === 3 && devMakes[1].prompt.includes('long-form formats need an outline'), 'pilot without an outline deliverable fails the check and is retried with the reason')
+const dev9 = r9.project_state.artifacts.development
+ok(dev9.quality && dev9.quality.grade !== 'A' && dev9.checks.failed.length > 0, 'work failing a check cannot be graded A even if the reviewer scores it 8+ (' + (dev9.quality && dev9.quality.grade) + ')')
+
+// 10. A department the reviewer never passes: presented, flagged below A, not hidden.
+const s10 = makeStub({ score: dept => (dept === 'sound_designer' ? 6 : 8) })
+const r10 = await run({ command: 'IDEA', idea: IDEA }, s10.agent, s10.parallel, noop, noop)
+const snd = r10.department_grades.find(g => g.key === 'sound_plan')
+ok(snd.grade === 'below_A' && snd.rounds === 3, 'never-A department stops after 3 review rounds')
+ok(r10.pending_gate.below_a.includes('sound_plan'), 'gate flags it for Lucas: below_a = ' + JSON.stringify(r10.pending_gate.below_a))
+
+// 11. REVISE on the approved package: approvals invalidated, dependents rebuilt, package re-reviewed.
+const s11 = makeStub()
+const r11 = await run({ command: 'REVISE', priorState: J(r2.project_state), revision: { target_kind: 'world_bible', routing_key: 'location_props_palette', note: 'swap the kitchen for a camper van', reason: 'client' } }, s11.agent, s11.parallel, noop, noop)
+ok(r11.project_state.approvals.production_plan.approved === false, 'REVISE invalidates the production approval')
+ok(s11.calls.some(c => c.label === 'production_designer') && s11.calls.some(c => c.label === 'cinematographer') && !s11.calls.some(c => c.label === 'copywriter'), 'world and its dependents rebuilt, script untouched')
+ok(s11.calls.some(c => /^panel/.test(c.label)) && r11.pending_gate.gate_id === 'production_plan', 'revised package re-reviewed and presented again')
+
+console.log(fails ? `\n${fails} FAILED` : '\nALL PASS')
+if (fails) process.exit(1)
