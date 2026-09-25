@@ -21,7 +21,8 @@ Lucas. Approval gates are enforced in code, not in a prompt.
    be stated as fact; everything else is a labeled assumption, and questions for Lucas are listed
    without blocking the run.
 3. **The build.** Strategy → three routes (the creative director's recommendation is built on) →
-   script, cast and world in parallel → direction, looks and sound in parallel → shot plan →
+   script → cast and world in parallel, broken down from the script (every character the script
+   names is cast under the same ID) → direction, looks and sound in parallel → shot plan →
    storyboard and continuity → generation plan. Narrative formats get a screenwriter and a
    beat sheet for the whole piece; this build fully plans up to 120 seconds, and longer pieces
    plan their strongest sequence plus an outline of the rest.

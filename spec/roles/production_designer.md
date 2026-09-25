@@ -14,18 +14,19 @@ the same room from it. If the set would suit any product in the category, it is 
   its category.
 
 **Every set has a history told by objects.**
-- Who uses it, for how long, and the last thing they did before M1, each shown by a prop or
-  a state.
+- Who uses it, for how long, and the last thing they did before M1, each shown by a prop or a
+  state.
 - Wear goes where hands and feet go. A mark has a position, size in cm, hex and finish against
   the surface's own, and a cause; "lightly worn" is not a mark. Put marks where a planned view
   sees them. If the idea is newness, give marks of newness (protective film, fold creases).
   Tabletop sets control seams, dust and fingerprints instead.
 
 **Space is a plan with numbers.**
-- `spatial_layout`: W × D × H in m; walls A–D clockwise in plan, A holding the entrance; anchor
-  corner A/B, x along wall A toward D, y toward C, in cm. Doors and windows by wall and span
-  (x on A and C, y on B and D), door swing, and the view through each.
-- Working heights: cutting and light work 86–95 cm, precision work 100–110 cm, seated 72–76 cm.
+- `spatial_layout`: W × D × H in m; walls A–D clockwise in plan, A holding the entrance;
+  anchor corner A/B, x along wall A toward D, y toward C, in cm. Doors and windows by wall and
+  span (x on A and C, y on B and D), door swing, and the view through each.
+- Working heights: cutting and light work 86–95 cm, precision work 100–110 cm, seated 72–76
+  cm.
 - Lock place and year, and the giveaways generators mix up: sockets, signage language, road
   side, plates.
 
@@ -35,9 +36,9 @@ the same room from it. If the set would suit any product in the category, it is 
   walls, dominant 36%". 3–6 entries, one dominant, finishes in trade terms.
 
 **The product has a job, a backing and a clear zone.**
-- `product_placement`: where its job happens, never a plinth: surface, x/y, facing as a bearing
-  (0° = toward wall C, clockwise), state, entry moment, and the prop state it changes. Swap
-  test: one detail that exists only because this product does this job here, built on a
+- `product_placement`: where its job happens, never a plinth: surface, x/y, facing as a
+  bearing (0° = toward wall C, clockwise), state, entry moment, and the prop state it changes.
+  Swap test: one detail that exists only because this product does this job here, built on a
   verified fact or a feature same-tier competitors lack.
 - At least 3:1 relative-luminance contrast between the backing and the part of the product
   doing the job, both hexes shown, under an even key (an 18% grey card reads #767676); give
@@ -46,14 +47,15 @@ the same room from it. If the set would suit any product in the category, it is 
 - Shiny parts show their mirror path (polished steel reflects about 60%, gloss enamel or glass
   5%): design what's there; lighting is a DP request.
 - Nothing moves in the clear zone during the hold; background motion stays lower in contrast
-  than the product in the same frame. No plaques, "bestseller" cards or queues unless verified.
+  than the product in the same frame. No plaques, "bestseller" cards or queues unless
+  verified.
 
 **Continuity is position and state, keyed to IDs.**
 - Prop IDs are unique across locations: list each prop once, where it first appears, and name
   the other locations there. Each location still lists two of its own.
 - Hero and action props get a first position and states (S1, S2), each with the moment that
-  causes it. A repeated position after a change is a new state. Irreversible states carry
-  "not before M#".
+  causes it. A repeated position after a change is a new state. Irreversible states carry "not
+  before M#".
 - Lock at most about five props per frame besides the product; generators drift past that.
 
 **Clear every mark; write every word.**

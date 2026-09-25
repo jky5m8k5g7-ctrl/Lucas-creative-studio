@@ -90,7 +90,8 @@ const DEPENDENTS = {
   development: DOWNSTREAM_OF_BRIEF,
   strategy: DOWNSTREAM_OF_BRIEF.slice(1),
   concepts: DOWNSTREAM_OF_BRIEF.slice(2),
-  script: ['directors_treatment', 'sound_plan', 'camera_plan', 'storyboard', 'continuity_bible', 'generation_plan', 'quality_reports', 'package_review'],
+  // Cast and world are broken down from the script, so a script change reaches everything.
+  script: ['casting_bible', 'world_bible', 'directors_treatment', 'style_bible', 'sound_plan', 'camera_plan', 'storyboard', 'continuity_bible', 'generation_plan', 'quality_reports', 'package_review'],
   casting_bible: ['style_bible', 'directors_treatment', 'camera_plan', 'storyboard', 'continuity_bible', 'generation_plan', 'quality_reports', 'package_review'],
   world_bible: ['directors_treatment', 'style_bible', 'camera_plan', 'storyboard', 'continuity_bible', 'generation_plan', 'quality_reports', 'package_review'],
   directors_treatment: ['camera_plan', 'storyboard', 'continuity_bible', 'generation_plan', 'quality_reports', 'package_review'],
@@ -1050,6 +1051,16 @@ function checkCasting(state, c) {
     if ((ch.visual_identity_anchors || []).length < 3) v.push(`${ch.character_id}: give at least three visual identity anchors`)
     if (ch.fictional_talent !== true) v.push(`${ch.character_id}: the cast is fictional; set fictional_talent to true`)
   })
+  // Everyone the script names by ID (beat sheet, dialogue prefixes) is cast under that ID.
+  const ID = /^[A-Z][A-Z0-9_]{0,23}$/
+  const sc = content(state, 'script')
+  const named = new Set(((sc.story && sc.story.beat_sheet) || []).flatMap(x => x.characters || []).filter(x => ID.test(x)))
+  ;(sc.deliverable_scripts || []).forEach(d => (d.beats || []).forEach(b => String(b.vo || '').split('\n').forEach(line => {
+    const m = line.trim().match(/^([A-Z][A-Z0-9_]{0,23})(?: \([^)]*\))?:/)
+    if (m) named.add(m[1])
+  })))
+  const castIds = idSet(chars, 'character_id')
+  named.forEach(id => { if (!castIds.has(id)) v.push(`the script's character ${id} isn't cast; use the script's IDs exactly`) })
   return v
 }
 
@@ -1394,6 +1405,7 @@ const SPECS = {
       'for every video deliverable: beats run back to back from exactly 0s to its exact length',
       `spoken words fit the time: at most ${isNarrative(state) ? 3 : 2.5} per second overall, never faster than 3.2 in a beat`,
       'on-screen text 7 words or fewer per beat; every picture at least 12 words of what the camera sees',
+      "characters are named by an ID in capitals (the character's name, e.g. ROSA) in the beat sheet and as the prefix of every spoken line; casting and every later department use these IDs",
       isAdFormat(state) ? 'every video deliverable has a CTA' : 'no CTA is needed for this format; leave cta empty unless the piece has one',
       `stills_copy has exactly ${stillCount(state)} entries`,
       state.brief.format === 'series_pilot' ? 'the pilot beat sheet has at least 12 scenes' : 'the beat sheet is not empty',
@@ -1407,20 +1419,20 @@ const SPECS = {
     dept: 'casting_director', role: () => 'casting_director', kind: 'casting_bible', stage: '04_script_cast_world', phase: 'Script, Cast & World', label: 'casting bible',
     schema: CASTING_CONTENT,
     empty: { characters: [] },
-    task: () => 'Define every character the route needs, with persistent IDs the other departments will use.',
-    rules: () => ['unique character ids', 'at least three visual identity anchors per character', 'fictional_talent is true for everyone'],
-    upstream: routeUpstream,
-    basedOn: state => ids(state, ['concepts']),
+    task: () => "Cast every character in the script. Use the script's character IDs exactly as written (in the beat sheet and the dialogue prefixes) so every department means the same person; add no one the script doesn't have.",
+    rules: () => ['unique character ids, matching the ids the script uses', 'at least three visual identity anchors per character', 'fictional_talent is true for everyone'],
+    upstream: state => ({ ...routeUpstream(state), script: content(state, 'script') }),
+    basedOn: state => ids(state, ['concepts', 'script']),
     check: checkCasting,
   },
   world_bible: {
     dept: 'production_designer', role: () => 'production_designer', kind: 'world_bible', stage: '04_script_cast_world', phase: 'Script, Cast & World', label: 'world bible',
     schema: WORLD_CONTENT,
     empty: { locations: [] },
-    task: () => 'Define every location and prop the route needs, with persistent IDs, spatial layout, palettes as hex colors, and the prop states that must match between shots.',
+    task: () => "Break the script down into every location and prop it needs, with persistent IDs, spatial layout, palettes as hex colors, and the prop states that must match between shots. Every scene heading in the script has a location; every object a beat names has a prop.",
     rules: () => ['unique location ids and prop ids (across all locations)', 'each palette has at least three entries, each with a hex color', 'at least two props per location'],
-    upstream: routeUpstream,
-    basedOn: state => ids(state, ['concepts']),
+    upstream: state => ({ ...routeUpstream(state), script: content(state, 'script') }),
+    basedOn: state => ids(state, ['concepts', 'script']),
     check: checkWorld,
   },
   directors_treatment: {
@@ -1649,7 +1661,9 @@ async function runGroup(state, keys, phaseName) {
 
 // Idempotent: builds whatever in 04–08 is missing or stale, and nothing else.
 async function buildDepartments(state) {
-  await runGroup(state, ['script', 'casting_bible', 'world_bible'], 'Script, Cast & World')
+  await runGroup(state, ['script'], 'Script, Cast & World')
+  if (state.limit_reached) return
+  await runGroup(state, ['casting_bible', 'world_bible'], 'Script, Cast & World')
   state.stage_reached = '04_script_cast_world'
   if (state.limit_reached) return
   const needsSound = videoDeliverables(state).length > 0

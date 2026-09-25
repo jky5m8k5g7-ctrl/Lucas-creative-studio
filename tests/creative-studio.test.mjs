@@ -140,5 +140,23 @@ const s12b = makeStub()
 const r12b = await run({ command: 'NOTES', priorState: J(r12.project_state), notes: 'The product is the Emberline 10-inch skillet.' }, s12b.agent, s12b.parallel, noop, noop)
 ok(s12b.calls.some(c => c.label === 'strategist' && c.prompt.includes('Emberline 10-inch')) && r12b.pending_gate.gate_id === 'production_plan', 'his notes reach the strategist and the build completes')
 
+// 13. Cast and world are broken down from the finished script; a character the script names
+// by an ID that casting doesn't have fails casting's check.
+const s13 = makeStub()
+const agent13 = async (prompt, o) => {
+  const r = await s13.agent(prompt, o)
+  if (o.label.startsWith('copywriter') && !o.label.includes('review') && r && r.content && r.content.story) {
+    r.content.story.beat_sheet[0].characters = ['C1', 'ROSA']
+  }
+  return r
+}
+const r13 = await run({ command: 'IDEA', idea: IDEA }, agent13, s13.parallel, noop, noop)
+const firstCast = s13.calls.findIndex(c => c.label === 'casting_director')
+const firstScript = s13.calls.findIndex(c => c.label === 'copywriter')
+ok(firstScript >= 0 && firstCast > s13.calls.findIndex(c => c.label === 'copywriter · review 1'), 'casting starts after the script is written and reviewed')
+ok(s13.calls[firstCast].prompt.includes('INT. KITCHEN'), 'casting sees the script')
+const cast13 = r13.project_state.artifacts.casting_bible
+ok(cast13.checks.failed.some(x => x.includes('ROSA')) && cast13.quality.grade !== 'A', 'an uncast script character fails the casting check and blocks an A')
+
 console.log(fails ? `\n${fails} FAILED` : '\nALL PASS')
 if (fails) process.exit(1)
