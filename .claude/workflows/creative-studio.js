@@ -885,7 +885,7 @@ Respond only via the required schema.`
 
 const DEFAULT_BAR = `Anchors, used for every criterion: 10 best-in-class, approve unchanged; 9 approve unchanged; 8 a senior practitioner would send it to the client with only small notes (the minimum for A); 6–7 competent but generic, or has real gaps; 5 or below not usable.`
 
-function criticPrompt(state, spec, role, content) {
+function criticPrompt(state, spec, role, content, previous) {
   return `${preamble(state)}
 
 You are reviewing the ${spec.label} before anything reaches Lucas. Hold it to the standard of the most demanding senior ${roleTitle(role)} working today and of the studio's creative director.
@@ -894,9 +894,9 @@ ${QUALITY_BAR ? `THE STUDIO'S QUALITY BAR:\n<<<\n${QUALITY_BAR}\n>>>` : DEFAULT_
 
 What this work had to build on: ${JSON.stringify(spec.upstream(state))}
 
-THE WORK UNDER REVIEW:
+THE WORK UNDER REVIEW (its assumptions and blockers are part of it):
 ${JSON.stringify(content)}
-
+${previous && (previous.notes || []).length ? `\nThis is a revision. The previous review scored it ${Object.entries(previous.scores || {}).map(([k, v]) => `${k} ${v}`).join(', ')} and gave these notes:\n${JSON.stringify(previous.notes)}\nFirst check each note: was it addressed? Score the work as it stands now. Don't move the goalposts: raise a new note only for a problem at least as serious as the ones above, and credit what was fixed.\n` : ''}
 ${spec.lane ? `Judge it as a ${spec.label}, at its own stage. This department decides ${spec.lane.decides}; ${spec.lane.leaves} belong to later departments. Never mark it down for leaving those out, and never ask for them in notes. Detail that does a later department's job is scope creep: it costs craft, not specificity.\n` : ''}
 Score each criterion 1–10 and quote the exact line that justifies the score:
 - specificity: could ${spec.lane ? spec.lane.next : 'the next department'} act on it without a follow-up question? Concrete names, numbers, actions, objects and sounds score high; moods and adjectives score low.
@@ -926,18 +926,18 @@ function qcPrompt(state) {
 
 Your role: ${ROLE_INSTRUCTIONS.quality_control}
 Audit this production package against the brief, product fidelity, department consistency, storyboard completeness, timing, and reference/rights readiness (per quality_checks.planning). No media has been generated yet, so mark every "media" category check as "not_inspected", never "pass". Package: ${JSON.stringify({
-    strategy: state.artifacts.strategy.content,
-    concepts: state.artifacts.concepts.content,
-    script: state.artifacts.script.content,
-    casting_bible: state.artifacts.casting_bible.content,
-    world_bible: state.artifacts.world_bible.content,
-    directors_treatment: state.artifacts.directors_treatment.content,
-    style_bible: state.artifacts.style_bible.content,
-    sound_plan: state.artifacts.sound_plan.content,
-    camera_plan: state.artifacts.camera_plan.content,
-    storyboard: state.artifacts.storyboard.content,
-    continuity_bible: state.artifacts.continuity_bible.content,
-    generation_plan: state.artifacts.generation_plan.content,
+    strategy: work(state, 'strategy'),
+    concepts: work(state, 'concepts'),
+    script: work(state, 'script'),
+    casting_bible: work(state, 'casting_bible'),
+    world_bible: work(state, 'world_bible'),
+    directors_treatment: work(state, 'directors_treatment'),
+    style_bible: work(state, 'style_bible'),
+    sound_plan: work(state, 'sound_plan'),
+    camera_plan: work(state, 'camera_plan'),
+    storyboard: work(state, 'storyboard'),
+    continuity_bible: work(state, 'continuity_bible'),
+    generation_plan: work(state, 'generation_plan'),
   })}
 Every issue must name a responsible_agent from the fixed role list and cite evidence. Recommend "approve" only if there are no unresolved critical or major defects and every required planning check was actually inspected.`
 }
@@ -965,6 +965,14 @@ function dupes(arr, f) {
   return d
 }
 const content = (state, key) => (state.artifacts[key] && state.artifacts[key].content) || {}
+// What another agent needs to read a department's work: its content plus the assumptions and
+// blockers it cites by ID (they live in the envelope, not the content).
+function work(state, key) {
+  const a = state.artifacts[key]
+  if (!a) return {}
+  return { ...(a.content || {}), assumptions: a.assumptions || [], blockers: a.blockers || [] }
+}
+const asWork = r => ({ ...((r && r.content) || {}), assumptions: (r && r.assumptions) || [], blockers: (r && r.blockers) || [] })
 
 function checkDevelopment(state, c) {
   const v = []
@@ -1353,10 +1361,13 @@ const ids = (state, keys) => keys.map(k => state.artifacts[k] && state.artifacts
 const routeUpstream = state => ({
   route: selectedRoute(state),
   strategy: {
-    lane: { decides: 'the audience tension, the single-minded proposition, proof points, success criteria, and what is fact versus hypothesis', leaves: 'the creative routes and any execution: scenes, shots, lines, casting', next: 'the creative director' },
     single_minded_proposition: content(state, 'strategy').single_minded_proposition,
     audience_tension: content(state, 'strategy').audience_tension,
   },
+  assumptions_cited_upstream: [
+    ...((state.artifacts.development && state.artifacts.development.assumptions) || []),
+    ...((state.artifacts.concepts && state.artifacts.concepts.assumptions) || []),
+  ],
 })
 
 const SPECS = {
@@ -1378,6 +1389,7 @@ const SPECS = {
     check: checkDevelopment,
   },
   strategy: {
+    lane: { decides: 'the audience tension, the single-minded proposition, proof points, success criteria, and what is fact versus hypothesis', leaves: 'the creative routes and any execution: scenes, shots, lines, casting', next: 'the creative director' },
     dept: 'strategist', role: () => 'strategist', kind: 'strategy', stage: '02_strategy', phase: 'Strategy', label: 'strategy',
     schema: STRATEGY_CONTENT,
     empty: { audience_tension: '', desired_behavior: '', product_relevance: '', single_minded_proposition: '', proof_points: [], success_criteria: [], supplied_facts: [], sourced_research: [], hypotheses: [] },
@@ -1385,7 +1397,7 @@ const SPECS = {
       ? 'Develop the strategic foundation. For a narrative piece the "product" is the piece itself: who it is for, the tension in their lives it speaks to, what it must make them feel or do, and the single-minded proposition every department serves.'
       : 'Develop the strategic foundation for this piece.',
     rules: () => ['single-minded proposition of 35 words or fewer', 'at least two proof points'],
-    upstream: state => ({ brief: content(state, 'brief'), development: content(state, 'development') }),
+    upstream: state => ({ brief: content(state, 'brief'), development: work(state, 'development') }),
     basedOn: state => ids(state, ['brief', 'development']),
     check: checkStrategy,
   },
@@ -1396,7 +1408,7 @@ const SPECS = {
     empty: { routes: [], recommended_route_id: '', recommendation_rationale: '' },
     task: () => 'Present three distinct routes and recommend one. The routes must differ on at least two of: tone, structure, point of view, and the role the product (or protagonist) plays. Size each execution example to the deliverables.',
     rules: () => ['exactly three routes with unique ids', 'recommended_route_id is one of them', `no banned language in central ideas or emotional promises (${BANNED_READABLE})`],
-    upstream: state => ({ strategy: content(state, 'strategy'), development: content(state, 'development') }),
+    upstream: state => ({ strategy: work(state, 'strategy'), development: work(state, 'development') }),
     basedOn: state => ids(state, ['strategy']),
     check: checkConcepts,
   },
@@ -1533,7 +1545,7 @@ const KEY_BY_DEPT = {
 function priorContent(state, key, spec) {
   const prior = state.artifacts[key]
   if (!prior) return null
-  if (!spec.split) return prior.content
+  if (!spec.split) return work(state, key)
   const joined = {}
   Object.keys(spec.split({})).forEach(k => Object.assign(joined, (state.artifacts[k] && state.artifacts[k].content) || {}))
   return joined
@@ -1584,7 +1596,8 @@ async function produce(state, key, opts) {
   if (byNotes) {
     res = await make(revisePrompt(state, spec, role, previous, { notes: (opts && opts.notes) || [] }, []), `${spec.dept} · revise from notes`)
   } else if (pq && pq.pending === 'review') {
-    res = { status: prior.status === 'review_required' ? 'draft' : prior.status, based_on: prior.based_on, content: previous, asset_uri: prior.asset_uri, assumptions: prior.assumptions, sources: prior.sources, blockers: prior.blockers }
+    const joined = spec.split ? previous : prior.content
+    res = { status: prior.status === 'review_required' ? 'draft' : prior.status, based_on: prior.based_on, content: joined, asset_uri: prior.asset_uri, assumptions: prior.assumptions, sources: prior.sources, blockers: prior.blockers }
   } else if (pq) {
     res = await make(revisePrompt(state, spec, role, previous, { scores: pq.scores, notes: pq.notes, keep: pq.keep }, violations), `${spec.dept} · resume revision`)
   } else {
@@ -1599,7 +1612,8 @@ async function produce(state, key, opts) {
     const history = quality ? quality.history.slice() : []
     let pending = 'review'
     for (let round = (quality ? quality.rounds : 0) + 1; round <= LIMITS.maxQualityRounds; round++) {
-      const crit = await runAgent(state, 'quality_control', criticPrompt(state, spec, role, res.content), { schema: CRITIQUE_SCHEMA, phase: ph, label: `${spec.dept} · review ${round}` })
+      const last = history.length ? { scores: history[history.length - 1].scores, notes: quality && quality.notes } : null
+      const crit = await runAgent(state, 'quality_control', criticPrompt(state, spec, role, asWork(res), last), { schema: CRITIQUE_SCHEMA, phase: ph, label: `${spec.dept} · review ${round}` })
       if (crit && crit.not_run) { refused = true; break }
       if (!crit || !crit.specificity) { pending = null; break }
       const scores = { specificity: crit.specificity.score, distinctiveness: crit.distinctiveness.score, fit: crit.fit.score, craft: crit.craft.score }
@@ -1614,7 +1628,7 @@ async function produce(state, key, opts) {
       pending = null
       if (quality.grade === 'A' || round === LIMITS.maxQualityRounds) break
       pending = 'revise'
-      const next = await make(revisePrompt(state, spec, role, res.content, { scores, notes: crit.notes, keep: crit.keep }, violations), `${spec.dept} · revise ${round}`)
+      const next = await make(revisePrompt(state, spec, role, asWork(res), { scores, notes: crit.notes, keep: crit.keep }, violations), `${spec.dept} · revise ${round}`)
       if (!next) break
       res = next
       pending = 'review'
@@ -1783,9 +1797,9 @@ function panelLenses(state) {
 }
 
 function packageContent(state) {
-  const out = { route: selectedRoute(state), strategy: content(state, 'strategy') }
+  const out = { route: selectedRoute(state), strategy: work(state, 'strategy') }
   ;['development', 'script', 'casting_bible', 'world_bible', 'directors_treatment', 'style_bible', 'sound_plan', 'camera_plan', 'storyboard', 'continuity_bible', 'generation_plan']
-    .forEach(k => { if (state.artifacts[k]) out[k] = state.artifacts[k].content })
+    .forEach(k => { if (state.artifacts[k]) out[k] = work(state, k) })
   return out
 }
 
