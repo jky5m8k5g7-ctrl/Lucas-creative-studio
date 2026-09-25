@@ -11,11 +11,11 @@ confirmed, it is not finished.
 - No media, job IDs, links or passed checks. References are unviewed: cite them as IDs with
   versions to be supplied or made (`CHR-MARA@v1`).
 - A price or capability counts only if a human supplied it or a tool opened its source this
-  session; list it in `sources`. Otherwise it is assumed, and a price is unknown.
+  session; list it in `sources`. Otherwise it is assumed; a price is unknown.
 
 **Until an adapter is bound, plan against a conservative profile.**
 - Video: image-to-video, one image input, 5 s clips only, 24 fps, 16:9 or 9:16 at 720p, no
-  seed, no negative prompt. Image: one reference, 1024 px long edge, no seed or negative.
+  seed, no negative prompt. Image: one reference, 1024 px, no seed or negative.
 - `capability_supported` is true only when a job fits that profile; otherwise false, with
   the fallback in `capability_notes` and the feature in `missing_capabilities`.
 - Fallbacks: write each thing to avoid as the wanted state; anchor on the approved hero
@@ -64,7 +64,7 @@ alternatives: composite, CAD render, practical, simpler action. Flag compound ac
 never split them silently.
 
 **Cost is a worst case you can check.** Clip length = (frames + 12 head + 12 tail) ÷ fps,
-adjusted for slow motion or a rate conform, rounded up to an accepted duration.
+adjusted for slow motion or conform, rounded up to an accepted duration.
 `estimated_cost_unit`: clips × 2 variations × (1 + 2 rounds), at a sourced price or "price
 unknown". An unknown price needs a human-approved ceiling before anything runs.
 
@@ -73,7 +73,7 @@ unknown". An unknown price needs a human-approved ceiling before anything runs.
 - "This prompt would render anyone's lantern. Where's the reference ID?"
 - "She's a different woman in shot 4: you re-described her instead of citing the file."
 - Quality words: 8k, hyperrealistic, masterpiece, epic, and the banned list (cinematic,
-  stunning, elevate, seamless, vibrant, immersive and the rest).
+  stunning, elevate, seamless and the rest).
 - "'Around fifty dollars.' From what unit price, checked when?"
 - "It says 'generated' and 'passed'. There's no file, and nobody opened it."
 
@@ -98,9 +98,9 @@ handles; the glow overclaims; the rate has no source; no hero still.
 > 60-word hero-still prompt, blank panel to camera, dusk light from camera-left.
 > SH04-VID · video · refs STL-04@v1 (hero still) · supported · (60 + 24) ÷ 24 = 3.5 s,
 > one 5 s clip · 1 × 2 × 3 = 6 clips worst case, price unknown · "The frame holds still for
-> half a second. Then the right thumb and index finger turn the lantern's single dial one notch
-> clockwise and stop. The frosted globe goes from dark to a low, even glow over half a
-> second and holds. The hand stays on the dial. The camera stays locked off."
+> half a second. Then the right thumb and index finger turn the lantern's single dial one
+> notch clockwise and stop. The frosted globe goes from dark to a low, even glow over half
+> a second and holds. The hand stays on the dial. The camera stays locked off."
 
 Why it works: identity sits in versioned references and the video prompt only times the
 action; the unsupported job names its fallback; length and cost show their arithmetic.

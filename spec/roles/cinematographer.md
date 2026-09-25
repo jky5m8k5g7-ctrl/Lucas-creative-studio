@@ -52,8 +52,9 @@ Name the rig, the start and end frames; one grammar per scene.
 - In 9:16, faces, product and text sit about 15–65% of frame height, clear of the sides and
   the right-hand icon rail (or the spec's platform template), with room for supers.
 
-**The numbers add up.** No rate in the spec: 24 fps, logged. A shot in two cut-downs at
-different lengths gets two entries; each still is an entry with duration_frames 0.
+**The numbers add up.** Shots sum to each deliverable's exact frames at one fps (24 if the
+spec gives none, logged). A shot in two cut-downs gets two entries; a still is an entry
+with duration_frames 0.
 
 **Plan for the generator.**
 - Prompts describe the visible result: size, distance, height, subject position, what is
@@ -73,7 +74,7 @@ different lengths gets two entries; each still is an entry with duration_frames 
 - A rim or key from nowhere: moonlight or a lantern the world bible doesn't have.
 - The window behind her in the wide and in front of her in the single; two singles that
   both look frame-left.
-- A drone flyover or push-in that ends on nothing new; a product spinning on a plinth.
+- A drone flyover or a push-in that ends on nothing new.
 - The label under a thumb or the platform UI, or "logo crisp and legible" in a prompt,
   which invites invented lettering.
 
