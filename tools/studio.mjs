@@ -6,6 +6,7 @@
 // copy with Workflow({ scriptPath }), then files the output with `save`.
 //
 //   node tools/studio.mjs new <slug> "<idea>" [--format ad_spot] [--seconds 30] [--brand Name]
+//        [--review end|gates] [--budget N]   gates: stop at the route choice before building
 //   node tools/studio.mjs resume <slug>                  continue after a run hit its call budget
 //   node tools/studio.mjs approve <slug> <decision.json> apply an Approval Desk decision
 //   node tools/studio.mjs notes <slug> "<notes>" [--decision-id id]
@@ -90,11 +91,26 @@ function cmdNew(slug, idea, f) {
   if (f.seconds) hints.duration_seconds = Number(f.seconds)
   if (f.brand) hints.brand = f.brand
   writeJSON(path.join(dir, 'idea.json'), { idea: idea.trim(), hints, idea_doc_id: f['idea-id'] || null })
-  writeRun(slug, { command: 'IDEA', idea: idea.trim(), ideaHints: hints })
+  writeRun(slug, { command: 'IDEA', idea: idea.trim(), ideaHints: hints, ...runOptions(f) })
 }
 
-function cmdResume(slug) {
-  writeRun(slug, { command: 'APPROVE', priorState: loadState(slug) })
+// Options any run takes: --review end|gates, --budget <agent calls per run>.
+function runOptions(f) {
+  const o = {}
+  if (f.review) {
+    if (!['end', 'gates'].includes(f.review)) die('--review is "end" or "gates"')
+    o.review = f.review
+  }
+  if (f.budget) {
+    const n = Number(f.budget)
+    if (!(n >= 1)) die('--budget is a number of agent calls')
+    o.maxAgentCalls = n
+  }
+  return o
+}
+
+function cmdResume(slug, f) {
+  writeRun(slug, { command: 'APPROVE', priorState: loadState(slug), ...runOptions(f) })
 }
 
 // A decision as the Approval Desk stores it: { gate_id, decision, selected_route_id, comment,
@@ -322,11 +338,11 @@ const [cmd, slug, ...rest] = process.argv.slice(2)
 const f = flags(rest)
 switch (cmd) {
   case 'new': cmdNew(slug, f._[0], f); break
-  case 'resume': cmdResume(slug); break
+  case 'resume': cmdResume(slug, f); break
   case 'approve': cmdApprove(slug, f._[0]); break
   case 'notes': cmdNotes(slug, f._[0], f); break
   case 'save': cmdSave(slug, f._[0]); break
   case 'status': cmdStatus(slug); break
   default:
-    console.log(read(fileURLToPath(import.meta.url)).split('\n').slice(1, 20).map(l => l.replace(/^\/\/ ?/, '')).join('\n'))
+    console.log(read(fileURLToPath(import.meta.url)).split('\n').slice(1).filter((l, i, a) => a.slice(0, i + 1).every(x => x.startsWith('//'))).map(l => l.replace(/^\/\/ ?/, '')).join('\n'))
 }
