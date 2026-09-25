@@ -63,7 +63,7 @@ const ROLE_INSTRUCTIONS = {
   producer: 'Executive Producer / Orchestrator. Normalize the brief, keep every department on the same approved direction, merge outputs, and present one coherent campaign. Never approve on the human’s behalf and never claim an asset exists without evidence.',
   development_producer: 'Development Producer. Take a raw idea from the creative director and develop it into a complete, buildable brief: the right format, a logline, a premise that makes the idea more specific and more surprising without replacing it, audience, objective, tone, deliverables sized to the format, and every assumption labeled. Never invent product facts, statistics, real people or real brands.',
   strategist: 'Brand and Audience Strategist. Identify the audience tension, desired behavior, product relevance, single-minded proposition, proof points, and success criteria. Separate supplied facts, sourced research, and hypotheses. Do not invent audience research or performance claims.',
-  creative_director: 'AI Creative Director. Develop three distinct campaign routes (unless told otherwise), each with a central idea, emotional promise, product role, visual language, and execution example. Recommend one with a concise rationale.',
+  creative_director: 'AI Creative Director. Develop exactly three distinct routes, each with a central idea, emotional promise, product role, visual language, and execution example. Recommend one with a concise rationale.',
   copywriter: 'Campaign Copywriter. Write timed scripts, dialogue or voiceover, on-screen copy, hooks, and calls to action for the approved route, one per deliverable duration, without changing the central promise. Use only approved factual claims.',
   screenwriter: 'Screenwriter. Write the beat sheet for the whole piece and the timed script for the build sequence: every scene has a heading, who is present, what each character wants, what changes, and the exact action and dialogue. Structure, character and visual storytelling come before dialogue.',
   casting_director: 'Casting Director. Define character profiles, screen presence, performance style, wardrobe fit considerations, and visual identity anchors. Use fictional adult talent by default. Never invent a real person’s availability or permission to use their likeness or voice.',
@@ -1200,7 +1200,7 @@ async function runAgent(state, role, prompt, opts) {
   }
   if (r) return r
   return opts && opts.emptyContent
-    ? blockedResult(opts, `${label} returned no result`, 'Resume this project to retry this department.')
+    ? { ...blockedResult(opts, `${label} returned no result`, 'Resume this project to retry this department.'), failed: true }
     : null
 }
 
@@ -1429,7 +1429,7 @@ const SPECS = {
     empty: { scenes: [] },
     task: () => 'Turn the script, cast and world into a directing treatment, scene by scene.',
     rules: () => ['unique scene ids', 'every scene says how it carries the idea'],
-    upstream: state => ({ script: content(state, 'script'), casting_bible: content(state, 'casting_bible'), world_bible: content(state, 'world_bible') }),
+    upstream: state => ({ route: selectedRoute(state), script: content(state, 'script'), casting_bible: content(state, 'casting_bible'), world_bible: content(state, 'world_bible') }),
     basedOn: state => ids(state, ['script', 'casting_bible', 'world_bible']),
     check: checkTreatment,
   },
@@ -1439,7 +1439,7 @@ const SPECS = {
     empty: { looks: [] },
     task: () => 'Build a look for every character in the casting bible, using their IDs.',
     rules: () => ['every look uses a character id from the casting bible, and every character has a look', 'garment colors given as hex values', 'at least two continuity locks per look'],
-    upstream: state => ({ script: content(state, 'script'), casting_bible: content(state, 'casting_bible'), world_bible: content(state, 'world_bible') }),
+    upstream: state => ({ route: selectedRoute(state), script: content(state, 'script'), casting_bible: content(state, 'casting_bible'), world_bible: content(state, 'world_bible') }),
     basedOn: state => ids(state, ['script', 'casting_bible', 'world_bible']),
     check: checkStyle,
   },
@@ -1449,7 +1449,7 @@ const SPECS = {
     empty: { cues: [] },
     task: () => 'Plan music, sound effects, atmosphere, dialogue and VO against the script, with cue timing in seconds for each deliverable.',
     rules: () => ['every video deliverable has cues', 'cue deliverable ids exist', 'timing in seconds and a licensing or consent requirement on every cue'],
-    upstream: state => ({ script: content(state, 'script') }),
+    upstream: state => ({ route: selectedRoute(state), script: content(state, 'script') }),
     basedOn: state => ids(state, ['script']),
     check: checkSound,
   },
@@ -1463,7 +1463,7 @@ const SPECS = {
       'lens_intent gives a focal length in mm',
       `one fps per deliverable, from ${FPS_OK.join(', ')}; each deliverable's shots add up to its exact length in frames (a shot used in two cut-downs at different lengths needs two entries)`,
     ],
-    upstream: state => ({ script: content(state, 'script'), directors_treatment: content(state, 'directors_treatment'), casting_bible: content(state, 'casting_bible'), style_bible: content(state, 'style_bible'), world_bible: content(state, 'world_bible'), shot_fields: SHOT_FIELDS }),
+    upstream: state => ({ route: selectedRoute(state), script: content(state, 'script'), directors_treatment: content(state, 'directors_treatment'), casting_bible: content(state, 'casting_bible'), style_bible: content(state, 'style_bible'), world_bible: content(state, 'world_bible'), shot_fields: SHOT_FIELDS }),
     basedOn: state => ids(state, ['directors_treatment', 'style_bible', 'world_bible', 'casting_bible', 'script']),
     check: checkCamera,
   },
@@ -1473,7 +1473,7 @@ const SPECS = {
     empty: { panels: [], contradictions_flagged: [], tracked_elements: [] },
     task: () => 'Combine the script, cast, wardrobe, world, direction, camera plan and sound plan into ordered, timed text panels, and track the continuity state of every persistent element across shots. Flag contradictions.',
     rules: () => ['the same id and timing rules as the shot plan', 'continuity states only reference existing panels; track at least the product and each character'],
-    upstream: state => ({ script: content(state, 'script'), casting_bible: content(state, 'casting_bible'), style_bible: content(state, 'style_bible'), world_bible: content(state, 'world_bible'), directors_treatment: content(state, 'directors_treatment'), camera_plan: content(state, 'camera_plan'), sound_plan: content(state, 'sound_plan') }),
+    upstream: state => ({ route: selectedRoute(state), script: content(state, 'script'), casting_bible: content(state, 'casting_bible'), style_bible: content(state, 'style_bible'), world_bible: content(state, 'world_bible'), directors_treatment: content(state, 'directors_treatment'), camera_plan: content(state, 'camera_plan'), sound_plan: content(state, 'sound_plan') }),
     basedOn: state => ids(state, ['script', 'casting_bible', 'style_bible', 'world_bible', 'directors_treatment', 'camera_plan', 'sound_plan']),
     check: checkStoryboard,
     split: c => ({
@@ -1487,7 +1487,7 @@ const SPECS = {
     empty: { jobs: [], missing_capabilities: [] },
     task: () => 'Translate every storyboard shot into image and video prompts with reference-image requirements, preserving cast identity, wardrobe, location and product. Check capability against the parameter rule (no assumed negative prompts, seeds, multi-reference, exact lenses or arbitrary durations) and estimate cost per job. Do not generate media.',
     rules: () => ['every storyboard shot has at least one job, and every job points at a storyboard shot', 'every prompt at least 40 words', `no banned language in prompts (${BANNED_READABLE})`],
-    upstream: state => ({ storyboard: content(state, 'storyboard'), casting_bible: content(state, 'casting_bible'), style_bible: content(state, 'style_bible'), world_bible: content(state, 'world_bible') }),
+    upstream: state => ({ route: selectedRoute(state), storyboard: content(state, 'storyboard'), casting_bible: content(state, 'casting_bible'), style_bible: content(state, 'style_bible'), world_bible: content(state, 'world_bible') }),
     basedOn: state => ids(state, ['storyboard']),
     check: checkGeneration,
   },
@@ -1534,6 +1534,9 @@ async function produce(state, key, opts) {
       if (r.not_run) { refused = true; return last }
       last = r
       madeNew = true
+      // An agent that says it can't do the work without an answer isn't retried against the
+      // checks; the blocker goes to Lucas. (A call that failed outright is retried.)
+      if (r.status === 'blocked' && !r.failed) { violations = []; return r }
       const v = spec.check ? spec.check(state, r.content || {}) : []
       attempts.push(v.length)
       violations = v
@@ -1631,7 +1634,9 @@ const BUILT = BUILD_ORDER.concat(['continuity_bible'])
 const packageNeedsWork = state => anyStale(state, BUILT) || BUILD_ORDER.some(k => hasPendingNotes(state, k))
 const unfinishedReview = (state, k) => !!(state.artifacts[k] && state.artifacts[k].quality && state.artifacts[k].quality.incomplete)
 const hasPendingNotes = (state, k) => !!(state.pending_notes && (state.pending_notes[k] || []).length)
-const needsWork = (state, k) => !isPresent(state, k) || hasPendingNotes(state, k) || (state.settings.quality && unfinishedReview(state, k))
+// Blocked work is retried on the next run: it was missing something (an answer from Lucas, or
+// an agent that failed), and the next run may have it.
+const needsWork = (state, k) => !isPresent(state, k) || state.artifacts[k].status === 'blocked' || hasPendingNotes(state, k) || (state.settings.quality && unfinishedReview(state, k))
 
 async function runGroup(state, keys, phaseName) {
   const todo = keys.filter(k => needsWork(state, k) || (k === 'storyboard' && !isPresent(state, 'continuity_bible')))
@@ -1940,6 +1945,17 @@ async function runPipeline(state) {
   }
   state.stage_reached = '03_concepts'
   if (state.limit_reached) return
+
+  // Direction that came back blocked goes to Lucas before anything is built on it.
+  const blockedDirection = ['strategy', 'concepts'].filter(k => state.artifacts[k] && state.artifacts[k].status === 'blocked')
+  if (blockedDirection.length) {
+    const blockers = blockedDirection.flatMap(k => state.artifacts[k].blockers || [])
+    blockers.forEach(b => directionQuestion(state, `${b.issue}${b.resolution ? ` (${b.resolution})` : ''}`))
+    state.pending_gate = { ...gateInfo('concept', [state.artifacts.brief, state.artifacts.strategy, state.artifacts.concepts]), blocked_by: blockedDirection, blockers, open_questions: state.open_questions || [] }
+    recordPendingApproval(state, 'concept')
+    state.decision_log.push({ stage: '03_concepts', summary: `Stopped before building: ${blockedDirection.join(' and ')} came back blocked and needs Lucas's answer (send it as notes).`, blocked: true })
+    return
+  }
 
   const conceptGate = state.approvals.concept
   const routes = content(state, 'concepts').routes || []

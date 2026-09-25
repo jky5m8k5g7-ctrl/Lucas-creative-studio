@@ -125,5 +125,20 @@ ok(r11.project_state.approvals.production_plan.approved === false, 'REVISE inval
 ok(s11.calls.some(c => c.label === 'production_designer') && s11.calls.some(c => c.label === 'cinematographer') && !s11.calls.some(c => c.label === 'copywriter'), 'world and its dependents rebuilt, script untouched')
 ok(s11.calls.some(c => /^panel/.test(c.label)) && r11.pending_gate.gate_id === 'production_plan', 'revised package re-reviewed and presented again')
 
+// 12. Blocked strategy stops before building, surfaces the question, and Lucas's notes unblock it.
+let blockOnce = true
+const s12 = makeStub()
+const agent12 = async (prompt, o) => {
+  if (o.label === 'strategist' && blockOnce) { blockOnce = false; s12.calls.push({ label: o.label, prompt }); return { status: 'blocked', based_on: [], content: { audience_tension: '', desired_behavior: '', product_relevance: '', single_minded_proposition: '', proof_points: [], success_criteria: [], supplied_facts: [], sourced_research: [], hypotheses: [] }, assumptions: [], sources: [], blockers: [{ issue: 'No product is named in the idea', responsible_agent: 'producer', resolution: 'Ask Lucas what the product is' }] } }
+  return s12.agent(prompt, o)
+}
+const r12 = await run({ command: 'IDEA', idea: IDEA }, agent12, s12.parallel, noop, noop)
+ok(r12.pending_gate && r12.pending_gate.gate_id === 'concept' && r12.pending_gate.blocked_by.includes('strategy'), 'blocked strategy stops at the concept stage')
+ok(r12.open_questions.some(q => q.includes('No product is named')), 'the blocker is a question for Lucas')
+ok(!s12.calls.some(c => c.label === 'copywriter'), 'nothing is built on blocked direction')
+const s12b = makeStub()
+const r12b = await run({ command: 'NOTES', priorState: J(r12.project_state), notes: 'The product is the Emberline 10-inch skillet.' }, s12b.agent, s12b.parallel, noop, noop)
+ok(s12b.calls.some(c => c.label === 'strategist' && c.prompt.includes('Emberline 10-inch')) && r12b.pending_gate.gate_id === 'production_plan', 'his notes reach the strategist and the build completes')
+
 console.log(fails ? `\n${fails} FAILED` : '\nALL PASS')
 if (fails) process.exit(1)
