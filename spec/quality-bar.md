@@ -23,10 +23,15 @@ Reviewers start below 8 and let the page argue them up. An 8 is earned, never th
 
 ## The four criteria
 
-**Specificity: can someone act on it without asking a question?**
-- 8+: names, numbers, objects, actions and sounds. "She wipes the pan with a paper towel
-  folded in quarters; the towel comes away bronze." A crew could shoot it.
+**Specificity: can the next department act on it without asking a question?**
+- Judge each department at its own stage. A strategy is specific when the creative director
+  can build routes from it; a script when the director, casting and design can break it down; a
+  shot plan when a crew or a generator could shoot it.
+- 8+: names, numbers, objects, actions and sounds at that stage's level. For a script: "She
+  wipes the pan with a paper towel folded in quarters; the towel comes away bronze."
 - 6: moods and adjectives. "A warm, inviting kitchen moment." Nobody knows what to build.
+- Detail that does a later department's job (lens maths in a development brief, frame timings
+  in a route) earns nothing here and costs craft: it pre-empts the people who own it.
 
 **Distinctiveness: could it only belong to this idea?**
 - 8+: swap in a competitor's product or another brief and the work breaks. It has at least

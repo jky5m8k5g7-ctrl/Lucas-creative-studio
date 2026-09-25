@@ -825,6 +825,7 @@ function preamble(state) {
   const b = state.brief
   const route = selectedRoute(state)
   const lines = [
+    'Work only from this prompt. Do not use tools: do not read files, run commands, search, or create tasks. Everything you need is below; answer with the structured output directly.',
     `Project ${state.project_id} — "${b.name || 'untitled'}"${b.brand ? ` for ${b.brand}` : ''}.`,
     state.idea ? `Lucas's original idea (stay true to it): ${state.idea}` : null,
     b.format ? `Format: ${b.format}` : null,
@@ -874,6 +875,7 @@ Your role: ${ROLE_INSTRUCTIONS[role]}
 ${craftBlock(role)}
 
 This task: ${spec.task(state)}
+${spec.lane ? `Your lane: you decide ${spec.lane.decides}. Leave to later departments: ${spec.lane.leaves}. Detail that belongs to a later department is padding, not credit. Keep every field as short as its job allows; ${spec.lane.next} must be able to act on it without a follow-up question.` : ''}
 ${rules.length ? `Your work is checked in code and sent back if any of these fail:\n${rules.map(r => `- ${r}`).join('\n')}` : ''}
 ${pending.length ? `Notes from an earlier review that this version must address:\n${JSON.stringify(pending)}` : ''}
 ${previous ? `Work upstream of you has changed since your last version. Update it to the new upstream context: keep every choice that still holds, change what no longer fits. Your last version:\n${JSON.stringify(previous)}` : ''}
@@ -895,12 +897,13 @@ What this work had to build on: ${JSON.stringify(spec.upstream(state))}
 THE WORK UNDER REVIEW:
 ${JSON.stringify(content)}
 
+${spec.lane ? `Judge it as a ${spec.label}, at its own stage. This department decides ${spec.lane.decides}; ${spec.lane.leaves} belong to later departments. Never mark it down for leaving those out, and never ask for them in notes. Detail that does a later department's job is scope creep: it costs craft, not specificity.\n` : ''}
 Score each criterion 1–10 and quote the exact line that justifies the score:
-- specificity: could the next department, or a crew, act on it without a follow-up question? Concrete names, numbers, actions, objects and sounds score high; moods and adjectives score low.
+- specificity: could ${spec.lane ? spec.lane.next : 'the next department'} act on it without a follow-up question? Concrete names, numbers, actions, objects and sounds score high; moods and adjectives score low.
 - distinctiveness: could it be dropped into someone else's project unchanged? Work that could only belong to this idea scores high.
 - fit: does it deliver Lucas's idea, the brief, the route in production, the verified facts and the must-haves, and avoid the must-avoids?
 - craft: would a senior ${roleTitle(role)} sign it? Correct technique, timing, continuity, nothing physically implausible.
-Default to below 8 unless the page proves otherwise; 8 is the minimum for A. Then give notes: every change that would take this to 9, each aimed at a specific part, saying exactly what to do, and citing the craft rule, taste note or brief line it comes from. List what must be kept.`
+Default to below 8 unless the page proves otherwise; 8 is the minimum for A. Then give at most six notes, the changes that would move a score most first, each aimed at a specific part, saying exactly what to do within this department's lane, and citing the craft rule, taste note or brief line it comes from. List what must be kept.`
 }
 
 function revisePrompt(state, spec, role, prior, feedback, violations) {
@@ -1350,6 +1353,7 @@ const ids = (state, keys) => keys.map(k => state.artifacts[k] && state.artifacts
 const routeUpstream = state => ({
   route: selectedRoute(state),
   strategy: {
+    lane: { decides: 'the audience tension, the single-minded proposition, proof points, success criteria, and what is fact versus hypothesis', leaves: 'the creative routes and any execution: scenes, shots, lines, casting', next: 'the creative director' },
     single_minded_proposition: content(state, 'strategy').single_minded_proposition,
     audience_tension: content(state, 'strategy').audience_tension,
   },
@@ -1357,6 +1361,7 @@ const routeUpstream = state => ({
 
 const SPECS = {
   development: {
+    lane: { decides: 'the format, logline, premise and its ending, story seed, audience, objective, tone, deliverables and assumptions', leaves: 'strategy, the routes, and anything shot-level: lenses, camera positions, frame timings, casting looks, wardrobe, sound design', next: 'the strategist and the creative director' },
     dept: 'development_producer', role: () => 'development_producer', kind: 'development', stage: '01_development', phase: 'Development', label: 'developed brief',
     schema: DEVELOPMENT_CONTENT,
     empty: { working_title: '', logline: '', format: 'ad_spot', format_rationale: '', premise: '', what_makes_it_specific: [], brand: '', product_or_subject: '', objective: '', audience: '', key_message: '', tone: [], verified_product_facts: [], deliverables: [], must_include: [], must_avoid: [], story_seed: { protagonist: '', want: '', obstacle: '', turn: '', ending: '' }, questions_for_lucas: [] },
@@ -1385,6 +1390,7 @@ const SPECS = {
     check: checkStrategy,
   },
   concepts: {
+    lane: { decides: 'three routes: the central idea, emotional promise, product role, visual language, and an execution example told in beats with rough seconds', leaves: 'final copy, frame-accurate timing, lenses and camera maths, blocking, casting and wardrobe detail', next: 'the writer, casting and production design' },
     dept: 'creative_director', role: () => 'creative_director', kind: 'concept_options', stage: '03_concepts', phase: 'Concepts', label: 'three routes',
     schema: CONCEPTS_CONTENT,
     empty: { routes: [], recommended_route_id: '', recommendation_rationale: '' },
@@ -1395,6 +1401,7 @@ const SPECS = {
     check: checkConcepts,
   },
   script: {
+    lane: { decides: 'the beats of the story and the timed script: what the camera sees, what we hear, the spoken lines, on-screen text and CTA', leaves: 'lenses, camera moves and lighting, casting looks, wardrobe, set dressing', next: 'the director, casting, production design and sound' },
     dept: 'copywriter', role: state => (isNarrative(state) ? 'screenwriter' : 'copywriter'), kind: 'script', stage: '04_script_cast_world', phase: 'Script, Cast & World', label: 'script',
     schema: WRITING_CONTENT,
     empty: { story: { logline: '', beat_sheet: [] }, deliverable_scripts: [], stills_copy: [], decisions: [] },
@@ -1416,6 +1423,7 @@ const SPECS = {
     check: checkWriting,
   },
   casting_bible: {
+    lane: { decides: 'who each character is on screen: presence, performance, identity anchors', leaves: 'wardrobe and grooming detail (the stylist) and framing (the cinematographer)', next: 'the stylist, the director and the cinematographer' },
     dept: 'casting_director', role: () => 'casting_director', kind: 'casting_bible', stage: '04_script_cast_world', phase: 'Script, Cast & World', label: 'casting bible',
     schema: CASTING_CONTENT,
     empty: { characters: [] },
@@ -1426,6 +1434,7 @@ const SPECS = {
     check: checkCasting,
   },
   world_bible: {
+    lane: { decides: 'locations, layout, props and their persistent states, palettes and product placement', leaves: 'camera positions, lenses and lighting setups', next: 'the director, stylist, cinematographer and storyboard' },
     dept: 'production_designer', role: () => 'production_designer', kind: 'world_bible', stage: '04_script_cast_world', phase: 'Script, Cast & World', label: 'world bible',
     schema: WORLD_CONTENT,
     empty: { locations: [] },
@@ -1436,6 +1445,7 @@ const SPECS = {
     check: checkWorld,
   },
   directors_treatment: {
+    lane: { decides: 'performance, blocking, action progression, emotional shifts and transitions, scene by scene', leaves: 'lens choices and lighting setups (the cinematographer), wardrobe (the stylist)', next: 'the cinematographer and storyboard' },
     dept: 'director', role: () => 'director', kind: 'directors_treatment', stage: '05_direction_style_sound', phase: 'Direction, Style & Sound', label: "director's treatment",
     schema: TREATMENT_CONTENT,
     empty: { scenes: [] },
@@ -1446,6 +1456,7 @@ const SPECS = {
     check: checkTreatment,
   },
   style_bible: {
+    lane: { decides: 'the look for each character: silhouette, materials and colors, fit, accessories, hair and makeup, continuity locks', leaves: 'camera and lighting', next: 'the cinematographer, storyboard and generation' },
     dept: 'stylist', role: () => 'stylist', kind: 'style_bible', stage: '05_direction_style_sound', phase: 'Direction, Style & Sound', label: 'style bible',
     schema: STYLE_CONTENT,
     empty: { looks: [] },
@@ -1456,6 +1467,7 @@ const SPECS = {
     check: checkStyle,
   },
   sound_plan: {
+    lane: { decides: 'music, effects, atmosphere, dialogue and VO cues with timing and rights needs', leaves: 'the final mix and delivery specs', next: 'the storyboard and the editor' },
     dept: 'sound_designer', role: () => 'sound_designer', kind: 'sound_plan', stage: '05_direction_style_sound', phase: 'Direction, Style & Sound', label: 'sound plan',
     schema: SOUND_PLAN_CONTENT,
     empty: { cues: [] },
@@ -1466,6 +1478,7 @@ const SPECS = {
     check: checkSound,
   },
   camera_plan: {
+    lane: { decides: 'every shot: framing, lens, height, movement, focus, light, and its length in frames', leaves: 'generation prompts and model settings (the generation supervisor)', next: 'the storyboard and generation' },
     dept: 'cinematographer', role: () => 'cinematographer', kind: 'camera_plan', stage: '06_camera', phase: 'Camera', label: 'shot plan',
     schema: CAMERA_PLAN_CONTENT,
     empty: { shots: [] },
@@ -1480,6 +1493,7 @@ const SPECS = {
     check: checkCamera,
   },
   storyboard: {
+    lane: { decides: 'ordered, timed panels combining every department, and the continuity state of every tracked element', leaves: 'new creative decisions: flag contradictions instead of resolving them yourself', next: 'the generation supervisor' },
     dept: 'storyboard_artist', role: () => 'storyboard_artist', kind: 'storyboard', stage: '07_storyboard', phase: 'Storyboard', label: 'storyboard and continuity bible',
     schema: STORYBOARD_AND_CONTINUITY_CONTENT,
     empty: { panels: [], contradictions_flagged: [], tracked_elements: [] },
@@ -1494,6 +1508,7 @@ const SPECS = {
     }),
   },
   generation_plan: {
+    lane: { decides: 'a job per shot: prompts, references, capability checks and cost', leaves: 'any change to the approved shots: flag it instead', next: 'Lucas, who approves any paid generation' },
     dept: 'generation_supervisor', role: () => 'generation_supervisor', kind: 'generation_plan', stage: '08_generation_plan', phase: 'Generation Plan', label: 'generation plan',
     schema: GENERATION_PLAN_CONTENT,
     empty: { jobs: [], missing_capabilities: [] },
