@@ -1,0 +1,12 @@
+[
+ {
+  "collection": "ideas",
+  "id": "limerence",
+  "update": true,
+  "data": {
+   "project_slug": "limerence",
+   "status": "building",
+   "status_note": "Still building: the studio paused at its per-run call limit and continues next run."
+  }
+ }
+]

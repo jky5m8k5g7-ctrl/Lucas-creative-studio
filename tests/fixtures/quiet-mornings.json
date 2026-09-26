@@ -1,0 +1,122 @@
+{
+  "brief": {
+    "name": "Quiet Mornings",
+    "brand": "Solace Home Goods (fictional test brand, not a real company)",
+    "product_or_subject": "the Solace ceramic pour-over coffee dripper",
+    "one_line_brief": "Make a $38 ceramic pour-over feel essential to a calm morning, not just another kitchen gadget.",
+    "objective": "Drive DTC site visits and add-to-carts among home-coffee enthusiasts.",
+    "audience": "Urban professionals aged 25-40 who make coffee at home and value ritual over convenience.",
+    "key_message": "A five-minute ritual that slows your morning down, on purpose.",
+    "tone": [
+      "quiet",
+      "warm",
+      "tactile"
+    ],
+    "verified_product_facts": [
+      "Hand-glazed stoneware ceramic",
+      "Dishwasher safe",
+      "Made in small batches"
+    ],
+    "references": [],
+    "deliverables": [
+      {
+        "id": "D01",
+        "type": "video",
+        "duration_seconds": 15,
+        "aspect_ratio": "9:16"
+      },
+      {
+        "id": "D02",
+        "type": "still",
+        "count": 2,
+        "aspect_ratio": "4:5"
+      }
+    ],
+    "must_include": [
+      "A clear product role in the story",
+      "A readable closing product moment"
+    ],
+    "must_avoid": [
+      "Generic luxury imagery without a story",
+      "Unsupported performance claims"
+    ],
+    "deadline": null,
+    "budget": {
+      "currency": "USD",
+      "runner_llm_cap": null,
+      "media_and_render_cap": null,
+      "spent": 0,
+      "reserved": 0
+    }
+  },
+  "strategy": {
+    "audience_tension": "The target audience — urban professionals aged 25-40 who make coffee at home and say they value ritual over convenience — live inside schedules built for speed. For most of that group, coffee on a weekday is something you get (a pod, a drip machine on autopilot, a coffee-shop stop) rather than something you make. The tension is between wanting mornings to feel intentional and self-directed, and defaulting to whatever costs the least time, because deliberately slowing down can feel indulgent or impractical on a Tuesday. The brief names this tension directly by setting 'ritual' against 'convenience' as competing values, by pricing the product at $38 (a considered purchase, not an impulse one), and by warning against generic luxury imagery — the tension is not 'I want to look rich,' it's 'I want five minutes that are mine before the day takes them.'",
+    "desired_behavior": "A viewer sees the :15 vertical video or one of the two 4:5 stills on social, recognizes the five-minute pour-over moment as a version of a morning ritual they want for themselves (not as an ad for 'a kitchen gadget'), and takes a direct-response action: clicks through to the Solace DTC site and adds the $38 pour-over dripper to cart. The objective is explicitly DTC visits and add-to-carts, not brand-awareness alone, so the creative must carry a clear, low-friction path from feeling to action.",
+    "product_relevance": "The ceramic pour-over cannot be a backdrop prop for a generic 'calm morning' mood — it has to be the literal mechanism that makes the ritual happen: the user stands at it, pours, waits, watches the water bloom the grounds. Its three verified attributes reinforce that role rather than sit apart from it: hand-glazed stoneware and small-batch production make the object itself read as considered and singular (supporting 'ritual', not 'appliance'), while dishwasher-safe care keeps the ritual repeatable on an ordinary Tuesday rather than precious or occasional. This is how the strategy satisfies the brief's required 'clear product role in the story' and 'readable closing product moment' without leaning on unverified performance claims (e.g., taste, extraction quality, temperature control) that were not supplied as facts.",
+    "single_minded_proposition": "The Solace pour-over is the five hands-on minutes you take back for yourself before the day takes the rest of your time — a small, repeatable act of choosing slow on purpose. (This operationalizes the brief's own key message, 'A five-minute ritual that slows your morning down, on purpose,' as a proposition the creative director can build routes against.)",
+    "proof_points": [
+      "Hand-glazed stoneware ceramic (verified fact): each piece carries visible handmade variation, giving the object a tactile, one-of-a-kind quality that a mass-produced plastic or metal drip gadget cannot claim — supports 'ritual object' over 'kitchen appliance.'",
+      "Made in small batches (verified fact): reinforces a considered, non-commodity positioning consistent with a $38 price point and with the brief's instruction to avoid generic luxury imagery — the claim to make is 'made with care in limited runs,' not 'exclusive' or 'luxury.'",
+      "Dishwasher safe (verified fact): removes the plausible objection that a 'ritual' object is too precious or high-maintenance to use every weekday — the ritual survives real life, which is what makes it repeatable rather than a one-time novelty.",
+      "Structural (not brand-specific) pour-over mechanic: manual pour-over brewing requires the user's continuous attention for several minutes, unlike a pod or programmable drip machine — this is a general characteristic of the pour-over method and is treated here as a category fact, not a tested claim about the Solace product's performance, taste, or extraction quality."
+    ],
+    "success_criteria": [
+      "Increase in click-throughs from the campaign's video and still placements to the Solace DTC product page, among the stated home-coffee-enthusiast audience segment.",
+      "Add-to-cart rate on site visits attributed to this campaign's creative, tracked against the campaign's own traffic (not an invented industry benchmark, since no baseline was supplied).",
+      "Qualitative signal that the 'ritual, on purpose' message is landing as intended — e.g., audience comments, saves, or shares that reference slowing down / morning ritual language rather than generic product-feature language.",
+      "Creative compliance checks the strategist can hand to the creative director and QC: every route keeps a clear, legible product role in the story and a readable closing product moment (both explicit brief requirements), and makes no performance, taste, or research claim beyond the three verified facts.",
+      "Note: no numeric targets (specific CTR%, add-to-cart %, conversion rate) are set here, because the brief and upstream context supplied no baseline or target figures; these should be defined by the producer/brand with actual analytics before being used as pass/fail thresholds."
+    ],
+    "supplied_facts": [
+      "Verified product fact: hand-glazed stoneware ceramic.",
+      "Verified product fact: dishwasher safe.",
+      "Verified product fact: made in small batches.",
+      "Brief fact: price point is $38.",
+      "Brief fact: objective is to drive DTC site visits and add-to-carts among home-coffee enthusiasts.",
+      "Brief fact: audience is urban professionals aged 25-40 who make coffee at home and value ritual over convenience.",
+      "Brief fact: key message is 'a five-minute ritual that slows your morning down, on purpose.'",
+      "Brief fact: tone is quiet, warm, tactile.",
+      "Brief fact: must include a clear product role in the story and a readable closing product moment.",
+      "Brief fact: must avoid generic luxury imagery without a story, and unsupported performance claims.",
+      "Brief fact: deliverables are one 15-second 9:16 video (D01) and two 4:5 stills (D02)."
+    ],
+    "sourced_research": [],
+    "hypotheses": [
+      "Hypothesis: this audience associates fast-format coffee (pods, programmable drip machines, coffee-shop pickup) with the rushed pace of their weekday, creating an unmet desire for a deliberately slower alternative — this is a reasoned inference from the brief's own 'ritual over convenience' framing, not sourced audience or market research.",
+      "Hypothesis: for this audience, handmade/small-batch cues signal intentionality and self-care rather than status or luxury, which is why the proposition leans on 'ritual/self-possession' rather than premium framing — inferred from the brief's tone words and its explicit instruction to avoid generic luxury imagery, not from tested creative research.",
+      "Hypothesis: removing the 'high-maintenance object' concern (via dishwasher-safe care) meaningfully lowers a real adoption barrier to daily use — a plausible behavioral read, not a validated finding.",
+      "Hypothesis: a $38 price point sits in a 'considered but attainable' zone for this audience (enough to feel intentional, not so much it reads as a luxury purchase) — an inference from the price and audience description, not a tested pricing study."
+    ]
+  },
+  "concepts": {
+    "routes": [
+      {
+        "route_id": "R1",
+        "central_idea": "Before the phone, the inbox, or anyone else gets a piece of you, there are five minutes that are only yours — marked by the pour.",
+        "emotional_promise": "Quiet self-possession: the felt relief of claiming a few minutes before the day starts claiming them for you.",
+        "product_role": "The Solace dripper is the literal boundary object. The film's one deliberate action — setting the phone face-down and reaching for the dripper instead — makes the product the mechanism of the choice, not a backdrop to it. It stays in frame through the pour, the bloom, and the final held mug, closing on an unhurried, fully lit shot of the dripper itself on the counter.",
+        "visual_language": "Quiet and continuous, no contrast-cutting: warm low window light, muted stoneware palette (terracotta, cream, soft grey), handheld-but-steady camera, close but not macro. Sound carries more of the emotion than music — water, steam, ceramic set down, a phone buzzing once, off-screen and ignored.",
+        "execution_example": "15s / 9:16 (D01): Open tight on a phone screen lighting up on a counter; a hand turns it face-down without looking. Cut to the same hand lifting the Solace dripper, setting it on a mug, spooning grounds. Slow spiral pour, water blooming the grounds in close-up (2-3s held). Cut to the person at a window, mug in both hands, steam rising, a single distant notification sound goes unanswered. Final beat (2s): dripper alone on the counter in soft full light, product fully legible, with an illustrative closing line such as 'Made in small batches' (exact copy owned by copywriter). The two 4:5 stills (D02) pull directly from this beat structure: still 1 = the pour/bloom close-up with the dripper as clear hero object; still 2 = the closing counter shot, product fully visible and legible, doubling as a clean DTC-linkable product image."
+      },
+      {
+        "route_id": "R2",
+        "central_idea": "The bloom itself — the moment water first meets the grounds — is the ritual's whole point, and the hand-glazed ceramic is filmed as the singular object that stages it.",
+        "emotional_promise": "Presence: the satisfaction of doing one small thing slowly enough to actually notice it happening.",
+        "product_role": "The dripper's surface and form are the visual subject, not just present in the shot. Macro texture on the hand-glazed stoneware (visible glaze variation, no two pieces identical) is used to make the tactile, handmade proof point legible on screen, then the frame pulls back to show the object in full use — giving the product both an intimate role and a clear closing moment.",
+        "visual_language": "Macro and shallow depth of field, slow motion on water contact and steam, warm directional morning light, near-silent sound design (pour, drip, a single ceramic clink) with minimal or no music. No other objects compete in frame — discipline here is what keeps it from reading as generic 'luxury lifestyle' imagery.",
+        "execution_example": "15s / 9:16 (D01): Near-entirely macro — dry grounds catching light, first pour, the bloom rising and settling, steam curling off the surface, a fingertip resting briefly on the glaze's texture. In the last 3 seconds, camera pulls back for the first time to a clean, fully lit shot of the dripper and finished mug on the counter, with a hand entering frame to lift the mug — the human presence and the product both land together as the closing moment. Illustrative closing line: 'Hand-glazed. Small batch. Yours.' The two 4:5 stills (D02) isolate: still 1 = the bloom macro shot; still 2 = the pulled-back closing counter shot, framed as a clean product/DTC image."
+      },
+      {
+        "route_id": "R3",
+        "central_idea": "An ordinary Tuesday, not a weekend — the deliberate choice to reach for the slow thing instead of the fast thing, on a day that gave no permission to slow down.",
+        "emotional_promise": "Quiet agency: permission to choose slowness even when nothing about the day is asking for it.",
+        "product_role": "The dripper is staged as the chosen alternative in an explicit two-beat decision (reach for the fast option, then don't — reach for this instead), which makes its role in the story unmissable. It remains the visual anchor through the pour and into a final in-focus product shot.",
+        "visual_language": "Two-beat structure with a movement contrast rather than a lighting contrast (to avoid a glossy before/after ad feel): a slightly quicker, handheld beat for the 'fast' cue, settling into a locked-off, steady frame for the pour. Same muted warm palette throughout so the shift feels like a change in pace, not a change in world.",
+        "execution_example": "15s / 9:16 (D01): Opens on an out-of-focus stack of notifications/alarm on a phone, a hand starting to reach for it — then redirects to the Solace dripper sitting on the counter instead. One continuous, steady pour; the frame holds on the bloom. Final beat: person seated, mug in both hands, dripper still visible in soft foreground focus. On-screen line (illustrative, copywriter to finalize): 'A five-minute ritual, on purpose.' The two 4:5 stills (D02): still 1 = the redirected-hand moment (phone out of focus behind, dripper sharp in the foreground) carrying the tension itself; still 2 = the seated closing shot with the product legible in frame."
+      }
+    ],
+    "recommended_route_id": "R1",
+    "recommendation_rationale": "R1 (\"the line before the day\") most directly dramatizes the strategy's own audience tension — ritual vs. the pull of convenience — through one specific, small, believable action (turning the phone face-down) rather than a generic mood board or an explicit before/after contrast edit. That keeps it furthest from the brief's 'generic luxury imagery without a story' risk while still giving the product an unambiguous role and a clean, legible closing shot that doubles easily as a DTC-linkable image. Its single continuous pace (no hard tonal cut) also fits the brief's 'quiet, warm, tactile' tone more precisely than R3's two-beat contrast, and it extends more naturally to both required still crops than R2's mostly-macro treatment, which risks losing legible product context if used as a static image on its own. R2 and R3 remain strong alternates: R2 is the more sensory, tactile-proof-point-forward option if the brand wants to foreground the hand-glazed/small-batch facts even more literally; R3 is the more literal, message-forward option if the producer wants the 'on purpose' contrast made explicit rather than implied."
+  },
+  "selected_route_id": "R1"
+}
