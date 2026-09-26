@@ -167,27 +167,37 @@ ok(cast13.checks.failed.some(x => x.includes('ROSA')) && cast13.quality.grade !=
 const wrap = (stub, fn) => async (prompt, o) => { const r = await stub.agent(prompt, o); return fn(r, o, prompt) || r }
 const approve = extra => ({ approved: true, approver_id: 'u_LUCAS', decided_at: '2026-09-26T10:00:00Z', decision_id: 'dec_' + Math.abs(JSON.stringify(extra || {}).length), ...(extra || {}) })
 
-// A. A department blocked at presentation, then approved: not a dead end. The approval run
-// rebuilds it, doesn't apply the approval to versions Lucas never saw, and presents again.
-let blockGen = true
+// A. A department blocked at presentation, then approved as it is: the approval applies to
+// exactly what Lucas saw, with no rebuild or re-review; the blocked department stays blocked.
 const sA = makeStub()
 const agentA = async (prompt, o) => {
-  if (blockGen && o.label === 'generation_supervisor') { sA.calls.push({ label: o.label, prompt }); return { status: 'blocked', based_on: [], content: { jobs: [], missing_capabilities: [] }, assumptions: [], sources: [], blockers: [{ issue: 'x', responsible_agent: 'producer', resolution: 'y' }] } }
+  if (o.label === 'generation_supervisor') { sA.calls.push({ label: o.label, prompt }); return { status: 'blocked', based_on: [], content: { jobs: [], missing_capabilities: [] }, assumptions: [], sources: [], blockers: [{ issue: 'no product photos', responsible_agent: 'producer', resolution: 'supply photos' }] } }
   return sA.agent(prompt, o)
 }
 const rA = await run({ command: 'IDEA', idea: IDEA }, agentA, sA.parallel, noop, noop)
 ok(rA.pending_gate.gate_id === 'production_plan' && rA.project_state.artifacts.generation_plan.status === 'blocked', 'A: package presented with a blocked department')
-blockGen = false
+const a0 = sA.calls.length
 const rA2 = await run({ command: 'APPROVE', priorState: J(rA.project_state), approvals: { production_plan: approve({ decision_id: 'dec_A', selected_route_id: 'R2' }) } }, agentA, sA.parallel, noop, noop)
-ok(rA2.approval_log.some(e => e.decision === 'not_applied') && rA2.pending_gate && rA2.pending_gate.gate_id === 'production_plan' && !rA2.pending_gate.blocked_by_stale, 'A: approval not applied; the rebuilt package is re-reviewed and presented, not stuck')
-ok(rA2.pending_gate.changed_since_review && rA2.pending_gate.changed.some(x => x.startsWith('generation_plan')), 'A: the gate says what changed since Lucas looked')
-const rA3 = await run({ command: 'APPROVE', priorState: J(rA2.project_state), approvals: { production_plan: approve({ decision_id: 'dec_A2', selected_route_id: 'R2' }) } }, agentA, sA.parallel, noop, noop)
-ok(rA3.approval_log.filter(e => e.gate_id === 'production_plan' && e.decision === 'approved').length === 1 && rA3.stage_reached === '09_production_plan_approved', 'A: approving the current versions applies')
+ok(sA.calls.length === a0 && !rA2.approval_log.some(e => e.decision === 'not_applied') && rA2.stage_reached === '09_production_plan_approved', 'A: approving it as seen applies at once, with no agent calls')
+ok(rA2.project_state.artifacts.generation_plan.status === 'blocked', 'A: the blocked department stays blocked after approval')
 
 // B. After the approval is applied, later runs don't revoke it or repeat it, and make no calls.
 const sB = makeStub()
-const rB = await run({ command: 'APPROVE', priorState: J(rA3.project_state), mode: 'connected_tools' }, sB.agent, sB.parallel, noop, noop)
-ok(sB.calls.length === 0 && !rB.approval_log.some(e => e.decision === 'not_applied' && e.decision_id === 'dec_A2') && rB.approval_log.filter(e => e.gate_id === 'production_plan' && e.decision === 'approved').length === 1, 'B: an applied approval survives later runs, once, with no agent calls')
+const rB = await run({ command: 'APPROVE', priorState: J(rA2.project_state), mode: 'connected_tools' }, sB.agent, sB.parallel, noop, noop)
+ok(sB.calls.length === 0 && !rB.approval_log.some(e => e.decision === 'not_applied') && rB.approval_log.filter(e => e.gate_id === 'production_plan' && e.decision === 'approved').length === 1, 'B: an applied approval survives later runs, once, with no agent calls')
+
+// B2. An approval that doesn't match is refused, names what changed, and keeps Lucas's comment.
+const drifted = J(rA.project_state)
+drifted.artifacts.script.revision += 1
+const sB2 = makeStub()
+const rB2 = await run({ command: 'APPROVE', priorState: drifted, approvals: { production_plan: approve({ decision_id: 'dec_B2', selected_route_id: 'R2', comment: 'Bigger end card.' }) } }, sB2.agent, sB2.parallel, noop, noop)
+ok(rB2.approval_log.some(e => e.decision === 'not_applied') && rB2.pending_gate.changed.includes('script'), 'B2: a mismatched approval is refused and the gate names the changed department')
+ok(rB2.project_state.human_notes.some(n => n.note === 'Bigger end card.'), 'B2: the refused approval\'s comment is kept as Lucas\'s note')
+
+// B3. A replayed "rebuild on route X" for the route already built is never an approval.
+const sB3 = makeStub()
+const rB3 = await run({ command: 'APPROVE', priorState: J(rA.project_state), approvals: { production_plan: approve({ decision_id: 'dec_B3', selected_route_id: 'R2', route_change: true }) } }, sB3.agent, sB3.parallel, noop, noop)
+ok(!rB3.approval_log.some(e => e.gate_id === 'production_plan' && e.decision === 'approved') && rB3.pending_gate && rB3.pending_gate.gate_id === 'production_plan', 'B3: a replayed route change is not applied as an approval')
 
 // C. Integrity fixes after the panel's last look are named in full, and the grade says it saw earlier versions.
 const sC = makeStub({
@@ -273,6 +283,45 @@ const agentL = wrap(sL, (r, o) => { if (o.label === 'cinematographer · revise 1
 await run({ command: 'IDEA', idea: IDEA }, agentL, sL.parallel, noop, noop)
 const retry = sL.calls.find(c => c.label === 'cinematographer · revise 1 · fix checks 1')
 ok(retry && !retry.prompt.includes('YOUR PREVIOUS VERSION') && retry.prompt.includes('Last attempt:'), 'L: the retry has the failed attempt, not the previous version too')
+
+// M. A direction change in notes at the package gate is redeveloped, not left as a question.
+const sM = makeStub({ router: () => ({ routes: [], switch_route_to: '', direction_change: 'make it about pride, not guilt' }) })
+const rM0 = await run({ command: 'IDEA', idea: IDEA }, sM.agent, sM.parallel, noop, noop)
+const m0 = sM.calls.length
+const rM = await run({ command: 'NOTES', priorState: J(rM0.project_state), notes: 'None of these routes. Make it about pride.' }, sM.agent, sM.parallel, noop, noop)
+const mLabels = sM.calls.slice(m0).map(c => c.label)
+ok(mLabels.includes('strategist · revise from notes') && mLabels.includes('creative_director') && mLabels.includes('copywriter') && rM.pending_gate.gate_id === 'production_plan', 'M: a direction change redevelops strategy and routes and rebuilds the package')
+ok(sM.calls.find(c => c.label === 'strategist · revise from notes').prompt.includes('make it about pride'), 'M: the strategist gets the direction change')
+ok(!rM.open_questions.some(q => q.includes('Confirm and the studio')), 'M: no dead-end confirmation question')
+
+// N. Notes that change nothing keep the panel's open question.
+const sN = makeStub({ panel: (lens, round, calls) => (lens === 'client' && calls.filter(c => /^panel · client/.test(c.label)).length === 1 ? { ok: false, questions: ['Which market?'] } : { ok: true }), router: () => ({ routes: [], switch_route_to: '', direction_change: '' }) })
+const rN0 = await run({ command: 'IDEA', idea: IDEA }, sN.agent, sN.parallel, noop, noop)
+const rN = await run({ command: 'NOTES', priorState: J(rN0.project_state), notes: 'Looks good so far.' }, sN.agent, sN.parallel, noop, noop)
+ok(rN.open_questions.some(q => q.includes('Which market?')), 'N: notes that revise nothing leave the open question in place')
+ok((rN.project_state.earlier_questions || []).includes('Is Emberline the final brand name?') && !rN.project_state.needs_human_input.length, 'N: development questions asked before the notes move to earlier questions')
+
+// O. A revision call that fails outright never replaces good work, and its notes survive.
+let failsLeft = 3
+const sO = makeStub({ router: () => ({ routes: [{ responsible: 'storyboard_artist', note: 'NOTE-FOR-BOARD' }], switch_route_to: '', direction_change: '' }) })
+const agentO = async (prompt, o) => { if (o.label.startsWith('storyboard_artist · revise from notes') && failsLeft > 0) { failsLeft--; sO.calls.push({ label: o.label, prompt }); return null } return sO.agent(prompt, o) }
+const rO0 = await run({ command: 'IDEA', idea: IDEA }, sO.agent, sO.parallel, noop, noop)
+const boardBefore = rO0.project_state.artifacts.storyboard.artifact_id
+const rO = await run({ command: 'NOTES', priorState: J(rO0.project_state), notes: 'Board note.' }, agentO, sO.parallel, noop, noop)
+const boardAfter = rO.project_state.artifacts.storyboard
+ok(boardAfter.status !== 'blocked' && boardAfter.content.panels.length === 3, 'O: a failed revision leaves a complete storyboard, not an empty blocked one')
+ok(sO.calls.some(c => c.label.startsWith('storyboard_artist · revise from notes') && c.prompt.includes('NOTE-FOR-BOARD')) && boardAfter.artifact_id !== boardBefore && !failsLeft, 'O: the note is applied once the call succeeds')
+
+// P. The board can't overwrite the camera plan's values.
+const sP = makeStub()
+const agentP = wrap(sP, (r, o) => { if (o.label === 'storyboard_artist' && r && r.content) r.content.panels[0].duration_frames = 999 })
+const rP = await run({ command: 'IDEA', idea: IDEA }, agentP, sP.parallel, noop, noop)
+ok(rP.project_state.artifacts.storyboard.content.panels[0].duration_frames === 360, 'P: a board that restates a shot length keeps the camera plan\'s value')
+
+// Q. A REVISE request's note reaches the department that rebuilds the target.
+const sQ = makeStub()
+await run({ command: 'REVISE', priorState: J(rA2.project_state), revision: { target_kind: 'world_bible', routing_key: 'location_props_palette', note: 'SWAP-TO-CAMPER-VAN', reason: 'client' } }, sQ.agent, sQ.parallel, noop, noop)
+ok(sQ.calls.some(c => c.label === 'production_designer' && c.prompt.includes('SWAP-TO-CAMPER-VAN')), 'Q: the revision note reaches the production designer')
 
 console.log(fails ? `\n${fails} FAILED` : '\nALL PASS')
 if (fails) process.exit(1)

@@ -34,7 +34,8 @@ try {
   const pkg = fs.readFileSync(path.join(DIR, 'package.md'), 'utf8')
   const desk = JSON.parse(fs.readFileSync(path.join(DIR, 'desk.json'), 'utf8'))
   const gate = desk.find(d => d.collection === 'gates').data
-  ok(pkg.includes('### D01') && pkg.includes('Every shot in full') && pkg.includes('#### S1') && pkg.includes('board note'), 'package.md has the board by deliverable and every shot in full')
+  ok(pkg.includes('### D01 · 30s 9:16') && /\| S2 \| 15\.0s \|/.test(pkg) && /### D02 · 1 still\(s\) 4:5[\s\S]*?\| K1 \|/.test(pkg), 'package.md has the board as timed tables per deliverable')
+  ok(pkg.includes('Every shot in full') && pkg.includes('#### S1') && pkg.includes('board note'), 'package.md has every shot in full, with the board\'s fields')
   ok(pkg.includes('Every job in full') && pkg.includes('acceptance checks') && pkg.includes('method'), 'package.md has every generation job in full')
   ok(pkg.includes('Open panel notes') && pkg.includes('PANEL-NOTE-X'), 'package.md lists the open panel notes when below A')
   ok(pkg.includes('What keeps these below A') && pkg.includes('name the object'), 'package.md says why a department is below A')
@@ -47,11 +48,24 @@ try {
   ok(stale && stale.includes('the desk card showed'), 'an approval of versions that differ from the current package is refused')
   const wrongGate = studioFails('approve', SLUG, decision({ name: 'd2.json', id: 'dec2', gate_id: 'concept', decision: 'approved', approver_id: 'u_L', artifact_ids_and_revisions: shown }))
   ok(wrongGate && wrongGate.includes('not waiting on the concept gate'), 'an approval for a gate the project isn\'t at is refused')
-  studio('approve', SLUG, decision({ name: 'd3.json', id: 'dec3', gate_id: 'production_plan', decision: 'approved', selected_route_id: gate.built_route_id, approver_id: 'u_L', decided_at: 'x', artifact_ids_and_revisions: shown }))
+  // A route change rebuilds and comes back unapproved; replaying the same decision is refused.
+  const other = gate.routes.map(r => r.route_id).find(id => id !== gate.built_route_id)
+  const rc = decision({ name: 'rc.json', id: 'dec_rc', gate_id: 'production_plan', decision: 'route_change', selected_route_id: other, approver_id: 'u_L', decided_at: 'x', artifact_ids_and_revisions: shown })
+  studio('approve', SLUG, rc)
+  studio('save', SLUG, await runOnce('rc-out.json'))
+  const afterRc = JSON.parse(fs.readFileSync(path.join(DIR, 'state.json'), 'utf8'))
+  ok(afterRc.selected_concept_id === other && afterRc.pending_gate.gate_id === 'production_plan' && !afterRc.approval_log.some(e => e.gate_id === 'production_plan' && e.decision === 'approved'), 'a route change rebuilds on the new route and comes back unapproved')
+  const replay = studioFails('approve', SLUG, rc)
+  ok(replay && (replay.includes('already applied') || replay.includes('already built')), 'replaying the same route change is refused')
+  const gate2 = JSON.parse(fs.readFileSync(path.join(DIR, 'desk.json'), 'utf8')).find(d => d.collection === 'gates').data
+  const shown2 = gate2.review_items.map(i => `${i.artifact_id}@r${i.revision}`)
+  studio('approve', SLUG, decision({ name: 'd3.json', id: 'dec3', gate_id: 'production_plan', decision: 'approved', selected_route_id: gate2.built_route_id, approver_id: 'u_L', decided_at: 'x', artifact_ids_and_revisions: shown2 }))
   studio('save', SLUG, await runOnce('2.json'))
   const st = JSON.parse(fs.readFileSync(path.join(DIR, 'state.json'), 'utf8'))
   ok(st.approval_log.some(e => e.gate_id === 'production_plan' && e.decision === 'approved' && e.decision_id === 'dec3') && st.production_plan_applied, 'the checked approval is applied')
   ok(studio('status', SLUG).includes('package approved'), 'status says the package is approved')
+  const idea = JSON.parse(fs.readFileSync(path.join(DIR, 'desk.json'), 'utf8')).find(d => d.collection === 'ideas')
+  ok(idea && idea.data.status === 'done', 'the idea card reaches done once the package is approved')
 } finally {
   fs.rmSync(DIR, { recursive: true, force: true })
 }
