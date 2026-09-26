@@ -12,6 +12,8 @@
 //   node tools/studio.mjs approve <slug> <decision.json> apply an Approval Desk decision
 //        (checked against the versions the desk showed; --no-version-check for one given in chat)
 //   node tools/studio.mjs notes <slug> "<notes>" [--decision-id id]
+//   node tools/studio.mjs direct <slug> "<note>" --for dept1,dept2 [--words "Lucas's words"]
+//        [--target dept=10 [--rounds 5]]   direction mid-build; a bar above A for one department
 //   node tools/studio.mjs save <slug> <workflow-output-file>
 //   node tools/studio.mjs status <slug>
 //
@@ -20,7 +22,9 @@
 //   state.json   the project state the next run resumes from
 //   package.md   the full package, readable
 //   desk.json    the documents to publish to the Approval Desk (gate + idea status)
+//   direction.json  Lucas's direction given before the first run was saved (later, it lives in the state)
 //   .run.js      the generated workflow for the next run (not committed)
+//   .run-parts/  the saved state in parts, when it is too large to embed in .run.js (not committed)
 
 import fs from 'node:fs'
 import path from 'node:path'
@@ -62,17 +66,55 @@ function studioInputs() {
   return { craft, tasteNotes: opt('spec/taste/notes.md'), qualityBar: opt('spec/quality-bar.md') }
 }
 
+// The Workflow tool refuses a script over 512 KiB. A larger run keeps its saved state in part
+// scripts (each returns a slice of the state's JSON) that the run loads first.
+const MAX_SCRIPT_BYTES = Number(process.env.STUDIO_MAX_SCRIPT_BYTES) || 480000
+const PART_BYTES = Number(process.env.STUDIO_PART_BYTES) || 440000
+
+function splitForParts(text) {
+  const parts = []
+  let at = 0
+  while (at < text.length) {
+    // Grow a slice until its escaped, UTF-8 size would pass the part limit.
+    let n = Math.min(text.length - at, PART_BYTES)
+    while (n > 1 && Buffer.byteLength(JSON.stringify(text.slice(at, at + n))) > PART_BYTES) n = Math.floor(n * 0.9)
+    parts.push(text.slice(at, at + n))
+    at += n
+  }
+  return parts
+}
+
 function writeRun(slug, args) {
   const src = read(WORKFLOW)
   const marker = 'const input = args || {}'
   if (!src.includes(marker)) die('the workflow no longer has the args line this runner patches')
-  const embedded = { ...studioInputs(), projectId: slug.toUpperCase().replace(/-/g, '_'), ...args }
+  const dir = projectDir(slug)
+  const partsDir = path.join(dir, '.run-parts')
+  fs.rmSync(partsDir, { recursive: true, force: true })
+  let embedded = { ...studioInputs(), projectId: slug.toUpperCase().replace(/-/g, '_'), ...args }
   // A replacer function, so "$&" or "$$" in Lucas's text or the state is inserted literally.
-  const run = src.replace(marker, () => `// Inputs embedded by tools/studio.mjs for project "${slug}".\nconst EMBEDDED_ARGS = ${JSON.stringify(embedded)}\nconst input = { ...EMBEDDED_ARGS, ...(args || {}) }`)
-  const out = path.join(projectDir(slug), '.run.js')
+  const build = e => src.replace(marker, () => `// Inputs embedded by tools/studio.mjs for project "${slug}".\nconst EMBEDDED_ARGS = ${JSON.stringify(e)}\nconst input = { ...EMBEDDED_ARGS, ...(args || {}) }`)
+  let run = build(embedded)
+  let note = ''
+  if (Buffer.byteLength(run) > MAX_SCRIPT_BYTES && embedded.priorState) {
+    const text = JSON.stringify(embedded.priorState)
+    const slices = splitForParts(text)
+    fs.mkdirSync(partsDir, { recursive: true })
+    const files = slices.map((slice, i) => {
+      const f = path.join(partsDir, `part-${String(i + 1).padStart(2, '0')}.js`)
+      fs.writeFileSync(f, `export const meta = { name: 'studio-state-${slug}-${i + 1}', description: 'Saved state for ${slug}, part ${i + 1} of ${slices.length}' }\nreturn ${JSON.stringify(slice)}\n`)
+      return f
+    })
+    const { priorState, ...rest } = embedded
+    embedded = { ...rest, priorStateParts: files, priorStateLength: text.length }
+    run = build(embedded)
+    note = ` with its saved state in ${files.length} part${files.length === 1 ? '' : 's'} (${path.relative(ROOT, partsDir)})`
+  }
+  if (Buffer.byteLength(run) > MAX_SCRIPT_BYTES) die(`the run script would be ${Buffer.byteLength(run)} bytes, over the Workflow limit, even with the state split out`)
+  const out = path.join(dir, '.run.js')
   fs.writeFileSync(out, run)
   const roles = Object.keys(embedded.craft)
-  console.log(`Wrote ${path.relative(ROOT, out)} (${args.command}; ${roles.length} craft brief${roles.length === 1 ? '' : 's'}: ${roles.join(', ') || 'none'})`)
+  console.log(`Wrote ${path.relative(ROOT, out)}${note} (${args.command}; ${roles.length} craft brief${roles.length === 1 ? '' : 's'}: ${roles.join(', ') || 'none'})`)
   console.log(`Run it: Workflow({ scriptPath: '${path.relative(ROOT, out)}' })`)
 }
 
@@ -148,6 +190,54 @@ function cmdNotes(slug, notes, f) {
   writeRun(slug, { command: 'NOTES', priorState: loadState(slug), notes: notes.trim(), decision_id: f['decision-id'] || null })
 }
 
+// Lucas's direction during a build: a note for the departments it names, and/or a bar above A
+// for one department (--target cinematographer=10 --rounds 5). A project with a saved state
+// resumes with it; one whose first run hasn't been saved yet is re-run from its idea with it
+// (a Workflow resume replays every call whose prompt is unchanged, so only the named
+// departments and the work after them run again).
+const DEPARTMENTS = ['development_producer', 'strategist', 'creative_director', 'copywriter', 'casting_director', 'production_designer', 'director', 'stylist', 'sound_designer', 'cinematographer', 'storyboard_artist', 'generation_supervisor']
+function cmdDirect(slug, note, f) {
+  const dir = projectDir(slug)
+  const statePath = path.join(dir, 'state.json')
+  const dirPath = path.join(dir, 'direction.json')
+  const saved = fs.existsSync(dirPath) ? readJSON(dirPath) : { direction: [], targets: {} }
+  const state = fs.existsSync(statePath) ? readJSON(statePath) : null
+  const known = [...new Map([...(state ? state.direction || [] : []), ...saved.direction].map(d => [d.id, d])).values()]
+  const entries = []
+  if (note && String(note).trim()) {
+    const depts = String(f.for || '').split(',').map(x => x.trim()).filter(Boolean)
+    if (!depts.length) die('say which departments the note is for: --for cinematographer,storyboard_artist')
+    const bad = depts.filter(d => !DEPARTMENTS.includes(d))
+    if (bad.length) die(`unknown department(s): ${bad.join(', ')}. Departments: ${DEPARTMENTS.join(', ')}`)
+    const ids = new Set(known.map(d => d.id))
+    let n = known.length + 1
+    while (ids.has(`LD-${String(n).padStart(2, '0')}`)) n++
+    entries.push({ id: `LD-${String(n).padStart(2, '0')}`, note: String(note).trim(), departments: depts, ...(f.words ? { lucas_words: String(f.words) } : {}) })
+  }
+  const targets = {}
+  if (f.target) {
+    const m = String(f.target).match(/^([a-z_]+)=(\d+(?:\.\d+)?)$/)
+    if (!m) die('--target is department=score, e.g. --target cinematographer=10')
+    if (!DEPARTMENTS.includes(m[1])) die(`unknown department: ${m[1]}`)
+    const min = Number(m[2])
+    if (!(min > 8 && min <= 10)) die('a target is above A (8) and at most 10')
+    const rounds = f.rounds ? Number(f.rounds) : 5
+    if (!(rounds >= 1 && rounds <= 8)) die('--rounds is 1 to 8')
+    targets[m[1]] = { min, rounds }
+  }
+  if (!entries.length && !Object.keys(targets).length) die('give a note (with --for) and/or --target department=score')
+  if (state) {
+    writeRun(slug, { command: 'APPROVE', priorState: state, direction: entries, targets, ...runOptions(f) })
+    return
+  }
+  const ideaPath = path.join(dir, 'idea.json')
+  if (!fs.existsSync(ideaPath)) die(`${slug} has no idea.json or state.json`)
+  const idea = readJSON(ideaPath)
+  const all = { direction: [...saved.direction, ...entries], targets: { ...saved.targets, ...targets } }
+  writeJSON(dirPath, all)
+  writeRun(slug, { command: 'IDEA', idea: idea.idea, ideaHints: idea.hints || {}, direction: all.direction, targets: all.targets, ...runOptions(f) })
+}
+
 function cmdSave(slug, outFile) {
   const raw = readJSON(outFile)
   const out = { ...(raw.result || raw), totalTokens: raw.totalTokens || null }
@@ -185,8 +275,10 @@ function grades(s) {
     return {
       key: k, label: LABELS[k], artifact: `${art(s, k).artifact_id} r${art(s, k).revision}`, status: art(s, k).status,
       grade, lowest: q ? q.min : null, rounds: q ? q.rounds : 0, failed_checks: (art(s, k).checks && art(s, k).checks.failed) || [], scores: q ? q.scores : null,
-      // What a reviewer still wants, shown wherever the grade isn't A.
-      notes: grade === 'A' ? [] : ((q && q.notes) || []).map(n => (typeof n === 'string' ? n : `${n.target ? `${n.target}: ` : ''}${n.note}`)),
+      // A bar Lucas set above A for this department, and whether the work reached it.
+      target: q && q.target ? q.target : null, met_target: q && q.target ? !!q.met_target : null, kept_round: (q && q.kept_round) || null,
+      // What a reviewer still wants, shown wherever the grade isn't A or Lucas's bar wasn't met.
+      notes: grade === 'A' && !(q && q.target && !q.met_target) ? [] : ((q && q.notes) || []).map(n => (typeof n === 'string' ? n : `${n.target ? `${n.target}: ` : ''}${n.note}`)),
     }
   })
 }
@@ -260,9 +352,11 @@ function renderPackage(slug, s, out) {
     if (open.length) md.push(`Open panel notes (not yet applied; send any you agree with as notes):\n\n${list(open)}`)
   }
   const gr = grades(s)
-  md.push(table(gr, [['label', 'Department'], ['grade', 'Grade'], ['lowest', 'Lowest score'], ['rounds', 'Review rounds'], [x => x.failed_checks.length, 'Failed checks'], ['artifact', 'Version']]))
-  const below = gr.filter(x => x.grade !== 'A' && (x.notes.length || x.failed_checks.length))
-  if (below.length) md.push(`### What keeps these below A\n\n${below.map(x => `**${x.label}**\n\n${list([...x.failed_checks.map(c => `Failed check: ${c}`), ...x.notes])}`).join('\n\n')}`)
+  const bars = gr.some(x => x.target)
+  md.push(table(gr, [['label', 'Department'], ['grade', 'Grade'], ['lowest', 'Lowest score'], ...(bars ? [[x => (x.target ? `${x.target} (${x.met_target ? 'met' : 'not met'})` : ''), 'Your bar']] : []), [x => `${x.rounds}${x.kept_round ? ` (kept round ${x.kept_round})` : ''}`, 'Review rounds'], [x => x.failed_checks.length, 'Failed checks'], ['artifact', 'Version']]))
+  const below = gr.filter(x => (x.grade !== 'A' || (x.target && !x.met_target)) && (x.notes.length || x.failed_checks.length))
+  if (below.length) md.push(`### What keeps these below ${bars ? 'A or your bar' : 'A'}\n\n${below.map(x => `**${x.label}**${x.target && !x.met_target ? ` (your bar: ${x.target} on every score; lowest now ${x.lowest})` : ''}\n\n${list([...x.failed_checks.map(c => `Failed check: ${c}`), ...x.notes])}`).join('\n\n')}`)
+  if ((s.direction || []).length) md.push(`### Your direction during the build\n\n${list(s.direction.map(d => `${d.id} (${d.departments.map(k => k.replace(/_/g, ' ')).join(', ')}): ${d.note}${d.lucas_words ? ` You said: "${d.lucas_words}"` : ''}`))}`)
   const qs = questionsFor(s)
   if (qs.length) md.push(`## Questions for you\n\n${list(qs)}`)
   const earlier = earlierQuestions(s)
@@ -384,7 +478,8 @@ function deskDocs(slug, s, out) {
           revised_after_review: (pr.revised_after_review || []).map(k => LABELS[k] || k), grade_note: panelNote(pr),
           lenses: pr.lenses.map(l => ({ lens: l.lens, would_approve: l.would_approve, verdict: l.verdict, scores: l.scores, notes: pr.grade === 'A' ? [] : (l.notes || []).map(n => ({ dept: n.responsible, target: n.target, note: n.note })) })),
         } : null,
-        departments: grades(s).map(x => ({ key: x.key, label: x.label, grade: x.grade, lowest: x.lowest, rounds: x.rounds, failed_checks: x.failed_checks, notes: x.notes })),
+        departments: grades(s).map(x => ({ key: x.key, label: x.label, grade: x.grade, lowest: x.lowest, rounds: x.rounds, failed_checks: x.failed_checks, notes: x.notes, ...(x.target ? { target: x.target, met_target: x.met_target, kept_round: x.kept_round } : {}) })),
+        direction: (s.direction || []).map(d => ({ id: d.id, departments: d.departments, note: d.note, lucas_words: d.lucas_words || null })),
         script: (C(s, 'script').deliverable_scripts || []).map(d => ({ deliverable_id: d.deliverable_id, duration_s: d.duration_s, idea_in_one_line: d.idea_in_one_line, cta: d.cta, beats: (d.beats || []).map(b => ({ t: `${b.start_s}–${b.end_s}s`, picture: b.picture, sound: b.sound, vo: b.vo, text: b.on_screen_text })) })),
         cast: (C(s, 'casting_bible').characters || []).map(c => ({ id: c.character_id, role: c.role_in_story, presence: c.screen_presence })),
         open_questions: questionsFor(s),
@@ -448,6 +543,7 @@ switch (cmd) {
   case 'resume': cmdResume(slug, f); break
   case 'approve': cmdApprove(slug, f._[0], f); break
   case 'notes': cmdNotes(slug, f._[0], f); break
+  case 'direct': cmdDirect(slug, f._[0], f); break
   case 'save': cmdSave(slug, f._[0]); break
   case 'status': cmdStatus(slug); break
   default:

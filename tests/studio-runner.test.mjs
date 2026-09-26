@@ -69,5 +69,57 @@ try {
 } finally {
   fs.rmSync(DIR, { recursive: true, force: true })
 }
+// Direction mid-build: before the first save it re-runs from the idea with the direction; after,
+// it resumes the saved state with it. The package and desk show the bar and the direction.
+const DSLUG = 'zz-direct-test'
+const DDIR = path.join(ROOT, 'projects', DSLUG)
+fs.rmSync(DDIR, { recursive: true, force: true })
+try {
+  studio('new', DSLUG, 'Emberline makes a cast-iron skillet, pre-seasoned with flaxseed oil. A dad teaching his kid breakfast.')
+  ok((studioFails('direct', DSLUG, 'Shoot on film.') || '').includes('--for'), 'direct: a note needs the departments it is for')
+  ok((studioFails('direct', DSLUG, 'Shoot on film.', '--for', 'camera_guy') || '').includes('unknown department'), 'direct: unknown departments are refused')
+  ok((studioFails('direct', DSLUG, '--target', 'cinematographer=7') || '').includes('above A'), 'direct: a bar must be above A')
+  studio('direct', DSLUG, 'FILM-LOOK-MARKER', '--for', 'cinematographer,generation_supervisor', '--words', 'on 35mm', '--target', 'cinematographer=10', '--rounds', '4')
+  const saved = JSON.parse(fs.readFileSync(path.join(DDIR, 'direction.json'), 'utf8'))
+  const runSrc = fs.readFileSync(path.join(DDIR, '.run.js'), 'utf8')
+  ok(saved.direction[0].id === 'LD-01' && saved.targets.cinematographer.min === 10 && saved.targets.cinematographer.rounds === 4, 'direct: the direction and bar are kept in direction.json until the first save')
+  ok(runSrc.includes('"command":"IDEA"') && runSrc.includes('FILM-LOOK-MARKER') && runSrc.includes('"targets":{"cinematographer"'), 'direct: an unsaved project re-runs from its idea with the direction')
+  const cam = (d, l) => (d === 'cinematographer' ? [9, 9, 9, 9] : null)
+  const run = await loadWorkflow(path.join(DDIR, '.run.js'))
+  const st = makeStub({ scores: cam })
+  const result = await run({}, st.agent, st.parallel, () => {}, () => {})
+  const out = path.join(tmp, 'd1.json')
+  fs.writeFileSync(out, JSON.stringify({ result, totalTokens: 1 }))
+  studio('save', DSLUG, out)
+  const pkg = fs.readFileSync(path.join(DDIR, 'package.md'), 'utf8')
+  const gate = JSON.parse(fs.readFileSync(path.join(DDIR, 'desk.json'), 'utf8')).find(d => d.collection === 'gates').data
+  const camRow = gate.departments.find(x => x.key === 'camera_plan')
+  ok(pkg.includes('Your bar') && pkg.includes('10 (not met)') && pkg.includes('your bar: 10 on every score') && pkg.includes('Your direction during the build') && pkg.includes('FILM-LOOK-MARKER'), 'direct: package.md shows the bar, why it was not met, and the direction')
+  ok(camRow.target === 10 && camRow.met_target === false && camRow.notes.length > 0 && gate.direction.length === 1, 'direct: the desk card carries the bar, the reviewer notes below it, and the direction')
+  // A state too big for one script goes in part scripts the run loads first.
+  const small = { cwd: ROOT, encoding: 'utf8', env: { ...process.env, STUDIO_MAX_SCRIPT_BYTES: '250000', STUDIO_PART_BYTES: '30000' } }
+  execFileSync('node', [path.join(ROOT, 'tools/studio.mjs'), 'resume', DSLUG], small)
+  const partsDir = path.join(DDIR, '.run-parts')
+  const partFiles = fs.existsSync(partsDir) ? fs.readdirSync(partsDir) : []
+  const splitSrc = fs.readFileSync(path.join(DDIR, '.run.js'), 'utf8')
+  ok(partFiles.length > 1 && splitSrc.includes('"priorStateParts":[') && !splitSrc.includes('"priorState":{') && partFiles.every(f => fs.statSync(path.join(partsDir, f)).size <= 30000), `parts: a large state is split into ${partFiles.length} part scripts, each under the limit`)
+  const runSplit = await loadWorkflow(path.join(DDIR, '.run.js'))
+  const stSplit = makeStub()
+  const rSplit = await runSplit({}, stSplit.agent, stSplit.parallel, () => {}, () => {})
+  const whole = JSON.parse(fs.readFileSync(path.join(DDIR, 'state.json'), 'utf8'))
+  ok(!rSplit.error && rSplit.project_state && rSplit.project_state.project_id === whole.project_id && rSplit.project_state.direction.length === whole.direction.length, 'parts: the run loads the whole state from its parts')
+  const first = path.join(partsDir, partFiles.sort()[0])
+  fs.writeFileSync(first, fs.readFileSync(first, 'utf8').replace(/return "(.{10})/, 'return "'))
+  const rBad = await (await loadWorkflow(path.join(DDIR, '.run.js')))({}, stSplit.agent, stSplit.parallel, () => {}, () => {})
+  ok(rBad.error && rBad.error.includes("didn't load whole"), 'parts: a damaged part stops the run instead of running on a partial state')
+  studio('resume', DSLUG)
+  ok(!fs.existsSync(partsDir) && fs.readFileSync(path.join(DDIR, '.run.js'), 'utf8').includes('"priorState":{'), 'parts: a state that fits is embedded again and old parts are removed')
+  studio('direct', DSLUG, 'SECOND-NOTE-MARKER', '--for', 'storyboard_artist')
+  const run2 = fs.readFileSync(path.join(DDIR, '.run.js'), 'utf8')
+  ok(run2.includes('"command":"APPROVE"') && run2.includes('"id":"LD-02"') && run2.includes('SECOND-NOTE-MARKER'), 'direct: a saved project resumes with the next direction, numbered after the first')
+} finally {
+  fs.rmSync(DDIR, { recursive: true, force: true })
+}
+
 console.log(fails ? `\n${fails} FAILED` : '\nALL PASS')
 if (fails) process.exit(1)

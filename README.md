@@ -83,6 +83,8 @@ node tools/studio.mjs new <slug> "<idea>" [--format ad_spot] [--seconds 30] [--b
 node tools/studio.mjs resume <slug>                   # continue after a run hit its call cap
 node tools/studio.mjs approve <slug> <decision.json>  # an Approval Desk decision
 node tools/studio.mjs notes <slug> "<notes>"
+node tools/studio.mjs direct <slug> "<note>" --for cinematographer,storyboard_artist [--words "..."]
+                          [--target cinematographer=10 --rounds 5]   # direction mid-build
 node tools/studio.mjs save <slug> <workflow-output>   # files state.json, package.md, desk.json
 node tools/studio.mjs status <slug>
 ```
@@ -91,6 +93,17 @@ Each writes `projects/<slug>/.run.js` (not committed); run it with
 `Workflow({ scriptPath: 'projects/<slug>/.run.js' })`. `save` writes the project's
 `state.json` (what the next run resumes from), `package.md` (the full package, readable) and
 `desk.json` (the documents Claude publishes to the Approval Desk).
+
+When a saved state is too large to embed (a Workflow script is capped at 512 KiB), the runner
+writes it to part scripts in `projects/<slug>/.run-parts/` and the run loads them first.
+
+**Direction mid-build.** `direct` records a note from Lucas for the departments it names. Their
+makers, reviewers and revisers get it as binding direction, and so do integrity QC and the
+package panel; other departments' prompts don't change. A project with a saved state resumes with
+it, and work those departments already built is revised against it. `--target dept=N` sets a bar
+above A for one department: it keeps revising until the reviewer scores N on all four criteria,
+for up to `--rounds` review rounds, keeping its best-scoring version. The reviewer is told the
+bar but asked to score as it otherwise would. The package reports whether each bar was met.
 
 ### Calling the workflow directly
 

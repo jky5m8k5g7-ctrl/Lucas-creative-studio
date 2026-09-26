@@ -4,7 +4,9 @@
 //
 //   node tools/live-feed.mjs <slug> --out <snapshot.json> [--wait <seconds>]
 //
-// The run to follow is named in projects/<slug>/.live-run (JSON: { journal, run, finished }).
+// The run to follow is named in projects/<slug>/.live-run (JSON: { journal, run, finished }, or
+// { journals: [{ dir, lines? }, ...] } for a build that continued in a new run: earlier runs are
+// read up to `lines`, then the current one; plus optional `targets` and `direction` to show).
 // With --wait, it waits (polling, up to the given seconds) for the journal to change since the
 // snapshot already in --out, then writes a fresh one either way. It prints one word: "changed",
 // "heartbeat" (nothing new; the snapshot only has a fresh written_at, so the page knows the
@@ -43,15 +45,16 @@ const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..')
 const pointerFile = path.join(root, 'projects', slug, '.live-run')
 const readJson = f => { try { return JSON.parse(fs.readFileSync(f, 'utf8')) } catch { return null } }
 const pointer = () => readJson(pointerFile) || {}
-const journalFile = p => (p.journal ? path.join(p.journal, 'journal.jsonl') : null)
+const journalsOf = p => (Array.isArray(p.journals) ? p.journals : p.journal ? [{ dir: p.journal }] : [])
 const size = f => { try { return fs.statSync(f).size } catch { return -1 } }
+const journalBytes = p => journalsOf(p).reduce((n, j) => n + size(path.join(j.dir, 'journal.jsonl')), 0)
 const mtime = f => { try { return fs.statSync(f).mtime.toISOString() } catch { return null } }
 const clip = (s, n) => { s = String(s == null ? '' : s).replace(/\s+/g, ' ').trim(); return s.length > n ? s.slice(0, n - 1).trimEnd() + '…' : s }
 
-function readJournal(file) {
+function readJournal(file, limit) {
   let text = ''
   try { text = fs.readFileSync(file, 'utf8') } catch { return [] }
-  const lines = text.split('\n')
+  const lines = text.split('\n').slice(0, limit || undefined)
   // The last line may still be being written.
   return lines.map(l => { try { return JSON.parse(l) } catch { return null } }).filter(Boolean)
 }
@@ -87,21 +90,27 @@ function headline(dept, c) {
 
 function snapshot() {
   const p = pointer()
-  const jf = journalFile(p)
-  const events = jf ? readJournal(jf) : []
+  const js = journalsOf(p)
   const starts = new Map()
   const results = new Map()
-  for (const e of events) {
-    if (e.type === 'started') starts.set(e.key, e)
-    else if (e.type === 'result') results.set(e.key, e)
-  }
-  const dir = p.journal
+  let events = 0
+  js.forEach((j, i) => {
+    const rows = readJournal(path.join(j.dir, 'journal.jsonl'), j.lines)
+    events += rows.length
+    // An earlier run's calls that never finished were stopped with it: leave them out.
+    const done = new Set(rows.filter(e => e.type === 'result').map(e => e.key))
+    for (const e of rows) {
+      if (e.type === 'started' && (i === js.length - 1 || done.has(e.key))) starts.set(e.key, { ...e, dir: j.dir })
+      else if (e.type === 'result') results.set(e.key, e)
+    }
+  })
+  const targets = p.targets || {}
   const times = s => ({
-    at: s.agentId ? mtime(path.join(dir, `agent-${s.agentId}.meta.json`)) : null,
-    end: s.agentId ? mtime(path.join(dir, `agent-${s.agentId}.jsonl`)) : null,
+    at: s.agentId ? mtime(path.join(s.dir, `agent-${s.agentId}.meta.json`)) : null,
+    end: s.agentId ? mtime(path.join(s.dir, `agent-${s.agentId}.jsonl`)) : null,
   })
 
-  const depts = Object.fromEntries(DEPTS.map(([d, n, what]) => [d, { dept: d, name: n, what, status: 'waiting', step: null, rounds: [], grade: null, headline: '', notes: [], keep: '', calls: 0, blocked: '' }]))
+  const depts = Object.fromEntries(DEPTS.map(([d, n, what]) => [d, { dept: d, name: n, what, status: 'waiting', step: null, rounds: [], grade: null, headline: '', notes: [], keep: '', calls: 0, blocked: '', target: (targets[d] && targets[d].min) || null, met_target: null }]))
   const qc = []
   const panel = []
   let router = null
@@ -127,6 +136,8 @@ function snapshot() {
     if (info.group === 'dept') {
       const d = depts[info.dept]
       d.calls++
+      // A fresh draft starts the department's review cycle over.
+      if (info.step === 'draft' && !info.fix) { d.rounds = []; d.grade = null; d.met_target = null; d.notes = []; d.keep = '' }
       if (!r) {
         d.status = { draft: 'drafting', review: 'reviewing', revise: 'revising', notes: 'revising', fix: 'fixing' }[info.step]
         d.step = info.step === 'review' ? `review ${info.round}` : info.step
@@ -141,10 +152,14 @@ function snapshot() {
           d.grade = min >= 8 ? 'A' : 'below_A'
           d.notes = (res.notes || []).slice(0, 3).map(n => clip(n.note, 280))
           d.keep = clip((res.keep || [])[0], 220)
-          const last = info.round >= 3
-          d.status = min >= 8 || last ? 'done' : 'revising'
+          const goal = d.target || 8
+          const maxRounds = d.target ? Math.max(3, targets[info.dept].rounds || 3) : 3
+          const last = info.round >= maxRounds
+          if (d.target) d.met_target = min >= goal
+          d.status = min >= goal || last ? 'done' : 'revising'
           d.step = null
-          feed.push({ at: doneAt, dept: info.dept, text: `${d.name} review ${info.round}: ${sc.s} · ${sc.d} · ${sc.f} · ${sc.c}${min >= 8 ? ' (A)' : last ? ' (below A after 3 rounds)' : ', sent back to revise'}` })
+          const verdict = min >= goal ? (d.target ? ` (${goal}s: your bar met)` : ' (A)') : last ? (d.target ? ` (below your bar of ${goal} after ${maxRounds} rounds)` : ' (below A after 3 rounds)') : d.target && min >= 8 ? `, A but below your bar of ${goal}: revising` : ', sent back to revise'
+          feed.push({ at: doneAt, dept: info.dept, text: `${d.name} review ${info.round}: ${sc.s} · ${sc.d} · ${sc.f} · ${sc.c}${verdict}` })
         } else {
           feed.push({ at: doneAt, dept: info.dept, text: `${d.name} review ${info.round}: no result` })
         }
@@ -195,7 +210,8 @@ function snapshot() {
     phase,
     calls: { started, done, running },
     budget: p.budget || null,
-    started_at: events.length && dir ? mtime(path.join(dir, `agent-${[...starts.values()][0]?.agentId}.meta.json`)) : null,
+    started_at: starts.size ? times([...starts.values()][0]).at : null,
+    direction: (p.direction || []).map(d => ({ id: d.id, note: d.note, lucas_words: d.lucas_words || '', departments: (d.departments || []).map(x => NAME[x] || x) })),
     last_event_at: lastAt,
     written_at: new Date().toISOString(),
     departments: DEPTS.map(([d]) => depts[d]),
@@ -205,7 +221,7 @@ function snapshot() {
     active,
     feed: feed.slice(-24).reverse(),
     finished: p.finished || null,
-    journal_bytes: jf ? size(jf) : -1,
+    journal_bytes: journalBytes(p),
   }
 }
 
@@ -217,7 +233,7 @@ async function main() {
     for (;;) {
       const p = pointer()
       if (p.finished && !(prev && prev.finished)) break
-      const now = size(journalFile(p))
+      const now = journalBytes(p)
       if (!prev || now !== prev.journal_bytes) {
         // Let parallel starts land together.
         await pause(8000)

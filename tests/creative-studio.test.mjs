@@ -323,5 +323,41 @@ const sQ = makeStub()
 await run({ command: 'REVISE', priorState: J(rA2.project_state), revision: { target_kind: 'world_bible', routing_key: 'location_props_palette', note: 'SWAP-TO-CAMPER-VAN', reason: 'client' } }, sQ.agent, sQ.parallel, noop, noop)
 ok(sQ.calls.some(c => c.label === 'production_designer' && c.prompt.includes('SWAP-TO-CAMPER-VAN')), 'Q: the revision note reaches the production designer')
 
+// R. Lucas's direction reaches only the departments it names (and QC and the panel); a bar above
+// A keeps the camera plan in its review loop until every score reaches it.
+const DIR = [{ id: 'LD-01', note: 'DIRECTION-35MM-MARKER', departments: ['cinematographer', 'storyboard_artist', 'generation_supervisor', 'not_a_department'], lucas_words: 'shot in 35mm' }]
+const camScores = { 1: [8, 8, 9, 9], 2: [9, 9, 9, 9], 3: [10, 10, 10, 10] }
+const sR = makeStub({ scores: (dept, label) => (dept === 'cinematographer' ? camScores[+label.split(' ').pop()] : null) })
+const rR = await run({ command: 'IDEA', idea: IDEA, direction: DIR, targets: { cinematographer: { min: 10, rounds: 5 } } }, sR.agent, sR.parallel, noop, noop)
+const qR = rR.project_state.artifacts.camera_plan.quality
+const has = (label, text) => { const c = sR.calls.find(x => x.label === label); return !!(c && c.prompt.includes(text)) }
+ok(['cinematographer', 'storyboard_artist', 'generation_supervisor'].every(d => has(d, 'DIRECTION-35MM-MARKER') && has(d, "LUCAS'S DIRECTION FOR THIS DEPARTMENT")), 'R: the direction reaches the camera, board and generation makers')
+ok(['development_producer', 'copywriter', 'director', 'stylist', 'sound_designer', 'production_designer'].every(d => !has(d, 'DIRECTION-35MM-MARKER') && !has(`${d} · review 1`, 'DIRECTION-35MM-MARKER')), 'R: departments the direction doesn\'t name never see it')
+ok(has('cinematographer · review 1', 'DIRECTION-35MM-MARKER') && has('cinematographer · review 1', "bar at 10 on every criterion") && !has('storyboard_artist · review 1', 'bar at 10'), 'R: the camera reviewer sees the direction and the bar; the board reviewer sees only the direction')
+ok(has('cinematographer · revise 1', "Lucas has set this department's bar at 10") && sR.calls.filter(c => / · revise \d+$/.test(c.label) && !c.label.startsWith('cinematographer')).every(c => c.prompt.includes('A needs 8 or more')), 'R: the camera reviser is told the bar; other revisers keep the A line')
+ok(qR.rounds === 3 && qR.min === 10 && qR.target === 10 && qR.met_target === true && qR.grade === 'A', 'R: the camera plan kept revising past A (9s) until it reached 10s on round 3')
+ok(sR.calls.some(c => /^integrity QC/.test(c.label) && c.prompt.includes('DIRECTION-35MM-MARKER')) && sR.calls.some(c => /^panel · /.test(c.label) && c.prompt.includes('DIRECTION-35MM-MARKER')), 'R: integrity QC and the panel check the package against the direction')
+ok(rR.project_state.direction.length === 1 && rR.project_state.direction[0].departments.join() === 'cinematographer,storyboard_artist,generation_supervisor', 'R: the direction is kept in the state, unknown departments dropped')
+ok(rR.pending_gate.department_grades.find(g => g.key === 'camera_plan').met_target === true && rR.pending_gate.below_target.length === 0, 'R: the gate reports the bar as met')
+
+// S. A bar that isn't reached stops after its rounds, reports it, and keeps the best version.
+const sS = makeStub({ scores: (dept, label) => (dept === 'cinematographer' ? { 1: [9, 9, 9, 9], 2: [8, 8, 9, 8], 3: [9, 9, 9, 8] }[+label.split(' ').pop()] : null) })
+const rS = await run({ command: 'IDEA', idea: IDEA, targets: { cinematographer: { min: 10, rounds: 3 } } }, sS.agent, sS.parallel, noop, noop)
+const qS = rS.project_state.artifacts.camera_plan.quality
+ok(qS.rounds === 3 && qS.kept_round === 1 && qS.min === 9 && qS.met_target === false && qS.history.length === 3, 'S: after 3 rounds below the bar, round 1\'s best version is kept: ' + JSON.stringify({ r: qS.rounds, k: qS.kept_round, m: qS.min }))
+ok(rS.pending_gate.below_target.some(b => b.key === 'camera_plan' && b.target === 10 && b.lowest === 9), 'S: the gate lists the camera plan as below Lucas\'s bar')
+ok(!sS.calls.some(c => c.label === 'cinematographer · review 4'), 'S: no review beyond the rounds Lucas allowed')
+
+// T. Direction and a bar added to a finished project: built work is revised against the direction,
+// and work below the new bar goes back into review with the bar's rounds on top.
+const sT = makeStub({ scores: (dept, label, calls) => (dept === 'cinematographer' ? (calls.filter(c => c.label.startsWith('cinematographer · review')).length >= 4 ? [10, 10, 10, 10] : [9, 9, 9, 9]) : null) })
+const rT0 = await run({ command: 'IDEA', idea: IDEA }, sT.agent, sT.parallel, noop, noop)
+const camRounds0 = rT0.project_state.artifacts.camera_plan.quality.rounds
+const rT = await run({ command: 'APPROVE', priorState: J(rT0.project_state), targets: { cinematographer: { min: 10, rounds: 4 } }, direction: [{ id: 'LD-01', note: 'BOARD-DIRECTION-MARKER', departments: ['storyboard_artist'] }] }, sT.agent, sT.parallel, noop, noop)
+const qT = rT.project_state.artifacts.camera_plan.quality
+ok(sT.calls.some(c => c.label === 'cinematographer · resume revision' && c.prompt.includes("bar at 10")) && qT.met_target === true && qT.rounds > camRounds0, 'T: a bar set later sends reviewed work back into its loop until it is met: ' + JSON.stringify({ before: camRounds0, after: qT.rounds, met: qT.met_target }))
+ok(sT.calls.some(c => c.label.startsWith('storyboard_artist') && c.prompt.includes('BOARD-DIRECTION-MARKER')) && rT.project_state.artifacts.storyboard.status !== 'stale', 'T: the board is rebuilt with the new direction')
+ok(rT.pending_gate && rT.pending_gate.gate_id === 'production_plan' && rT.project_state.decision_log.some(d => d.stage === 'direction'), 'T: the project comes back to the gate with the direction logged')
+
 console.log(fails ? `\n${fails} FAILED` : '\nALL PASS')
 if (fails) process.exit(1)

@@ -45,6 +45,9 @@ export function makeStub(opts = {}) {
     if (opts.fail && opts.fail(label)) return null
     if (/ · review \d+$/.test(label)) {
       const dept = label.split(' · ')[0]
+      // opts.scores sets all four scores ([specificity, distinctiveness, fit, craft]) when it returns them.
+      const four = opts.scores && opts.scores(dept, label, calls)
+      if (four) return { specificity: crit(four[0]), distinctiveness: crit(four[1]), fit: crit(four[2]), craft: crit(four[3]), notes: Math.min(...four) < 10 ? [{ target: 'S1', note: `raise it (${label})`, source: 'craft brief' }] : [], keep: ['the pan'] }
       const s = opts.score ? opts.score(dept, label, calls) : 8
       return { specificity: crit(s), distinctiveness: crit(Math.max(s, 8)), fit: crit(9), craft: crit(9), notes: s < 8 ? [{ target: 'B1', note: 'name the object', source: 'craft brief' }] : [], keep: ['the pan'] }
     }

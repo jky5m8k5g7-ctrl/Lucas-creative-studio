@@ -33,9 +33,21 @@ export const meta = {
 // quality: true turns on the A-quality loop (default for IDEA); review: 'end' | 'gates'.
 // mode: 'planning_only' (default) | 'connected_tools' (also needs toolBindings and
 //   brief.budget.media_and_render_cap, or stage 10+ reports a blocked_capability_report).
+// priorStateParts + priorStateLength: the runner's split form of a large priorState (see below).
 // See ../../spec/creative_studio_agents.json for the blueprint and ../../spec/quality-bar.md for "A".
 
 const input = args || {}
+// A saved state too large for one Workflow script arrives in parts: tools/studio.mjs writes each
+// part as a small script that returns a slice of the state's JSON, and this run loads them in order.
+if (!input.priorState && Array.isArray(input.priorStateParts) && input.priorStateParts.length) {
+  const slices = []
+  for (const p of input.priorStateParts) slices.push(await workflow({ scriptPath: p }))
+  const joined = slices.join('')
+  if (slices.some(x => typeof x !== 'string') || (input.priorStateLength && joined.length !== input.priorStateLength)) {
+    return { command: input.command || 'START', error: `The saved project state didn't load whole (${joined.length} of ${input.priorStateLength} characters). Regenerate the run with tools/studio.mjs and try again.` }
+  }
+  input.priorState = JSON.parse(joined)
+}
 const PROJECT_ID = input.projectId || (input.priorState && input.priorState.project_id) || 'PROJECT_001'
 const command = input.command || 'START'
 const CRAFT = input.craft || {}
@@ -833,6 +845,21 @@ function selectedRoute(state) {
   return routes.find(r => r.route_id === state.selected_concept_id) || null
 }
 
+// Lucas's standing direction: notes he gave during a build, each for the departments it names.
+// It reaches only those departments' prompts (and QC and the panel), so work that doesn't need
+// it is untouched.
+function directionFor(state, dept) {
+  return (state.direction || []).filter(d => (d.departments || []).includes(dept))
+}
+function directionLines(notes) {
+  return notes.map(d => `- ${d.note}${d.lucas_words ? ` (Lucas's words: "${d.lucas_words}")` : ''}`).join('\n')
+}
+// A bar Lucas set above A for one department: { min, rounds }.
+function targetFor(state, dept) {
+  const t = state.settings && state.settings.targets && state.settings.targets[dept]
+  return t && t.min > A_MIN ? t : null
+}
+
 function preamble(state) {
   const b = state.brief
   const route = selectedRoute(state)
@@ -881,18 +908,25 @@ Respond only via the required schema.`
 function makerPrompt(state, spec, role, previous) {
   const rules = spec.rules ? spec.rules(state) : []
   const pending = (state.pending_notes && state.pending_notes[spec.key]) || []
+  const dir = directionFor(state, spec.dept)
   return `${preamble(state)}
 
 Your role: ${ROLE_INSTRUCTIONS[role]}
 ${craftBlock(role)}
 
-This task: ${spec.task(state)}
+This task: ${spec.task(state)}${dir.length ? `\nLUCAS'S DIRECTION FOR THIS DEPARTMENT (binding: where it differs from the craft brief, the taste notes or upstream work, follow it, and name each upstream clash in assumptions):\n${directionLines(dir)}` : ''}
 ${spec.lane ? `Your lane: you decide ${spec.lane.decides}. Leave to later departments: ${spec.lane.leaves}. Detail that belongs to a later department is padding, not credit. Keep every field as short as its job allows; ${spec.lane.next} must be able to act on it without a follow-up question.` : ''}
 ${rules.length ? `Your work is checked in code and sent back if any of these fail:\n${rules.map(r => `- ${r}`).join('\n')}` : ''}
 ${pending.length ? `Notes from an earlier review that this version must address:\n${JSON.stringify(pending)}` : ''}
 ${previous ? `Work upstream of you has changed since your last version. Update it to the new upstream context: keep every choice that still holds, change what no longer fits. Your last version:\n${JSON.stringify(previous)}` : ''}
 Upstream context: ${JSON.stringify(spec.upstream(state))}
 Respond only via the required schema.`
+}
+
+function criticDirection(state, spec) {
+  const dir = directionFor(state, spec.dept)
+  const t = targetFor(state, spec.dept)
+  return `${dir.length ? `\n\nLucas's direction for this department (binding; judge fit against it as you would the brief):\n${directionLines(dir)}` : ''}${t ? `\n\nLucas has set this department's bar at ${t.min} on every criterion. Score exactly as you otherwise would; the bar never changes a score. For every criterion below ${t.min}, one of your notes must say exactly what would raise it.` : ''}`
 }
 
 const DEFAULT_BAR = `Anchors, used for every criterion: 10 best-in-class, approve unchanged; 9 approve unchanged; 8 a senior practitioner would send it to the client with only small notes (the minimum for A); 6–7 competent but generic, or has real gaps; 5 or below not usable.`
@@ -904,7 +938,7 @@ You are reviewing the ${spec.label} before anything reaches Lucas. Hold it to th
 ${craftBlock(role)}
 ${QUALITY_BAR ? `THE STUDIO'S QUALITY BAR:\n<<<\n${QUALITY_BAR}\n>>>` : DEFAULT_BAR}
 
-What this work had to build on: ${JSON.stringify(spec.upstream(state))}
+What this work had to build on: ${JSON.stringify(spec.upstream(state))}${criticDirection(state, spec)}
 
 THE WORK UNDER REVIEW (its assumptions and blockers are part of it):
 ${JSON.stringify(content)}
@@ -922,7 +956,7 @@ function revisePrompt(state, spec, role, prior, feedback, violations) {
   const scores = feedback.scores ? Object.entries(feedback.scores).map(([k, v]) => `${k} ${v}`).join(', ') : ''
   return `${makerPrompt(state, spec, role)}
 
-${prior ? `YOUR PREVIOUS VERSION:\n${JSON.stringify(prior)}\n\n` : ''}${scores ? `The reviewer scored it: ${scores}. A needs 8 or more on every criterion.` : ''}
+${prior ? `YOUR PREVIOUS VERSION:\n${JSON.stringify(prior)}\n\n` : ''}${scores ? `The reviewer scored it: ${scores}. ${targetFor(state, spec.dept) ? `Lucas has set this department's bar at ${targetFor(state, spec.dept).min} on every criterion; A (8) is not enough here.` : 'A needs 8 or more on every criterion.'}` : ''}
 NOTES TO ADDRESS (apply each one; if one would break the brief, the facts or another note, keep your version and say why in assumptions):
 ${JSON.stringify(feedback.notes || [])}
 ${(feedback.keep || []).length ? `KEEP, don't lose these: ${JSON.stringify(feedback.keep)}` : ''}
@@ -1235,7 +1269,7 @@ Audit this production package against the brief, product fidelity, department co
     // The board's own fields and continuity; its camera fields are the camera plan's, above.
     storyboard: boardWork(state),
     generation_plan: work(state, 'generation_plan'),
-  })}
+  })}${(state.direction || []).length ? `\nLucas's direction given during the build (binding; check the package follows it, and raise anything that doesn't as an issue for its owner):\n${directionLines(state.direction)}` : ''}
 Every issue must name the one responsible_agent who can fix it and cite evidence. ${OWNERS} The strategy or the route itself → strategist or creative_director, and rights, consent, budget and anything only a person can decide → producer; those go to Lucas as questions. Recommend "approve" only if there are no unresolved critical or major defects and every required planning check was actually inspected.`
 }
 
@@ -1699,11 +1733,21 @@ async function produce(state, key, opts) {
   if (!res || (res.failed && prior && prior.status !== 'stale')) return prior || null
 
   let quality = pq && !byNotes ? { ...pq } : null
+  // A bar Lucas set above A: review and revise until every score reaches it, with more rounds.
+  const target = targetFor(state, spec.dept)
+  const goal = target ? target.min : A_MIN
+  // Work reviewed before the bar was set gets the bar's rounds on top of the ones it had.
+  const base = (pq && pq.target_from_round) || 0
+  const maxRounds = target ? Math.max(LIMITS.maxQualityRounds, base + (target.rounds || LIMITS.maxQualityRounds)) : LIMITS.maxQualityRounds
   // Blocked work (the agent couldn't do it, or failed) goes to Lucas as blocked, not to a reviewer.
   if (state.settings.quality && res.status !== 'blocked') {
     const history = quality ? quality.history.slice() : []
     let pending = 'review'
-    for (let round = (quality ? quality.rounds : 0) + 1; round <= LIMITS.maxQualityRounds; round++) {
+    // The best reviewed version so far: a revision that scores lower never replaces it.
+    let best = null
+    const rank = b => [b.violations.length ? 0 : 1, b.quality.min, Object.values(b.quality.scores).reduce((a, x) => a + x, 0)]
+    const better = (a, b) => { const x = rank(a); const y = rank(b); for (let i = 0; i < x.length; i++) if (x[i] !== y[i]) return x[i] > y[i]; return false }
+    for (let round = (quality ? quality.rounds : 0) + 1; round <= maxRounds; round++) {
       const last = history.length ? { scores: history[history.length - 1].scores, notes: quality && quality.notes } : null
       const crit = await runAgent(state, 'quality_control', criticPrompt(state, spec, role, asWork(res), last), { schema: CRITIQUE_SCHEMA, phase: ph, label: `${spec.dept} · review ${round}` })
       if (crit && crit.not_run) { refused = true; break }
@@ -1716,9 +1760,12 @@ async function produce(state, key, opts) {
         scores, min, rounds: round, history,
         evidence: { specificity: crit.specificity.evidence, distinctiveness: crit.distinctiveness.evidence, fit: crit.fit.evidence, craft: crit.craft.evidence },
         notes: crit.notes, keep: crit.keep,
+        ...(target ? { target: goal, met_target: min >= goal && !violations.length, ...(base ? { target_from_round: base } : {}) } : {}),
       }
+      const reviewed = { res, violations: violations.slice(), quality: { ...quality }, round }
+      if (!best || better(reviewed, best)) best = reviewed
       pending = null
-      if (quality.grade === 'A' || round === LIMITS.maxQualityRounds) break
+      if ((min >= goal && !violations.length) || round === maxRounds) break
       pending = 'revise'
       const fb = { scores, notes: crit.notes, keep: crit.keep }
       const next = await make(revisePrompt(state, spec, role, asWork(res), fb, violations), `${spec.dept} · revise ${round}`, revisePrompt(state, spec, role, null, fb, violations))
@@ -1730,7 +1777,15 @@ async function produce(state, key, opts) {
     }
     // Out of budget mid-review: record exactly what's left so the next run picks it up.
     if (refused && pending) quality = { ...(quality || { grade: 'not_reviewed', scores: null, min: null, rounds: 0, history: [], notes: [], keep: [] }), history, incomplete: true, pending }
-    else if (quality) delete quality.incomplete
+    else if (quality) {
+      delete quality.incomplete
+      // The last reviewed version scored below an earlier one: keep the earlier one.
+      if (best && best.round !== quality.rounds && better(best, { res, violations, quality })) {
+        res = best.res
+        violations = best.violations
+        quality = { ...best.quality, rounds: quality.rounds, history, kept_round: best.round }
+      }
+    }
   }
 
   const parts = spec.split ? spec.split(res.content || {}, state) : { [key]: res.content }
@@ -1759,7 +1814,7 @@ async function produce(state, key, opts) {
   if (state.pending_notes && state.pending_notes[key]) delete state.pending_notes[key]
   state.decision_log.push({
     stage: spec.stage,
-    summary: `${spec.label}: ${quality ? (quality.incomplete ? `review paused for budget (next: ${quality.pending})` : `graded ${quality.grade} (lowest ${quality.min}/10) after ${quality.rounds} review round${quality.rounds === 1 ? '' : 's'}`) : 'drafted'}${violations.length ? `; ${violations.length} check(s) still failing` : ''}`,
+    summary: `${spec.label}: ${quality ? (quality.incomplete ? `review paused for budget (next: ${quality.pending})` : `graded ${quality.grade} (lowest ${quality.min}/10${quality.target ? `; Lucas's bar ${quality.target} ${quality.met_target ? 'met' : 'not met'}` : ''}) after ${quality.rounds} review round${quality.rounds === 1 ? '' : 's'}${quality.kept_round ? `, keeping round ${quality.kept_round}'s version` : ''}`) : 'drafted'}${violations.length ? `; ${violations.length} check(s) still failing` : ''}`,
     artifact_id: state.artifacts[key].artifact_id,
   })
   return state.artifacts[key]
@@ -1918,7 +1973,7 @@ ${lens.brief}
 ${lens.taste ? `${TASTE_NOTES ? `THE STUDIO'S TASTE NOTES:\n<<<\n${TASTE_NOTES}\n>>>\n` : ''}${QUALITY_BAR ? `THE STUDIO'S QUALITY BAR:\n<<<\n${QUALITY_BAR}\n>>>` : DEFAULT_BAR}` : DEFAULT_BAR}
 
 THE FULL PACKAGE:
-${JSON.stringify(packageContent(state))}
+${JSON.stringify(packageContent(state))}${(state.direction || []).length ? `\n\nLucas's direction given during the build (binding; fit includes following it):\n${directionLines(state.direction)}` : ''}
 
 Score the package as a whole, 1–10 on specificity, distinctiveness, fit (to Lucas's idea, the brief and the route) and craft, quoting the line that justifies each score. Set would_approve true only if you would approve it for production today.
 Notes: every change needed to reach 9, each assigned to the one department that must make it (responsible), aimed at a specific part, saying exactly what to do, and citing where the rule comes from. ${OWNERS} Anything about the direction itself (how the idea was developed, the strategy, or which route was chosen) is Lucas's call: put it in direction_questions, not in notes. Rights, consent, prices and budget are the producer's and Lucas's to decide; a department's job is to name them, not clear them, so put anything only a person can decide in direction_questions.`
@@ -2109,7 +2164,10 @@ function applyDevelopment(state) {
 function gradeSummary(state) {
   return BUILD_ORDER.concat(['development', 'strategy', 'concepts'])
     .filter(k => state.artifacts[k] && state.artifacts[k].quality)
-    .map(k => ({ key: k, artifact_id: state.artifacts[k].artifact_id, grade: state.artifacts[k].quality.grade, lowest: state.artifacts[k].quality.min, rounds: state.artifacts[k].quality.rounds }))
+    .map(k => {
+      const q = state.artifacts[k].quality
+      return { key: k, artifact_id: state.artifacts[k].artifact_id, grade: q.grade, lowest: q.min, rounds: q.rounds, ...(q.target ? { target: q.target, met_target: !!q.met_target } : {}) }
+    })
 }
 
 // ---- main pipeline ----
@@ -2277,6 +2335,7 @@ async function runPipeline(state) {
       package_grade: state.package_review ? state.package_review.grade : null,
       department_grades: gradeSummary(state),
       below_a: gradeSummary(state).filter(g => g.grade !== 'A').map(g => g.key),
+      ...(gradeSummary(state).some(g => g.target) ? { below_target: gradeSummary(state).filter(g => g.target && !g.met_target).map(g => ({ key: g.key, target: g.target, lowest: g.lowest })) } : {}),
       open_questions: state.open_questions || [],
       ...(seenScope ? { changed_since_review: true, changed: changedSince() } : {}),
       ...(extra || {}),
@@ -2384,6 +2443,37 @@ if (command === 'IDEA') {
   if (input.review) state.settings.review_at_end = input.review === 'end'
   state.approvals = { ...(state.approvals || {}), ...(input.approvals || {}) }
   if (command === 'REVISE' && input.revision) applyRevision(state, input.revision)
+}
+
+// Lucas's direction given during a build, and any bar above A he set for a department. Work a
+// department already built is revised against new direction (as pending notes), and work reviewed
+// below a new bar goes back into its review loop.
+const specKeyFor = dept => Object.keys(SPECS).find(k => SPECS[k].dept === dept)
+if (Array.isArray(input.direction) && input.direction.length) {
+  const have = new Set((state.direction || []).map(d => d.id))
+  const fresh = input.direction
+    .map(d => d && { ...d, departments: (d.departments || []).filter(specKeyFor) })
+    .filter(d => d && d.id && String(d.note || '').trim() && d.departments.length && !have.has(d.id))
+  state.direction = [...(state.direction || []), ...fresh]
+  fresh.forEach(d => d.departments.forEach(dept => {
+    const key = specKeyFor(dept)
+    if (isPresent(state, key)) state.pending_notes = { ...(state.pending_notes || {}), [key]: [...((state.pending_notes || {})[key] || []), { target: 'Lucas', note: d.note, source: "Lucas's direction" }] }
+  }))
+  if (fresh.length) state.decision_log.push({ stage: 'direction', summary: `Lucas's direction added: ${fresh.map(d => `${d.id} for ${d.departments.join(', ')}`).join('; ')}` })
+}
+if (input.targets && typeof input.targets === 'object') {
+  Object.entries(input.targets).forEach(([dept, t]) => {
+    const key = specKeyFor(dept)
+    const min = Number(t && t.min)
+    if (!key || !(min > A_MIN && min <= 10)) return
+    const rounds = Math.min(8, Math.max(1, Number(t.rounds) || LIMITS.maxQualityRounds))
+    state.settings.targets = { ...(state.settings.targets || {}), [dept]: { min, rounds } }
+    const a = state.artifacts[key]
+    const q = a && a.status !== 'stale' && a.quality
+    const met = q && q.min >= min && !((a.checks && a.checks.failed) || []).length
+    if (q && q.scores && !q.incomplete && !met && !hasPendingNotes(state, key)) a.quality = { ...q, incomplete: true, pending: 'revise', target_from_round: q.rounds }
+    state.decision_log.push({ stage: 'direction', summary: `Lucas set the ${dept} bar at ${min} on every criterion (up to ${rounds} review rounds)` })
+  })
 }
 
 if (state.settings.quality) LIMITS.maxAgentCallsPerRun = input.maxAgentCalls || 220
