@@ -66,7 +66,7 @@ const ROLE_INSTRUCTIONS = {
   creative_director: 'AI Creative Director. Develop exactly three distinct routes, each with a central idea, emotional promise, product role, visual language, and execution example. Recommend one with a concise rationale.',
   copywriter: 'Campaign Copywriter. Write timed scripts, dialogue or voiceover, on-screen copy, hooks, and calls to action for the approved route, one per deliverable duration, without changing the central promise. Use only approved factual claims.',
   screenwriter: 'Screenwriter. Write the beat sheet for the whole piece and the timed script for the build sequence: every scene has a heading, who is present, what each character wants, what changes, and the exact action and dialogue. Structure, character and visual storytelling come before dialogue.',
-  casting_director: 'Casting Director. Define character profiles, screen presence, performance style, wardrobe fit considerations, and visual identity anchors. Use fictional adult talent by default. Never invent a real person’s availability or permission to use their likeness or voice.',
+  casting_director: 'Casting Director. Define character profiles, screen presence, performance style, wardrobe fit considerations, and visual identity anchors. Use fictional adult talent by default; cast a child only when the script needs one, and flag it for human review. Never invent a real person’s availability or permission to use their likeness or voice.',
   production_designer: 'Production Designer / Art Director. Define locations, spatial layout, props, materials, palette, product placement, and background behavior with persistent location and prop IDs and states that must match between shots.',
   director: 'Film Director. Turn the approved script and world into a directing treatment: performance beats, blocking, action progression, emotional shifts, and transitions, explaining how each scene demonstrates the idea and flagging anything needing practical footage or compositing.',
   stylist: 'Wardrobe, Hair and Makeup Stylist. Build looks for the cast and world: garment silhouettes, materials, colors, fit, accessories, hair, makeup, and grooming, with look IDs and locked continuity. Avoid wardrobe that distracts from or obscures the product.',
@@ -473,9 +473,13 @@ const SOUND_PLAN_CONTENT = {
   required: ['cues'],
 }
 
-const SHOT_FIELDS = ['shot_id', 'scene_id', 'deliverable_ids', 'purpose', 'duration_frames', 'fps', 'character_ids', 'look_ids', 'location_id', 'product_reference_ids', 'prop_ids', 'framing', 'lens_intent', 'camera_movement', 'lighting', 'action', 'performance', 'dialogue_or_voiceover', 'on_screen_text', 'sound_cues', 'entry_state', 'exit_state', 'image_prompt', 'video_prompt', 'avoid', 'reference_asset_ids', 'generation_method', 'acceptance_checks']
+// The camera plan owns what the camera does; the storyboard adds only what a board adds (sound,
+// text, states, what a generator may get wrong) and is merged onto the camera plan's shots in
+// code; the generation plan owns prompts, references and acceptance checks. Nothing is written
+// twice.
+const CAMERA_SHOT_FIELDS = ['shot_id', 'scene_id', 'deliverable_ids', 'purpose', 'duration_frames', 'fps', 'character_ids', 'look_ids', 'location_id', 'product_reference_ids', 'prop_ids', 'framing', 'lens_intent', 'camera_movement', 'lighting', 'action', 'performance']
 
-const SHOT_SCHEMA = {
+const CAMERA_SHOT_SCHEMA = {
   type: 'object',
   properties: {
     shot_id: { type: 'string' },
@@ -495,27 +499,33 @@ const SHOT_SCHEMA = {
     lighting: { type: 'string' },
     action: { type: 'string' },
     performance: { type: 'string' },
+  },
+  required: CAMERA_SHOT_FIELDS,
+}
+
+const CAMERA_PLAN_CONTENT = { type: 'object', properties: { shots: { type: 'array', items: CAMERA_SHOT_SCHEMA } }, required: ['shots'] }
+
+const BOARD_FIELDS = ['shot_id', 'board_note', 'dialogue_or_voiceover', 'on_screen_text', 'sound_cues', 'entry_state', 'exit_state', 'generation_risk']
+
+const BOARD_PANEL_SCHEMA = {
+  type: 'object',
+  properties: {
+    shot_id: { type: 'string' },
+    board_note: { type: 'string' },
     dialogue_or_voiceover: { type: 'string' },
     on_screen_text: { type: 'string' },
     sound_cues: { type: 'array', items: { type: 'string' } },
     entry_state: { type: 'string' },
     exit_state: { type: 'string' },
-    image_prompt: { type: 'string' },
-    video_prompt: { type: 'string' },
-    avoid: { type: 'array', items: { type: 'string' } },
-    reference_asset_ids: { type: 'array', items: { type: 'string' } },
-    generation_method: { type: 'string' },
-    acceptance_checks: { type: 'array', items: { type: 'string' } },
+    generation_risk: { type: 'string' },
   },
-  required: SHOT_FIELDS,
+  required: BOARD_FIELDS,
 }
-
-const CAMERA_PLAN_CONTENT = { type: 'object', properties: { shots: { type: 'array', items: SHOT_SCHEMA } }, required: ['shots'] }
 
 const STORYBOARD_AND_CONTINUITY_CONTENT = {
   type: 'object',
   properties: {
-    panels: { type: 'array', items: SHOT_SCHEMA },
+    panels: { type: 'array', items: BOARD_PANEL_SCHEMA },
     contradictions_flagged: { type: 'array', items: { type: 'string' } },
     tracked_elements: {
       type: 'array',
@@ -551,13 +561,15 @@ const GENERATION_PLAN_CONTENT = {
           job_id: { type: 'string' },
           shot_id: { type: 'string' },
           job_type: { type: 'string', enum: ['image', 'video'] },
+          method: { type: 'string' },
           prompt: { type: 'string' },
           reference_asset_ids: { type: 'array', items: { type: 'string' } },
+          acceptance_checks: { type: 'array', items: { type: 'string' } },
           capability_supported: { type: 'boolean' },
           capability_notes: { type: 'string' },
           estimated_cost_unit: { type: 'string' },
         },
-        required: ['job_id', 'shot_id', 'job_type', 'prompt', 'reference_asset_ids', 'capability_supported', 'capability_notes', 'estimated_cost_unit'],
+        required: ['job_id', 'shot_id', 'job_type', 'method', 'prompt', 'reference_asset_ids', 'acceptance_checks', 'capability_supported', 'capability_notes', 'estimated_cost_unit'],
       },
     },
     missing_capabilities: { type: 'array', items: { type: 'string' } },
@@ -590,7 +602,7 @@ const QUALITY_REPORT_CONTENT = {
           severity: { type: 'string', enum: ['critical', 'major', 'minor'] },
           shot_or_timecode: { type: 'string' },
           evidence: { type: 'string' },
-          responsible_agent: { type: 'string', enum: DEPT_IDS.concat(['producer']) },
+          responsible_agent: { type: 'string', enum: PANEL_DEPTS.concat(['strategist', 'creative_director', 'producer']) },
         },
         required: ['issue_id', 'severity', 'shot_or_timecode', 'evidence', 'responsible_agent'],
       },
@@ -910,36 +922,12 @@ function revisePrompt(state, spec, role, prior, feedback, violations) {
   const scores = feedback.scores ? Object.entries(feedback.scores).map(([k, v]) => `${k} ${v}`).join(', ') : ''
   return `${makerPrompt(state, spec, role)}
 
-YOUR PREVIOUS VERSION:
-${JSON.stringify(prior)}
-
-${scores ? `The reviewer scored it: ${scores}. A needs 8 or more on every criterion.` : ''}
+${prior ? `YOUR PREVIOUS VERSION:\n${JSON.stringify(prior)}\n\n` : ''}${scores ? `The reviewer scored it: ${scores}. A needs 8 or more on every criterion.` : ''}
 NOTES TO ADDRESS (apply each one; if one would break the brief, the facts or another note, keep your version and say why in assumptions):
 ${JSON.stringify(feedback.notes || [])}
 ${(feedback.keep || []).length ? `KEEP, don't lose these: ${JSON.stringify(feedback.keep)}` : ''}
 ${(violations || []).length ? `Also fix these failed checks: ${JSON.stringify(violations)}` : ''}
 Return the full revised work.`
-}
-
-function qcPrompt(state) {
-  return `${preamble(state)}
-
-Your role: ${ROLE_INSTRUCTIONS.quality_control}
-Audit this production package against the brief, product fidelity, department consistency, storyboard completeness, timing, and reference/rights readiness (per quality_checks.planning). No media has been generated yet, so mark every "media" category check as "not_inspected", never "pass". Package: ${JSON.stringify({
-    strategy: work(state, 'strategy'),
-    concepts: work(state, 'concepts'),
-    script: work(state, 'script'),
-    casting_bible: work(state, 'casting_bible'),
-    world_bible: work(state, 'world_bible'),
-    directors_treatment: work(state, 'directors_treatment'),
-    style_bible: work(state, 'style_bible'),
-    sound_plan: work(state, 'sound_plan'),
-    camera_plan: work(state, 'camera_plan'),
-    storyboard: work(state, 'storyboard'),
-    continuity_bible: work(state, 'continuity_bible'),
-    generation_plan: work(state, 'generation_plan'),
-  })}
-Every issue must name a responsible_agent from the fixed role list and cite evidence. Recommend "approve" only if there are no unresolved critical or major defects and every required planning check was actually inspected.`
 }
 
 // ---- code checks: objective, cheap, and run before any reviewer sees the work ----
@@ -971,6 +959,33 @@ function work(state, key) {
   const a = state.artifacts[key]
   if (!a) return {}
   return { ...(a.content || {}), assumptions: a.assumptions || [], blockers: a.blockers || [] }
+}
+// Compact ID tables for departments that only need to reference upstream work, not re-read it.
+const castTable = state => (content(state, 'casting_bible').characters || []).map(c => ({ character_id: c.character_id, role_in_story: c.role_in_story, visual_identity_anchors: c.visual_identity_anchors }))
+const lookTable = state => (content(state, 'style_bible').looks || []).map(l => ({ look_id: l.look_id, character_id: l.character_id, continuity_locks: l.continuity_locks }))
+const worldTable = state => (content(state, 'world_bible').locations || []).map(l => ({ location_id: l.location_id, description: l.description, props: (l.props || []).map(p => ({ prop_id: p.prop_id, description: p.description, persistent_state_notes: p.persistent_state_notes })) }))
+// Each board panel joined onto its camera-plan shot, in the camera plan's order; a panel for a
+// shot the camera plan doesn't have is kept at the end (its check has already failed).
+function mergePanels(state, panels) {
+  const shots = content(state, 'camera_plan').shots || []
+  const byId = {}
+  panels.forEach(p => { if (p && p.shot_id && !byId[p.shot_id]) byId[p.shot_id] = p })
+  const known = new Set(shots.map(sh => sh.shot_id))
+  return shots.filter(sh => byId[sh.shot_id]).map(sh => ({ ...sh, ...byId[sh.shot_id] }))
+    .concat(panels.filter(p => p && !known.has(p.shot_id)))
+}
+// The storyboard as its own work: the board's fields per shot plus continuity, without the
+// camera-plan fields its stored panels are joined with (those are the camera plan's).
+function boardWork(state) {
+  const a = state.artifacts.storyboard
+  if (!a) return {}
+  return {
+    panels: (a.content.panels || []).map(p => Object.fromEntries(BOARD_FIELDS.map(f => [f, p[f]]))),
+    contradictions_flagged: a.content.contradictions_flagged || [],
+    tracked_elements: content(state, 'continuity_bible').tracked_elements || [],
+    assumptions: a.assumptions || [],
+    blockers: a.blockers || [],
+  }
 }
 const asWork = r => ({ ...((r && r.content) || {}), assumptions: (r && r.assumptions) || [], blockers: (r && r.blockers) || [] })
 
@@ -1053,6 +1068,9 @@ function checkWriting(state, c) {
   return v
 }
 
+// Speaker prefixes that are not on-screen characters (an unseen announcer, text, effects).
+const NOT_CAST = new Set(['VO', 'V', 'VOICEOVER', 'NARRATOR', 'ANNOUNCER', 'ANNCR', 'SUPER', 'SFX', 'MUSIC', 'CAPTION', 'TEXT', 'CARD'])
+
 function checkCasting(state, c) {
   const v = []
   const chars = c.characters || []
@@ -1071,7 +1089,7 @@ function checkCasting(state, c) {
     if (m) named.add(m[1])
   })))
   const castIds = idSet(chars, 'character_id')
-  named.forEach(id => { if (!castIds.has(id)) v.push(`the script's character ${id} isn't cast; use the script's IDs exactly`) })
+  named.forEach(id => { if (!NOT_CAST.has(id) && !castIds.has(id)) v.push(`the script's character ${id} isn't cast; use the script's IDs exactly`) })
   return v
 }
 
@@ -1161,10 +1179,17 @@ function checkCamera(state, c) {
 }
 
 function checkStoryboard(state, c) {
-  const v = checkShots(state, c.panels || [], 'storyboard', false)
-  const panelIds = idSet(c.panels, 'shot_id')
-  ;(c.tracked_elements || []).forEach(e => (e.states_by_shot || []).forEach(s => {
-    if (!panelIds.has(s.shot_id)) v.push(`continuity ${e.element_id}: shot ${s.shot_id} isn't a panel`)
+  const v = []
+  const shotIds = idSet(content(state, 'camera_plan').shots, 'shot_id')
+  const panels = c.panels || []
+  const twice = [...new Set(dupes(panels, 'shot_id'))]
+  if (twice.length) v.push(`one panel per shot; these appear more than once: ${twice.join(', ')}`)
+  panels.forEach(p => { if (!shotIds.has(p.shot_id)) v.push(`panel ${p.shot_id} isn't a shot in the camera plan; board the shot plan as it is and flag a missing shot in contradictions_flagged`) })
+  const panelIds = idSet(panels, 'shot_id')
+  const missing = [...shotIds].filter(id => !panelIds.has(id))
+  if (missing.length) v.push(`every camera-plan shot needs a panel; missing: ${missing.slice(0, 12).join(', ')}${missing.length > 12 ? ` and ${missing.length - 12} more` : ''}`)
+  ;(c.tracked_elements || []).forEach(e => (e.states_by_shot || []).forEach(x => {
+    if (!panelIds.has(x.shot_id)) v.push(`continuity ${e.element_id}: shot ${x.shot_id} isn't a panel`)
   }))
   if (!(c.tracked_elements || []).length) v.push('track at least the product and each character across shots')
   return v.slice(0, 30)
@@ -1178,11 +1203,34 @@ function checkGeneration(state, c) {
   jobs.forEach(j => {
     if (!panelIds.has(j.shot_id)) v.push(`${j.job_id}: shot ${j.shot_id} isn't in the storyboard`)
     if (words(j.prompt) < 40) v.push(`${j.job_id}: the prompt is ${words(j.prompt)} words; a usable generation prompt needs at least 40`)
+    if (!String(j.method || '').trim()) v.push(`${j.job_id}: name the method`)
+    if (!(j.acceptance_checks || []).length) v.push(`${j.job_id}: give at least one acceptance check a reviewer can pass or fail`)
   })
   panels.forEach(p => { if (!jobs.some(j => j.shot_id === p.shot_id)) v.push(`storyboard shot ${p.shot_id} has no generation job`) })
   const hits = bannedHits(jobs.map(j => j.prompt).join(' '))
   if (hits.length) v.push(`banned language in prompts: ${hits.join(', ')}`)
   return v.slice(0, 30)
+}
+
+function qcPrompt(state) {
+  return `${preamble(state)}
+
+Your role: ${ROLE_INSTRUCTIONS.quality_control}
+Audit this production package against the brief, product fidelity, department consistency, storyboard completeness, timing, and reference/rights readiness (per quality_checks.planning). No media has been generated yet, so mark every "media" category check as "not_inspected", never "pass". Package: ${JSON.stringify({
+    strategy: work(state, 'strategy'),
+    route_in_production: selectedRoute(state),
+    script: work(state, 'script'),
+    casting_bible: work(state, 'casting_bible'),
+    world_bible: work(state, 'world_bible'),
+    directors_treatment: work(state, 'directors_treatment'),
+    style_bible: work(state, 'style_bible'),
+    sound_plan: work(state, 'sound_plan'),
+    camera_plan: work(state, 'camera_plan'),
+    // The board's own fields and continuity; its camera fields are the camera plan's, above.
+    storyboard: boardWork(state),
+    generation_plan: work(state, 'generation_plan'),
+  })}
+Every issue must name the one responsible_agent who can fix it and cite evidence. Owners: the script's words, a line's timing within its beat and the CTA → copywriter; the cast → casting_director; places and props → production_designer; performance and blocking → director; looks → stylist; sound cues and VO windows → sound_designer; shots, lenses and shot lengths → cinematographer; board text, sound placement and continuity states → storyboard_artist; prompts, references and costs → generation_supervisor; the strategy or the route itself → strategist or creative_director (these go to Lucas as questions); rights, consent, budget and anything only a person can decide → producer (these also go to Lucas). Recommend "approve" only if there are no unresolved critical or major defects and every required planning check was actually inspected.`
 }
 
 // ---- agent calls: per-run budget guard (must never throw across parallel(), which swallows errors to null) ----
@@ -1341,6 +1389,7 @@ function applyRevision(state, revision) {
   Object.entries(GATE_COVERAGE).forEach(([gateId, kinds]) => {
     if (state.approvals[gateId] && kinds.some(k => affected.has(k))) {
       state.approvals[gateId] = { approved: false, note: 'invalidated by revision' }
+      if (gateId === 'production_plan') state.production_plan_applied = false
       invalidatedGates.push(gateId)
     }
   })
@@ -1423,8 +1472,8 @@ const SPECS = {
     rules: state => [
       'for every video deliverable: beats run back to back from exactly 0s to its exact length',
       `spoken words fit the time: at most ${isNarrative(state) ? 3 : 2.5} per second overall, never faster than 3.2 in a beat`,
-      'on-screen text 7 words or fewer per beat; every picture at least 12 words of what the camera sees',
-      "characters are named by an ID in capitals (the character's name, e.g. ROSA) in the beat sheet and as the prefix of every spoken line; casting and every later department use these IDs",
+      'on-screen text 7 words or fewer per beat; approved end-frame text that is longer keeps its words and splits at a phrase break across consecutive end beats (each at least 1.5 s, same picture); every picture at least 12 words of what the camera sees',
+      "on-screen characters are named by an ID in capitals (the character's name, e.g. ROSA) in the beat sheet and as the prefix of every line they speak; casting and every later department use these IDs. An unseen announcer or narrator is written 'VO:' and is not a character",
       isAdFormat(state) ? 'every video deliverable has a CTA' : 'no CTA is needed for this format; leave cta empty unless the piece has one',
       `stills_copy has exactly ${stillCount(state)} entries`,
       state.brief.format === 'series_pilot' ? 'the pilot beat sheet has at least 12 scenes' : 'the beat sheet is not empty',
@@ -1484,39 +1533,46 @@ const SPECS = {
     schema: SOUND_PLAN_CONTENT,
     empty: { cues: [] },
     task: () => 'Plan music, sound effects, atmosphere, dialogue and VO against the script, with cue timing in seconds for each deliverable.',
-    rules: () => ['every video deliverable has cues', 'cue deliverable ids exist', 'timing in seconds and a licensing or consent requirement on every cue'],
+    rules: () => ['every video deliverable has cues', 'cue deliverable ids exist', 'timing in seconds and a licensing or consent requirement on every cue', "the script's lines are quoted exactly and placed inside their beats (they already fit the script's speaking-rate check); flag the copywriter only if one can't fit"],
     upstream: state => ({ route: selectedRoute(state), script: content(state, 'script') }),
     basedOn: state => ids(state, ['script']),
     check: checkSound,
   },
   camera_plan: {
-    lane: { decides: 'every shot: framing, lens, height, movement, focus, light, and its length in frames', leaves: 'generation prompts and model settings (the generation supervisor)', next: 'the storyboard and generation' },
+    lane: { decides: 'every shot: framing, lens, height, movement, focus, light, action, performance, and its length in frames', leaves: 'sound, on-screen text and continuity states (the storyboard) and generation prompts, references and model settings (the generation supervisor)', next: 'the storyboard and generation' },
     dept: 'cinematographer', role: () => 'cinematographer', kind: 'camera_plan', stage: '06_camera', phase: 'Camera', label: 'shot plan',
     schema: CAMERA_PLAN_CONTENT,
     empty: { shots: [] },
-    task: () => 'Build the shot plan (shot_contract) for every video deliverable, plus one shot entry per still frame (duration_frames 0). Use only the character, look, location and prop IDs that exist upstream.',
+    task: () => "Build the shot plan for every video deliverable, plus one shot entry per still frame (duration_frames 0). You own what the camera does in each shot: framing, lens, height, movement, focus, light, action and performance, in order within each deliverable. Use only the character, look, location and prop IDs that exist upstream. Prompts for a generator are the generation supervisor's job; if a shot's action or lens behavior is one a generator may not manage (fine hand work, legible text, a rack focus), say so in its purpose.",
     rules: () => [
       'unique shot ids; every character, look, location and prop id exists upstream',
       'lens_intent gives a focal length in mm',
       `one fps per deliverable, from ${FPS_OK.join(', ')}; each deliverable's shots add up to its exact length in frames (a shot used in two cut-downs at different lengths needs two entries)`,
     ],
-    upstream: state => ({ route: selectedRoute(state), script: content(state, 'script'), directors_treatment: content(state, 'directors_treatment'), casting_bible: content(state, 'casting_bible'), style_bible: content(state, 'style_bible'), world_bible: content(state, 'world_bible'), shot_fields: SHOT_FIELDS }),
+    upstream: state => ({ route: selectedRoute(state), script: content(state, 'script'), directors_treatment: content(state, 'directors_treatment'), casting_bible: content(state, 'casting_bible'), style_bible: content(state, 'style_bible'), world_bible: content(state, 'world_bible'), shot_fields: CAMERA_SHOT_FIELDS }),
     basedOn: state => ids(state, ['directors_treatment', 'style_bible', 'world_bible', 'casting_bible', 'script']),
     check: checkCamera,
   },
   storyboard: {
-    lane: { decides: 'ordered, timed panels combining every department, and the continuity state of every tracked element', leaves: 'new creative decisions: flag contradictions instead of resolving them yourself', next: 'the generation supervisor' },
+    lane: { decides: "what each shot's panel adds: the exact dialogue or VO, on-screen text, sound cues, entry and exit states, generation risk, and the continuity of every tracked element", leaves: 'framing, lens, timing, action and performance (the camera plan): flag disagreements instead of changing them', next: 'the generation supervisor' },
     dept: 'storyboard_artist', role: () => 'storyboard_artist', kind: 'storyboard', stage: '07_storyboard', phase: 'Storyboard', label: 'storyboard and continuity bible',
     schema: STORYBOARD_AND_CONTINUITY_CONTENT,
     empty: { panels: [], contradictions_flagged: [], tracked_elements: [] },
-    task: () => 'Combine the script, cast, wardrobe, world, direction, camera plan and sound plan into ordered, timed text panels, and track the continuity state of every persistent element across shots. Flag contradictions.',
-    rules: () => ['the same id and timing rules as the shot plan', 'continuity states only reference existing panels; track at least the product and each character'],
-    upstream: state => ({ route: selectedRoute(state), script: content(state, 'script'), casting_bible: content(state, 'casting_bible'), style_bible: content(state, 'style_bible'), world_bible: content(state, 'world_bible'), directors_treatment: content(state, 'directors_treatment'), camera_plan: content(state, 'camera_plan'), sound_plan: content(state, 'sound_plan') }),
-    basedOn: state => ids(state, ['script', 'casting_bible', 'style_bible', 'world_bible', 'directors_treatment', 'camera_plan', 'sound_plan']),
+    task: () => "Board the camera plan: one panel per shot, keyed by its shot_id, in the camera plan's order. The camera plan already fixes each shot's framing, lens, timing, action and performance, and the board is joined to it by shot_id, so don't repeat those. Each panel adds: board_note (what the frame reads as at phone size, and how it cuts into the next panel), dialogue_or_voiceover (the script's exact line with its speaker ID, or empty), on_screen_text (the script's exact card, or empty), sound_cues (cue IDs from the sound plan), entry_state and exit_state (each character, the product and each state-changing prop, written out in full), and generation_risk (what a generator could get wrong in this shot, or 'none'). Then track the state of every persistent element across panels. Never re-time or re-frame a shot: put any disagreement with the camera plan, script or sound plan in contradictions_flagged.",
+    rules: () => ['exactly one panel per camera-plan shot, keyed by its shot_id', 'continuity states only reference existing panels; track at least the product and each character'],
+    upstream: state => ({ route: selectedRoute(state), script: content(state, 'script'), camera_plan: content(state, 'camera_plan'), sound_plan: content(state, 'sound_plan'), cast: castTable(state), looks: lookTable(state), world: worldTable(state) }),
+    basedOn: state => ids(state, ['script', 'casting_bible', 'style_bible', 'world_bible', 'camera_plan', 'sound_plan']),
     check: checkStoryboard,
-    split: c => ({
-      storyboard: { panels: c.panels, contradictions_flagged: c.contradictions_flagged },
-      continuity_bible: { tracked_elements: c.tracked_elements },
+    // The storyboard artifact holds each panel joined onto its camera-plan shot, so everything
+    // downstream reads one complete panel; the agent only ever sees and writes the board's fields.
+    split: (c, state) => ({
+      storyboard: { panels: mergePanels(state, c.panels || []), contradictions_flagged: c.contradictions_flagged || [] },
+      continuity_bible: { tracked_elements: c.tracked_elements || [] },
+    }),
+    unsplit: state => ({
+      panels: (content(state, 'storyboard').panels || []).map(p => Object.fromEntries(BOARD_FIELDS.map(f => [f, p[f]]))),
+      contradictions_flagged: content(state, 'storyboard').contradictions_flagged || [],
+      tracked_elements: content(state, 'continuity_bible').tracked_elements || [],
     }),
   },
   generation_plan: {
@@ -1524,8 +1580,8 @@ const SPECS = {
     dept: 'generation_supervisor', role: () => 'generation_supervisor', kind: 'generation_plan', stage: '08_generation_plan', phase: 'Generation Plan', label: 'generation plan',
     schema: GENERATION_PLAN_CONTENT,
     empty: { jobs: [], missing_capabilities: [] },
-    task: () => 'Translate every storyboard shot into image and video prompts with reference-image requirements, preserving cast identity, wardrobe, location and product. Check capability against the parameter rule (no assumed negative prompts, seeds, multi-reference, exact lenses or arbitrary durations) and estimate cost per job. Do not generate media.',
-    rules: () => ['every storyboard shot has at least one job, and every job points at a storyboard shot', 'every prompt at least 40 words', `no banned language in prompts (${BANNED_READABLE})`],
+    task: () => "For every storyboard panel, write the jobs that would make it: the method (for example a text-to-image still, image-to-video from an approved still, a practical insert or a composite), a model-ready prompt that describes the visible result, the reference images it needs (cast, look, location, product and state references), acceptance checks a reviewer can pass or fail on the generated file, capability notes against a cautious profile (no assumed negative prompts, seeds, multi-reference, exact lenses or arbitrary durations), and a cost estimate. Reference kit jobs (character, product, location) attach to the first shot that uses them. Generated picture carries no speech: every video prompt ends on the scene's ambient sound only, with lips closed wherever a face is in frame; lines are added later by an approved lip-sync pass or staged off-mouth. Do not generate media.",
+    rules: () => ['every storyboard shot has at least one job, and every job points at a storyboard shot', 'every job has a method and at least one acceptance check', 'every prompt at least 40 words', `no banned language in prompts (${BANNED_READABLE})`],
     upstream: state => ({ route: selectedRoute(state), storyboard: content(state, 'storyboard'), casting_bible: content(state, 'casting_bible'), style_bible: content(state, 'style_bible'), world_bible: content(state, 'world_bible') }),
     basedOn: state => ids(state, ['storyboard']),
     check: checkGeneration,
@@ -1539,16 +1595,35 @@ const KEY_BY_DEPT = {
   generation_supervisor: 'generation_plan', strategist: 'strategy', creative_director: 'concepts',
 }
 
+// A script revision that changes only words (lines, cards, sound notes, CTA, still copy) leaves
+// the story's structure, cast, places and pictures as they were: only the departments that
+// carry the words are rebuilt. Anything structural rebuilds everything built on the script.
+const SCRIPT_WORD_DEPENDENTS = ['sound_plan', 'storyboard', 'continuity_bible', 'generation_plan', 'quality_reports', 'package_review']
+function scriptStructure(c) {
+  const speakers = new Set()
+  ;(c.deliverable_scripts || []).forEach(d => (d.beats || []).forEach(b => String(b.vo || '').split('\n').forEach(line => {
+    const m = line.trim().match(/^([A-Z][A-Z0-9_]{0,23})(?: \([^)]*\))?:/)
+    if (m) speakers.add(m[1])
+  })))
+  return JSON.stringify({
+    sheet: ((c.story && c.story.beat_sheet) || []).map(x => [x.scene_id, x.heading, x.characters, x.what_happens, x.turn]),
+    beats: (c.deliverable_scripts || []).map(d => [d.deliverable_id, d.duration_s, (d.beats || []).map(b => [b.beat_id, b.start_s, b.end_s, b.picture])]),
+    stills: (c.stills_copy || []).map(x => [x.still_id, x.picture]),
+    speakers: [...speakers].sort(),
+  })
+}
+function scriptDependents(before, after) {
+  return scriptStructure(before || {}) === scriptStructure(after || {}) ? SCRIPT_WORD_DEPENDENTS : (DEPENDENTS.script || [])
+}
+
 // ---- the quality loop: make → code checks → review → revise, until A or out of rounds ----
 
 // The prior version's content, rejoined for departments whose output is split into two artifacts.
 function priorContent(state, key, spec) {
   const prior = state.artifacts[key]
   if (!prior) return null
-  if (!spec.split) return work(state, key)
-  const joined = {}
-  Object.keys(spec.split({})).forEach(k => Object.assign(joined, (state.artifacts[k] && state.artifacts[k].content) || {}))
-  return joined
+  if (!spec.unsplit) return work(state, key)
+  return { ...spec.unsplit(state), assumptions: prior.assumptions || [], blockers: prior.blockers || [] }
 }
 
 async function produce(state, key, opts) {
@@ -1565,7 +1640,9 @@ async function produce(state, key, opts) {
 
   // One make: the agent's work, re-run up to twice while code checks fail. Out of budget, it
   // returns the last real attempt (or null if there was none).
-  async function make(firstPrompt, label) {
+  // retryBase: the prompt a check-fix retry builds on. It leaves out the previous version,
+  // which the failed attempt already supersedes, so a retry never carries two copies of the work.
+  async function make(firstPrompt, label, retryBase) {
     let prompt = firstPrompt
     let last = null
     for (let i = 0; i <= 2; i++) {
@@ -1580,7 +1657,7 @@ async function produce(state, key, opts) {
       attempts.push(v.length)
       violations = v
       if (!v.length || i === 2) return r
-      prompt = `${firstPrompt}\n\nYour last attempt failed these checks:\n${v.map(x => `- ${x}`).join('\n')}\n\nLast attempt: ${JSON.stringify(r.content)}\n\nFix every failed check and keep everything that already works.`
+      prompt = `${retryBase || firstPrompt}\n\nYour last attempt failed these checks:\n${v.map(x => `- ${x}`).join('\n')}\n\nLast attempt: ${JSON.stringify(r.content)}\n\nFix every failed check and keep everything that already works.`
     }
     return last
   }
@@ -1594,14 +1671,17 @@ async function produce(state, key, opts) {
   const byNotes = prior && prior.status !== 'stale' && ((opts && opts.notes) || hasPending)
   let res
   if (byNotes) {
-    res = await make(revisePrompt(state, spec, role, previous, { notes: (opts && opts.notes) || [] }, []), `${spec.dept} · revise from notes`)
+    const fb = { notes: (opts && opts.notes) || [] }
+    res = await make(revisePrompt(state, spec, role, previous, fb, []), `${spec.dept} · revise from notes`, revisePrompt(state, spec, role, null, fb, []))
   } else if (pq && pq.pending === 'review') {
-    const joined = spec.split ? previous : prior.content
+    const joined = spec.unsplit ? spec.unsplit(state) : prior.content
     res = { status: prior.status === 'review_required' ? 'draft' : prior.status, based_on: prior.based_on, content: joined, asset_uri: prior.asset_uri, assumptions: prior.assumptions, sources: prior.sources, blockers: prior.blockers }
   } else if (pq) {
-    res = await make(revisePrompt(state, spec, role, previous, { scores: pq.scores, notes: pq.notes, keep: pq.keep }, violations), `${spec.dept} · resume revision`)
+    const fb = { scores: pq.scores, notes: pq.notes, keep: pq.keep }
+    res = await make(revisePrompt(state, spec, role, previous, fb, violations), `${spec.dept} · resume revision`, revisePrompt(state, spec, role, null, fb, violations))
   } else {
-    res = await make(makerPrompt(state, spec, role, prior && prior.status === 'stale' ? previous : null), spec.dept)
+    const rebuildFrom = prior && prior.status === 'stale' && !prior.superseded_route ? previous : null
+    res = await make(makerPrompt(state, spec, role, rebuildFrom), spec.dept, rebuildFrom ? makerPrompt(state, spec, role, null) : null)
   }
   // Nothing was made this run: leave the department as it was so the next run builds it.
   if (!res) return prior || null
@@ -1628,7 +1708,8 @@ async function produce(state, key, opts) {
       pending = null
       if (quality.grade === 'A' || round === LIMITS.maxQualityRounds) break
       pending = 'revise'
-      const next = await make(revisePrompt(state, spec, role, asWork(res), { scores, notes: crit.notes, keep: crit.keep }, violations), `${spec.dept} · revise ${round}`)
+      const fb = { scores, notes: crit.notes, keep: crit.keep }
+      const next = await make(revisePrompt(state, spec, role, asWork(res), fb, violations), `${spec.dept} · revise ${round}`, revisePrompt(state, spec, role, null, fb, violations))
       if (!next) break
       res = next
       pending = 'review'
@@ -1639,7 +1720,7 @@ async function produce(state, key, opts) {
     else if (quality) delete quality.incomplete
   }
 
-  const parts = spec.split ? spec.split(res.content || {}) : { [key]: res.content }
+  const parts = spec.split ? spec.split(res.content || {}, state) : { [key]: res.content }
   Object.entries(parts).forEach(([k, c]) => {
     const was = state.artifacts[k]
     // A resumed review that changed nothing only updates the grade on the same version.
@@ -1655,7 +1736,8 @@ async function produce(state, key, opts) {
     // A fresh revision of current work invalidates what was built on it; regenerating stale
     // work doesn't need to, because its dependents were already marked stale.
     if (was && was.status !== 'stale') {
-      ;(DEPENDENTS[k] || []).forEach(dep => {
+      const deps = k === 'script' ? scriptDependents(was.content, c) : (DEPENDENTS[k] || [])
+      deps.forEach(dep => {
         if (state.artifacts[dep] && !parts[dep]) state.artifacts[dep] = { ...state.artifacts[dep], status: 'stale' }
       })
       if (state.package_review) state.package_review.stale = true
@@ -1716,31 +1798,41 @@ async function buildDepartments(state) {
 // Revises departments in build order. A department whose upstream was revised in the same pass
 // is not revised against stale input: its notes wait in pending_notes and are applied when it
 // is regenerated.
+// Revises departments in build order. Notes that can't be applied now (an upstream department
+// was just revised, the department is stale, or the budget ran out) wait in pending_notes and
+// are applied when the department is next built; none are dropped.
 async function reviseInOrder(state, notesByKey, phaseName) {
   const revised = []
+  const keep = (key, notes) => { state.pending_notes = { ...(state.pending_notes || {}), [key]: [...((state.pending_notes || {})[key] || []), ...notes] } }
+  let stopped = false
   for (const key of BUILD_ORDER) {
     const notes = notesByKey[key]
     if (!notes || !notes.length) continue
     const upstreamRevised = revised.some(up => (DEPENDENTS[up] || []).includes(key))
-    if (upstreamRevised || !isPresent(state, key)) {
-      state.pending_notes = { ...(state.pending_notes || {}), [key]: [...((state.pending_notes || {})[key] || []), ...notes] }
-      continue
-    }
+    if (stopped || upstreamRevised || !isPresent(state, key)) { keep(key, notes); continue }
     const before = state.artifacts[key].artifact_id
     await produce(state, key, { notes, phase: phaseName })
     if (state.artifacts[key].artifact_id === before) {
-      // Out of budget before the revision was made: keep the notes for the next run.
-      state.pending_notes = { ...(state.pending_notes || {}), [key]: [...((state.pending_notes || {})[key] || []), ...notes] }
-      break
+      // Out of budget before the revision was made.
+      keep(key, notes)
+      stopped = true
+      continue
     }
     revised.push(key)
-    if (state.limit_reached) break
+    if (state.limit_reached) stopped = true
   }
   return revised
 }
 
-function directionQuestion(state, text) {
-  state.open_questions = [...new Set([...(state.open_questions || []), text])]
+// Lucas's open questions, kept by source; state.open_questions is the union he sees. QC and
+// panel questions accumulate until Lucas answers (NOTES) or the route changes, since revising
+// departments never answers a direction question; the others are replaced when re-evaluated.
+const addQuestions = (state, source, list) => setQuestions(state, source, [...((state.questions || {})[source] || []), ...list])
+function setQuestions(state, source, list) {
+  state.questions = { ...(state.questions || {}), [source]: [...new Set(list)] }
+  const all = []
+  Object.values(state.questions).forEach(l => l.forEach(q => { if (!all.includes(q)) all.push(q) }))
+  state.open_questions = all
 }
 
 // ---- stage 09: integrity QC (facts, continuity, rights), routed back through the quality loop ----
@@ -1760,6 +1852,9 @@ async function preproductionReview(state) {
     if (res.not_run) break
     state.artifacts.quality_reports = makeArtifact(state, 'quality_reports', 'quality_control', '09_preproduction_review', planningArtifactIds(state), res)
     const critical = (res.content.issues || []).filter(i => i.severity === 'critical')
+    // Direction and production decisions QC raises are Lucas's; this report replaces the last one's.
+    addQuestions(state, 'qc', critical.filter(i => !KEY_BY_DEPT[i.responsible_agent] || ['strategy', 'concepts'].includes(KEY_BY_DEPT[i.responsible_agent]))
+      .map(i => i.responsible_agent === 'producer' ? `Rights or production decision needed: ${i.evidence}` : `QC flagged a direction issue (${i.responsible_agent}): ${i.evidence}`))
     if (!critical.length) break
     if (round > LIMITS.maxRevisionRoundsPerStage) {
       state.decision_log.push({ stage: '09_preproduction_review', summary: `${critical.length} critical issue(s) still open after ${LIMITS.maxRevisionRoundsPerStage} integrity revision rounds; they are listed for Lucas in the QC report.`, unresolved: true })
@@ -1768,11 +1863,9 @@ async function preproductionReview(state) {
     const notesByKey = {}
     critical.forEach(i => {
       const key = KEY_BY_DEPT[i.responsible_agent]
-      if (key === 'strategy' || key === 'concepts' || !key) {
-        // Direction was approved (or is Lucas's to approve); QC doesn't overrule it.
-        directionQuestion(state, `QC flagged a critical issue for ${i.responsible_agent}: ${i.evidence}`)
-        return
-      }
+      // Direction was approved (or is Lucas's to approve) and production decisions are his: those
+      // went to him as questions above; QC doesn't overrule them.
+      if (key === 'strategy' || key === 'concepts' || !key) return
       ;(notesByKey[key] = notesByKey[key] || []).push({ target: i.shot_or_timecode, note: i.evidence, source: `integrity QC, ${i.severity}` })
     })
     if (!Object.keys(notesByKey).length) break
@@ -1798,8 +1891,10 @@ function panelLenses(state) {
 
 function packageContent(state) {
   const out = { route: selectedRoute(state), strategy: work(state, 'strategy') }
-  ;['development', 'script', 'casting_bible', 'world_bible', 'directors_treatment', 'style_bible', 'sound_plan', 'camera_plan', 'storyboard', 'continuity_bible', 'generation_plan']
+  ;['development', 'script', 'casting_bible', 'world_bible', 'directors_treatment', 'style_bible', 'sound_plan', 'camera_plan']
     .forEach(k => { if (state.artifacts[k]) out[k] = work(state, k) })
+  if (state.artifacts.storyboard) out.storyboard = boardWork(state)
+  if (state.artifacts.generation_plan) out.generation_plan = work(state, 'generation_plan')
   return out
 }
 
@@ -1851,9 +1946,11 @@ async function packagePanel(state) {
     const approvals = got.filter(x => x.r.would_approve).length
     // A needs every lens, all approving, and every criterion averaging A_MIN or better.
     const grade = got.length === lenses.length && approvals === got.length && Math.min(...Object.values(averages)) >= A_MIN ? 'A' : 'below_A'
-    got.forEach(x => (x.r.direction_questions || []).forEach(q => directionQuestion(state, `${x.lens}: ${q}`)))
+    addQuestions(state, 'panel', got.flatMap(x => (x.r.direction_questions || []).map(q => `${x.lens}: ${q}`)))
     state.package_review = {
       round, grade, averages, approvals, of: lenses.length, complete: false,
+      // The exact versions this round looked at, so later changes can be named.
+      scope: Object.fromEntries(BUILT.filter(k => state.artifacts[k]).map(k => [k, state.artifacts[k].artifact_id])),
       lenses: got.map(x => ({ lens: x.lens, would_approve: x.r.would_approve, verdict: x.r.verdict, scores: Object.fromEntries(crits.map(c => [c, x.r[c].score])), evidence: Object.fromEntries(crits.map(c => [c, x.r[c].evidence])), notes: x.r.notes })),
     }
     state.decision_log.push({ stage: '10_package_review', summary: `Package review round ${round}: ${grade}, ${approvals}/${lenses.length} would approve, lowest average ${Math.min(...Object.values(averages))}` })
@@ -1871,10 +1968,24 @@ async function packagePanel(state) {
   return revisedAll
 }
 
-// ---- Lucas's notes on the package (command NOTES) ----
+// After the panel's last look, fixes and rebuilds can change departments it saw. Name every
+// changed department, so the grade is never presented as covering versions it didn't see.
+function notePanelScope(state, fixed) {
+  const pr = state.package_review
+  if (!pr || !pr.scope) return
+  const changed = BUILT.filter(k => state.artifacts[k] && pr.scope[k] && pr.scope[k] !== state.artifacts[k].artifact_id)
+  pr.fixed_after_review = [...new Set([...(pr.fixed_after_review || []), ...(fixed || [])])]
+  pr.revised_after_review = changed
+  pr.grade_on_earlier_versions = changed.length > 0
+  pr.stale = false
+}
+
+// ---- Lucas's notes (command NOTES) ----
 
 async function routeLucasNotes(state, notes) {
   const routes = (content(state, 'concepts').routes || []).map(r => ({ route_id: r.route_id, central_idea: r.central_idea }))
+  const lastPending = [...(state.approval_log || [])].reverse().find(e => e.decision === 'pending')
+  const atConceptGate = !!lastPending && lastPending.gate_id === 'concept'
   const r = await runAgent(state, 'producer', `${preamble(state)}
 
 You are the studio's producer. Lucas, the creative director, has reviewed the package and written these notes:
@@ -1882,11 +1993,21 @@ You are the studio's producer. Lucas, the creative director, has reviewed the pa
 
 Route each note to the one execution department that must act on it (responsible), rewritten as a specific instruction that keeps Lucas's intent and wording. If he asks for a different route, set switch_route_to to its id (routes: ${JSON.stringify(routes)}); otherwise leave it empty. If he asks to change the strategy or the idea itself, describe that in direction_change and don't route it; otherwise leave it empty.`, { schema: ROUTER_SCHEMA, phase: 'Package Review', label: 'producer · route your notes' })
   state.human_notes = (state.human_notes || []).concat([{ gate_id: 'package', note: notes, decision_id: (input.decision_id || null) }])
-  if (!r || !r.routes) {
-    directionQuestion(state, 'Your notes were saved and every department now sees them, but they could not be routed to specific departments in this run. Send them again to have the work revised.')
+  const addPending = (k, note) => { state.pending_notes = { ...(state.pending_notes || {}), [k]: [...((state.pending_notes || {})[k] || []), { target: 'Lucas', note, source: "Lucas's notes" }] } }
+  if (atConceptGate) {
+    // At the route choice the notes are about the strategy or the routes: those are what get
+    // revised (a strategy change rebuilds the routes too).
+    if (r && r.direction_change) addPending('strategy', r.direction_change)
+    addPending('concepts', notes)
+    setQuestions(state, 'notes', [])
+    state.decision_log.push({ stage: 'lucas_notes', summary: `Lucas's notes at the route choice go to ${r && r.direction_change ? 'the strategist and ' : ''}the creative director` })
     return
   }
-  if (r.direction_change) directionQuestion(state, `Your notes ask to change the direction: ${r.direction_change}. Confirm and the studio will redevelop from there.`)
+  if (!r || !r.routes) {
+    setQuestions(state, 'notes', ['Your notes were saved and every department now sees them, but they could not be routed to specific departments in this run. Send them again to have the work revised.'])
+    return
+  }
+  setQuestions(state, 'notes', r.direction_change ? [`Your notes ask to change the direction: ${r.direction_change}. Confirm and the studio will redevelop from there.`] : [])
   if (r.switch_route_to && routes.some(x => x.route_id === r.switch_route_to) && r.switch_route_to !== state.selected_concept_id) {
     switchRoute(state, r.switch_route_to, 'Lucas asked for a different route in his notes')
     return
@@ -1902,8 +2023,14 @@ Route each note to the one execution department that must act on it (responsible
 
 function switchRoute(state, routeId, why) {
   state.selected_concept_id = routeId
-  ;(DEPENDENTS.concepts || []).forEach(k => { if (state.artifacts[k]) state.artifacts[k] = { ...state.artifacts[k], status: 'stale' } })
+  // superseded_route: rebuilt from scratch, never "update your last version", which was the old route.
+  ;(DEPENDENTS.concepts || []).forEach(k => { if (state.artifacts[k]) state.artifacts[k] = { ...state.artifacts[k], status: 'stale', superseded_route: true } })
   delete state.approvals.production_plan
+  state.production_plan_applied = false
+  state.presented_scope = null
+  state.pending_notes = {}
+  setQuestions(state, 'panel', [])
+  setQuestions(state, 'qc', [])
   state.package_review = null
   state.decision_log.push({ stage: 'route_switch', summary: `Switched to route ${routeId} (${why}); everything built on the old route will be redone.` })
 }
@@ -1952,11 +2079,21 @@ function gradeSummary(state) {
 
 // ---- main pipeline ----
 
-// Every artifact version in the package, as "id@rN". An approval applies only to the exact
-// versions Lucas was shown.
-const packageScope = state => Object.values(state.artifacts).filter(a => a.status !== 'stale').map(a => `${a.artifact_id}@r${a.revision}`).sort()
+// The versions a production_plan decision covers: the package and the direction it confirms.
+// Artifacts made after approval (production stages) are not part of it.
+const PACKAGE_KINDS = [...GATE_COVERAGE.concept, ...GATE_COVERAGE.production_plan]
+// Every covered artifact version, as "id@rN". An approval applies only to the exact versions
+// Lucas was shown.
+const packageScope = state => PACKAGE_KINDS.filter(k => state.artifacts[k] && state.artifacts[k].status !== 'stale')
+  .map(k => `${state.artifacts[k].artifact_id}@r${state.artifacts[k].revision}`).sort()
 
 async function runPipeline(state) {
+  // An applied package approval freezes the package: nothing before production runs again.
+  if (state.production_plan_applied && state.approvals.production_plan && state.approvals.production_plan.approved) {
+    await runProductionStages(state)
+    return
+  }
+
   if (state.settings.idea_mode) {
     const dev = state.artifacts.development
     if (!isPresent(state, 'development') || (dev && dev.status === 'blocked') || (state.settings.quality && unfinishedReview(state, 'development'))) {
@@ -1991,9 +2128,9 @@ async function runPipeline(state) {
 
   // Direction that came back blocked goes to Lucas before anything is built on it.
   const blockedDirection = ['strategy', 'concepts'].filter(k => state.artifacts[k] && state.artifacts[k].status === 'blocked')
+  const blockers = blockedDirection.flatMap(k => state.artifacts[k].blockers || [])
+  setQuestions(state, 'blockers', blockers.map(b => `${b.issue}${b.resolution ? ` (${b.resolution})` : ''}`))
   if (blockedDirection.length) {
-    const blockers = blockedDirection.flatMap(k => state.artifacts[k].blockers || [])
-    blockers.forEach(b => directionQuestion(state, `${b.issue}${b.resolution ? ` (${b.resolution})` : ''}`))
     state.pending_gate = { ...gateInfo('concept', [state.artifacts.brief, state.artifacts.strategy, state.artifacts.concepts]), blocked_by: blockedDirection, blockers, open_questions: state.open_questions || [] }
     recordPendingApproval(state, 'concept')
     state.decision_log.push({ stage: '03_concepts', summary: `Stopped before building: ${blockedDirection.join(' and ')} came back blocked and needs Lucas's answer (send it as notes).`, blocked: true })
@@ -2022,12 +2159,39 @@ async function runPipeline(state) {
     return
   }
 
+  // A decision naming a different route is a rebuild, never an approval (in either mode): Lucas
+  // hasn't seen that route built. His comment still steers the rebuild.
+  let prodGate = state.approvals.production_plan
+  if (prodGate && prodGate.approved && prodGate.selected_route_id && prodGate.selected_route_id !== state.selected_concept_id && routes.some(r => r.route_id === prodGate.selected_route_id)) {
+    if (prodGate.comment) state.human_notes = (state.human_notes || []).concat([{ gate_id: 'package', note: prodGate.comment, decision_id: prodGate.decision_id || null }])
+    state.approval_log.push({ gate_id: 'production_plan', decision: 'route_change', selected_route_id: prodGate.selected_route_id, approver_id: prodGate.approver_id || null, decided_at: prodGate.decided_at || null, decision_id: prodGate.decision_id || null, verified: !!prodGate.approver_id, note: 'Rebuild on another route; not an approval.' })
+    if (conceptGate && conceptGate.approved) {
+      // Gates mode: the route decision moves to the new route, recorded as Lucas's decision.
+      state.approvals.concept = { ...conceptGate, selected_route_id: prodGate.selected_route_id, decision_id: prodGate.decision_id || conceptGate.decision_id }
+      state.approval_log.push({ gate_id: 'concept', decision: 'approved', selected_route_id: prodGate.selected_route_id, approver_id: prodGate.approver_id || null, decided_at: prodGate.decided_at || null, decision_id: prodGate.decision_id || null, verified: !!prodGate.approver_id, confirmed_at: 'production_plan', comment: prodGate.comment || '' })
+    }
+    switchRoute(state, prodGate.selected_route_id, 'Lucas picked a different route at review')
+    return runPipeline(state)
+  }
+
   await buildDepartments(state)
   if (state.limit_reached) return
 
+  // An approval that no longer matches the package (work was rebuilt after Lucas saw it) is not
+  // applied; this run reviews the current package and presents it again.
+  let changedSinceReview = null
+  if (prodGate && prodGate.approved && state.presented_scope &&
+      (anyStale(state, PACKAGE_KINDS) || packageScope(state).join() !== state.presented_scope.join())) {
+    const now = packageScope(state)
+    changedSinceReview = now.filter(x => !state.presented_scope.includes(x)).map(x => x.split('@')[0])
+    delete state.approvals.production_plan
+    state.approval_log.push({ gate_id: 'production_plan', decision: 'not_applied', approver_id: prodGate.approver_id || null, decision_id: prodGate.decision_id || null, reason: 'The package changed after Lucas reviewed it; the current versions are reviewed and presented again.', changed: changedSinceReview })
+    state.decision_log.push({ stage: '09_preproduction_review', summary: `Approval not applied: the package changed after Lucas reviewed it (${changedSinceReview.join(', ') || 'stale work'}). Presenting the current versions.` })
+    prodGate = null
+  }
+
   // Once Lucas has approved, nothing is reviewed or revised again before the approval is
-  // checked against the versions he saw.
-  const prodGate = state.approvals.production_plan
+  // applied to the versions he saw.
   if (!(prodGate && prodGate.approved)) {
     phase('Pre-production Review')
     await preproductionReview(state)
@@ -2042,11 +2206,7 @@ async function runPipeline(state) {
       if (panelRevised.length || !isPresent(state, 'quality_reports')) {
         const fixed = await preproductionReview(state)
         if (state.limit_reached) return
-        if (fixed.length && state.package_review) {
-          // Integrity fixes (facts, continuity) made after the panel's last look; listed, not re-paneled.
-          state.package_review.revised_after_review = fixed
-          state.package_review.stale = false
-        }
+        notePanelScope(state, fixed)
       }
     }
   }
@@ -2056,17 +2216,21 @@ async function runPipeline(state) {
   if (packageNeedsWork(state)) {
     if (state.settings.quality) await buildDepartments(state)
     if (state.limit_reached) return
+    notePanelScope(state, [])
   }
   const staleKinds = Object.entries(state.artifacts).filter(([, a]) => a.status === 'stale').map(([k]) => k)
   const pendingProduction = extra => {
     state.presented_scope = packageScope(state)
     state.pending_gate = {
-      ...gateInfo('production_plan', Object.values(state.artifacts)),
-      ...(state.settings.review_at_end ? { also_confirms: `concept (route ${state.selected_concept_id})`, selected_route_id: state.selected_concept_id, route_options: routes.map(r => ({ route_id: r.route_id, central_idea: r.central_idea })) } : {}),
+      ...gateInfo('production_plan', PACKAGE_KINDS.map(k => state.artifacts[k]).filter(Boolean)),
+      ...(state.settings.review_at_end ? { also_confirms: `concept (route ${state.selected_concept_id})` } : {}),
+      selected_route_id: state.selected_concept_id,
+      route_options: routes.map(r => ({ route_id: r.route_id, central_idea: r.central_idea })),
       package_grade: state.package_review ? state.package_review.grade : null,
       department_grades: gradeSummary(state),
       below_a: gradeSummary(state).filter(g => g.grade !== 'A').map(g => g.key),
       open_questions: state.open_questions || [],
+      ...(changedSinceReview ? { changed_since_review: true, changed: changedSinceReview } : {}),
       ...(extra || {}),
     }
     recordPendingApproval(state, 'production_plan')
@@ -2080,19 +2244,6 @@ async function runPipeline(state) {
     pendingProduction()
     return
   }
-  if (state.settings.review_at_end && prodGate.selected_route_id && prodGate.selected_route_id !== state.selected_concept_id && routes.some(r => r.route_id === prodGate.selected_route_id)) {
-    // Not an approval: Lucas hasn't seen this route built. His comment still steers the rebuild.
-    if (prodGate.comment) state.human_notes = (state.human_notes || []).concat([{ gate_id: 'package', note: prodGate.comment, decision_id: prodGate.decision_id || null }])
-    switchRoute(state, prodGate.selected_route_id, 'Lucas picked a different route at review')
-    return runPipeline(state)
-  }
-  if (state.presented_scope && packageScope(state).join() !== state.presented_scope.join()) {
-    delete state.approvals.production_plan
-    state.approval_log.push({ gate_id: 'production_plan', decision: 'not_applied', approver_id: prodGate.approver_id || null, decision_id: prodGate.decision_id || null, reason: 'The package changed after it was presented for review; the new versions are presented again.' })
-    state.decision_log.push({ stage: '09_preproduction_review', summary: 'Approval not applied: the package changed after Lucas reviewed it. Presenting the current versions.' })
-    pendingProduction({ changed_since_review: true })
-    return
-  }
   if (state.settings.review_at_end && !(conceptGate && conceptGate.approved)) {
     state.approvals.concept = { ...prodGate, selected_route_id: state.selected_concept_id }
     state.artifacts.concepts.status = 'approved'
@@ -2100,8 +2251,9 @@ async function runPipeline(state) {
       [state.artifacts.brief, state.artifacts.strategy, state.artifacts.concepts].filter(Boolean).map(a => `${a.artifact_id}@r${a.revision}`),
       { selected_route_id: state.selected_concept_id, confirmed_at: 'production_plan' }))
   }
-  Object.values(state.artifacts).forEach(a => { if (a.status !== 'blocked' && a.status !== 'stale') a.status = 'approved' })
-  state.approval_log.push(approvedEntry(state, 'production_plan', prodGate, Object.values(state.artifacts).map(a => `${a.artifact_id}@r${a.revision}`)))
+  PACKAGE_KINDS.forEach(k => { const a = state.artifacts[k]; if (a && a.status !== 'blocked' && a.status !== 'stale') a.status = 'approved' })
+  state.approval_log.push(approvedEntry(state, 'production_plan', prodGate, packageScope(state), { selected_route_id: state.selected_concept_id }))
+  state.production_plan_applied = true
   state.stage_reached = '09_production_plan_approved'
 
   await runProductionStages(state)
@@ -2194,6 +2346,10 @@ if (state.settings.quality && !(CRAFT && Object.keys(CRAFT).length)) {
 
 if (command === 'NOTES' && String(input.notes || '').trim()) {
   delete state.approvals.production_plan
+  state.production_plan_applied = false
+  // Lucas has answered; anything still open is raised again by the next review.
+  setQuestions(state, 'qc', [])
+  setQuestions(state, 'panel', [])
   await routeLucasNotes(state, String(input.notes).trim())
 }
 

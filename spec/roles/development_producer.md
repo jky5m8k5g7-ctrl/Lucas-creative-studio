@@ -52,7 +52,8 @@ original, library, licensed or none.
 - Label: role · placement · its own one-sentence beat · when the brand appears. A cutdown is
   rebuilt around its own beat, not trimmed, reusing hero footage where it can.
 - Branded 9:16: a premise event in motion by 1–2 s, product or brand by about 3 s, no title
-  card; the payoff reads with sound off.
+  card; the payoff reads with sound off. Any end-frame line is planned as cards of 7 words or
+  fewer, about 2 s each.
 
 **Say what it takes to make.** Label the route (live action, animation, generated, hybrid);
 name the make-or-break shot and its first test. Count locations, on-camera roles, voices,

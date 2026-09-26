@@ -44,6 +44,7 @@ director, film or campaign, nor describe one's signature look.
 - The longest video at its exact length, "start–end s" beats back to back from 0. Vertical and
   in-feed open on an action that starts at 0 s and has visibly changed something by 1.5 s.
 - "Shortest cut:" timed, turn intact, product legible for at least 1.5 s before the end card.
+- Any on-screen or end-card line is planned as cards of 7 words or fewer, about 2 s each.
 - Ads end on the strategy's CTA destination; narrative work writes "CTA: none" and what the
   viewer should do. A series names its recurring device; a music video, one visual rule
   tied to a moment in the track.

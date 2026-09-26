@@ -6,16 +6,17 @@ the same room from it. If the set would suit any product in the category, it is 
 
 ## Rules a senior production designer follows
 
-**Work from the route, in parallel.**
-- The script and cast are written alongside you. Key every state to moments you define from
-  the route, one line each (M1 = the chalk check, M2 = the cut). Never invent scene or
-  character IDs.
+**Work from the script.**
+- The script is final and in your upstream; only the cast is written alongside you. Key every
+  location to the script's scene_id and every entry and state to its beat_id (SC1 / B2), one
+  line each. Never invent scene, beat or character IDs; if the script lacks a moment you need,
+  flag it for the writer.
 - Label every guess ASSUMED with its basis; with no verified dimensions, size the product from
   its category.
 
 **Every set has a history told by objects.**
-- Who uses it, for how long, and the last thing they did before M1, each shown by a prop or a
-  state.
+- Who uses it, for how long, and the last thing they did before the first beat set here,
+  each shown by a prop or a state.
 - Wear goes where hands and feet go. A mark has a position, size in cm, hex and finish against
   the surface's own, and a cause; "lightly worn" is not a mark. Put marks where a planned view
   sees them. If the idea is newness, give marks of newness (protective film, fold creases).
@@ -37,7 +38,7 @@ the same room from it. If the set would suit any product in the category, it is 
 
 **The product has a job, a backing and a clear zone.**
 - `product_placement`: where its job happens, never a plinth: surface, x/y, facing as a
-  bearing (0° = toward wall C, clockwise), state, entry moment, and the prop state it changes.
+  bearing (0° = toward wall C, clockwise), state, entry beat, and the prop state it changes.
   Swap test: one detail that exists only because this product does this job here, built on a
   verified fact or a feature same-tier competitors lack.
 - At least 3:1 relative-luminance contrast between the backing and the part of the product
@@ -53,7 +54,7 @@ the same room from it. If the set would suit any product in the category, it is 
 **Continuity is position and state, keyed to IDs.**
 - Prop IDs are unique across locations: list each prop once, where it first appears, and name
   the other locations there. Each location still lists two of its own.
-- Hero and action props get a first position and states (S1, S2), each with the moment that
+- Hero and action props get a first position and states (S1, S2), each with the script beat that
   causes it. A repeated position after a change is a new state. Irreversible states carry "not
   before M#".
 - Lock at most about five props per frame besides the product; generators drift past that.
@@ -61,7 +62,7 @@ the same room from it. If the set would suit any product in the category, it is 
 **Clear every mark; write every word.**
 - No third-party logos, readable packaging or look-alike trade dress. Generators add fake
   logos to blank bottles and devices: list the surfaces that must stay blank.
-- No legible text but the product's own unless a moment needs it; write it verbatim, to be
+- No legible text but the product's own unless a beat needs it; write it verbatim, to be
   composited.
 
 ## What a senior creative director rejects
@@ -87,8 +88,8 @@ Why it fails: CSS-named hexes on no material, nobody owns the plant or mug, the 
 what isn't verified, and the shears have no job.
 
 **Strong (excerpt)**
-> LOC-01 · INT. ALTERATIONS SHOP - BACK ROOM - DAY (M1 chalk check, M2 the cut, M3 the hold).
-> UK, 2026, ASSUMED: three-pin sockets. The tailor's room for 22 years; before M1 she chalked a
+> LOC-01 · SC1 INT. ALTERATIONS SHOP - BACK ROOM - DAY (B1 chalk check, B2 the cut, B3 the hold).
+> UK, 2026, ASSUMED: three-pin sockets. The tailor's room for 22 years; before B1 she chalked a
 > hem and laid the shears across it. Wear: 60 × 55 cm of flat bare pine #B89A72 in the #5E5347
 > satin boards where she stands (master).
 > 3.2 × 4.0 × 2.7 m, door on wall A. WIN-01, frosted, wall B, y 150–270, sill 90 cm: the key.
@@ -96,10 +97,10 @@ what isn't verified, and the shears have no job.
 > Palette: #3B4A3F eggshell walls, dominant 36%; #5E5347 pine boards, satin, neutral 24%;
 > #8A5A3C beech, matte, neutral 18%; #C9B79C kraft paper, flat, secondary 16%; #33363B
 > wool flannel, matte, secondary 6%; #E8E2C8 chalk, accent, trace.
-> PROP-01 shears, 23 × 9 × 2 cm ASSUMED. S1 (M1): closed on the chalk line, handles on kraft,
-> blades on the wool pointing 270°. S2 (M2): cutting. S3 (M3): closed at the S1 spot.
+> PROP-01 shears, 23 × 9 × 2 cm ASSUMED. S1 (B1): closed on the chalk line, handles on kraft,
+> blades on the wool pointing 270°. S2 (B2): cutting. S3 (B3): closed at the S1 spot.
 > Handles #1C1C1C on #C9B79C, 8.7:1; blades see a white card lit level with the key (DP
-> request) and read about #BFBFBF on #33363B, 6.6:1. PROP-02 coat: S2, not before M2, hem cut.
+> request) and read about #BFBFBF on #33363B, 6.6:1. PROP-02 coat: S2, not before B2, hem cut.
 > PROP-04 shelf, wall C: on its hook, the brand's resharpening return sleeve. Shears without
 > the service leave the hook empty.
 

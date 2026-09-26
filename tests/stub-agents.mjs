@@ -34,8 +34,8 @@ export function makeStub(opts = {}) {
     stylist: () => ({ looks: [{ look_id: 'LK1', character_id: 'C1', materials_colors: 'waxed cotton #3B4A5C', continuity_locks: ['sleeves rolled', 'watch left wrist'] }] }),
     sound_designer: () => ({ cues: [{ cue_id: 'Q1', deliverable_ids: ['D01'], timing: '0-30s', licensing_or_consent_requirement: 'original score, work for hire' }] }),
     cinematographer: () => ({ shots: shots(true) }),
-    storyboard_artist: () => ({ panels: shots(false), contradictions_flagged: [], tracked_elements: [{ element_id: 'PAN', states_by_shot: [{ shot_id: 'S1' }, { shot_id: 'S2' }] }] }),
-    generation_supervisor: () => ({ jobs: ['S1', 'S2', 'K1'].map((s, i) => ({ job_id: `J${i}`, shot_id: s, job_type: 'image', prompt: long(45) })), missing_capabilities: [] }),
+    storyboard_artist: () => ({ panels: ['S1', 'S2', 'K1'].map(id => ({ shot_id: id, board_note: 'reads at phone size', dialogue_or_voiceover: '', on_screen_text: '', sound_cues: ['Q1'], entry_state: 'pan cold', exit_state: 'pan hot', generation_risk: 'none' })), contradictions_flagged: [], tracked_elements: [{ element_id: 'PAN', element_type: 'product', states_by_shot: [{ shot_id: 'S1', state: 'cold' }, { shot_id: 'S2', state: 'hot' }] }] }),
+    generation_supervisor: () => ({ jobs: ['S1', 'S2', 'K1'].map((s, i) => ({ job_id: `J${i}`, shot_id: s, job_type: 'image', method: 'text-to-image still', prompt: long(45), reference_asset_ids: [], acceptance_checks: ['the pan reads as cast iron'], capability_supported: true, capability_notes: '', estimated_cost_unit: '1 image' })), missing_capabilities: [] }),
   }
   const crit = s => ({ score: s, evidence: `line ${s}` })
   async function agent(prompt, o) {

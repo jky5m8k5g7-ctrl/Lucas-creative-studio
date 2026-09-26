@@ -163,5 +163,116 @@ ok(s13.calls[firstCast].prompt.includes('INT. KITCHEN'), 'casting sees the scrip
 const cast13 = r13.project_state.artifacts.casting_bible
 ok(cast13.checks.failed.some(x => x.includes('ROSA')) && cast13.quality.grade !== 'A', 'an uncast script character fails the casting check and blocks an A')
 
+// ---- audit fixes ----
+const wrap = (stub, fn) => async (prompt, o) => { const r = await stub.agent(prompt, o); return fn(r, o, prompt) || r }
+const approve = extra => ({ approved: true, approver_id: 'u_LUCAS', decided_at: '2026-09-26T10:00:00Z', decision_id: 'dec_' + Math.abs(JSON.stringify(extra || {}).length), ...(extra || {}) })
+
+// A. A department blocked at presentation, then approved: not a dead end. The approval run
+// rebuilds it, doesn't apply the approval to versions Lucas never saw, and presents again.
+let blockGen = true
+const sA = makeStub()
+const agentA = async (prompt, o) => {
+  if (blockGen && o.label === 'generation_supervisor') { sA.calls.push({ label: o.label, prompt }); return { status: 'blocked', based_on: [], content: { jobs: [], missing_capabilities: [] }, assumptions: [], sources: [], blockers: [{ issue: 'x', responsible_agent: 'producer', resolution: 'y' }] } }
+  return sA.agent(prompt, o)
+}
+const rA = await run({ command: 'IDEA', idea: IDEA }, agentA, sA.parallel, noop, noop)
+ok(rA.pending_gate.gate_id === 'production_plan' && rA.project_state.artifacts.generation_plan.status === 'blocked', 'A: package presented with a blocked department')
+blockGen = false
+const rA2 = await run({ command: 'APPROVE', priorState: J(rA.project_state), approvals: { production_plan: approve({ decision_id: 'dec_A', selected_route_id: 'R2' }) } }, agentA, sA.parallel, noop, noop)
+ok(rA2.approval_log.some(e => e.decision === 'not_applied') && rA2.pending_gate && rA2.pending_gate.gate_id === 'production_plan' && !rA2.pending_gate.blocked_by_stale, 'A: approval not applied; the rebuilt package is re-reviewed and presented, not stuck')
+ok(rA2.pending_gate.changed_since_review && rA2.pending_gate.changed.some(x => x.startsWith('generation_plan')), 'A: the gate says what changed since Lucas looked')
+const rA3 = await run({ command: 'APPROVE', priorState: J(rA2.project_state), approvals: { production_plan: approve({ decision_id: 'dec_A2', selected_route_id: 'R2' }) } }, agentA, sA.parallel, noop, noop)
+ok(rA3.approval_log.filter(e => e.gate_id === 'production_plan' && e.decision === 'approved').length === 1 && rA3.stage_reached === '09_production_plan_approved', 'A: approving the current versions applies')
+
+// B. After the approval is applied, later runs don't revoke it or repeat it, and make no calls.
+const sB = makeStub()
+const rB = await run({ command: 'APPROVE', priorState: J(rA3.project_state), mode: 'connected_tools' }, sB.agent, sB.parallel, noop, noop)
+ok(sB.calls.length === 0 && !rB.approval_log.some(e => e.decision === 'not_applied' && e.decision_id === 'dec_A2') && rB.approval_log.filter(e => e.gate_id === 'production_plan' && e.decision === 'approved').length === 1, 'B: an applied approval survives later runs, once, with no agent calls')
+
+// C. Integrity fixes after the panel's last look are named in full, and the grade says it saw earlier versions.
+const sC = makeStub({
+  qc: (label, calls) => (calls.filter(c => /^integrity QC/.test(c.label)).length === 2 ? ['copywriter'] : []),
+  panel: (lens, round) => (round === 1 && lens === 'client' ? { ok: false, notes: [{ responsible: 'stylist', target: 'LK1', note: 'warmer', source: 'x' }] } : { ok: true }),
+})
+const rC = await run({ command: 'IDEA', idea: IDEA }, sC.agent, sC.parallel, noop, noop)
+const prC = rC.package_review
+ok(prC && prC.grade_on_earlier_versions && prC.revised_after_review.includes('script') && prC.revised_after_review.includes('storyboard'), 'C: the post-panel fixes are listed with everything they rebuilt: ' + JSON.stringify(prC && prC.revised_after_review))
+
+// D. A route switch rebuilds from the new route, not from the old route's work.
+const sD = makeStub({ panel: (lens, round, calls) => (lens === 'client' && calls.filter(c => /^panel · client/.test(c.label)).length === 1 ? { ok: false, questions: ['Is R2 too quiet?'] } : { ok: true }) })
+const rD0 = await run({ command: 'IDEA', idea: IDEA }, sD.agent, sD.parallel, noop, noop)
+const before = sD.calls.length
+const rD = await run({ command: 'APPROVE', priorState: J(rD0.project_state), approvals: { production_plan: approve({ decision_id: 'dec_D', selected_route_id: 'R3' }) } }, sD.agent, sD.parallel, noop, noop)
+const dCalls = sD.calls.slice(before)
+ok(dCalls.filter(c => ['copywriter', 'casting_director', 'cinematographer'].includes(c.label)).every(c => !c.prompt.includes('Your last version')), 'D: the new route is built fresh, not from the old route\'s work')
+ok(!rD.open_questions.some(q => q.includes('Is R2 too quiet')) && rD.approval_log.some(e => e.decision === 'route_change'), 'D: the old route\'s panel questions are gone; the decision is logged as a route change')
+
+// E. A budget stop during a revision pass keeps every later department's notes.
+const sE = makeStub({ panel: (lens, round, calls) => (calls.filter(c => /^panel · client/.test(c.label)).length === 1 && lens === 'client' ? { ok: false, notes: [{ responsible: 'stylist', target: 'LK1', note: 'NOTE-FOR-STYLE', source: 'x' }, { responsible: 'sound_designer', target: 'Q1', note: 'NOTE-FOR-SOUND', source: 'x' }] } : { ok: true }) })
+let stE = null, rE, runsE = 0
+const firstPanel = async () => { let s0 = null; do { rE = await run(s0 ? { command: 'APPROVE', priorState: J(s0), maxAgentCalls: 4 } : { command: 'IDEA', idea: IDEA, maxAgentCalls: 4 }, sE.agent, sE.parallel, noop, noop); s0 = rE.project_state; runsE++ } while (rE.budget_ledger.limit_reached && runsE < 80); return s0 }
+stE = await firstPanel()
+ok(sE.calls.some(c => c.label.startsWith('sound_designer') && c.prompt.includes('NOTE-FOR-SOUND')), 'E: the sound designer still gets its note after budget stops (' + runsE + ' runs)')
+
+// F. QC's rights/production issues become questions for Lucas, worded as decisions.
+const sF = makeStub({ qc: (label, calls) => (calls.filter(c => /^integrity QC/.test(c.label)).length === 1 ? ['producer'] : []) })
+const rF = await run({ command: 'IDEA', idea: IDEA }, sF.agent, sF.parallel, noop, noop)
+ok(rF.open_questions.some(q => q.startsWith('Rights or production decision needed')), 'F: a producer issue reaches Lucas as a decision to make')
+
+// G. A words-only script note rebuilds only what carries the words; a structural one rebuilds all.
+const sG = makeStub()
+const rG0 = await run({ command: 'IDEA', idea: IDEA }, sG.agent, sG.parallel, noop, noop)
+let wordsOnly = true
+const agentG = wrap(sG, (r, o) => { if (o.label === 'copywriter · revise from notes' && r && r.content) { const b = r.content.deliverable_scripts[0].beats; b[1].on_screen_text = 'Emberline. Yours for life.'; if (!wordsOnly) b[0].picture = 'A woman sears a steak in a black skillet on a gas ring while rain hits the window' } })
+const g0 = sG.calls.length
+await run({ command: 'NOTES', priorState: J(rG0.project_state), notes: 'Change the end card.' }, agentG, sG.parallel, noop, noop)
+const gLabels = sG.calls.slice(g0).map(c => c.label)
+ok(gLabels.includes('storyboard_artist') && gLabels.includes('sound_designer') && !gLabels.includes('casting_director') && !gLabels.includes('cinematographer'), 'G: a words-only change rebuilds sound, board and generation, not cast or camera')
+wordsOnly = false
+const g1 = sG.calls.length
+await run({ command: 'NOTES', priorState: J(rG0.project_state), notes: 'Change the opening.' }, agentG, sG.parallel, noop, noop)
+const gLabels2 = sG.calls.slice(g1).map(c => c.label)
+ok(gLabels2.includes('casting_director') && gLabels2.includes('cinematographer'), 'G: a structural change rebuilds everything built on the script')
+
+// H. Gates mode: "rebuild on another route" at the package gate is never an approval.
+const sH = makeStub()
+const rH0 = await run({ command: 'IDEA', idea: IDEA, review: 'gates' }, sH.agent, sH.parallel, noop, noop)
+const rH1 = await run({ command: 'APPROVE', priorState: J(rH0.project_state), approvals: { concept: approve({ decision_id: 'dec_H1', selected_route_id: 'R2' }) } }, sH.agent, sH.parallel, noop, noop)
+ok(rH1.pending_gate.gate_id === 'production_plan', 'H: gates mode reaches the package gate after the route is approved')
+const rH2 = await run({ command: 'APPROVE', priorState: J(rH1.project_state), approvals: { production_plan: approve({ decision_id: 'dec_H2', selected_route_id: 'R3' }) } }, sH.agent, sH.parallel, noop, noop)
+ok(rH2.project_state.selected_concept_id === 'R3' && rH2.pending_gate.gate_id === 'production_plan' && !rH2.approval_log.some(e => e.gate_id === 'production_plan' && e.decision === 'approved'), 'H: a route change rebuilds on R3 and records no package approval')
+ok(rH2.project_state.approvals.concept.selected_route_id === 'R3', 'H: the route decision moves to R3')
+
+// I. Notes at the route choice revise the routes.
+const sI = makeStub()
+const rI0 = await run({ command: 'IDEA', idea: IDEA, review: 'gates' }, sI.agent, sI.parallel, noop, noop)
+const i0 = sI.calls.length
+const rI = await run({ command: 'NOTES', priorState: J(rI0.project_state), notes: 'None of these; make them funnier.' }, sI.agent, sI.parallel, noop, noop)
+const iCalls = sI.calls.slice(i0)
+ok(iCalls.some(c => c.label === 'creative_director · revise from notes' && c.prompt.includes('make them funnier')) && rI.pending_gate.gate_id === 'concept', 'I: notes at the route choice revise the routes and bring them back')
+ok(rI.project_state.artifacts.concepts.revision === 2, 'I: the routes are a new version')
+
+// J. An unseen announcer isn't a character to cast.
+const sJ = makeStub()
+const agentJ = wrap(sJ, (r, o) => { if (o.label === 'copywriter' && r && r.content) r.content.deliverable_scripts[0].beats[1].vo = 'VO: Find yours at emberline.example.' })
+const rJ = await run({ command: 'IDEA', idea: IDEA }, agentJ, sJ.parallel, noop, noop)
+ok(!rJ.project_state.artifacts.casting_bible.checks.failed.some(x => x.includes('VO')), 'J: a VO line doesn\'t have to be cast')
+
+// K. The board is joined onto the camera plan; a shot without a panel fails the board's check.
+const sb = rJ.project_state.artifacts.storyboard.content.panels
+ok(sb.length === 3 && sb[0].lens_intent === '35mm at T2.8' && sb[0].location_id === 'L1' && sb[0].board_note === 'reads at phone size', 'K: each stored panel carries the camera plan\'s fields and the board\'s')
+const sK = makeStub()
+const agentK = wrap(sK, (r, o) => { if (o.label.startsWith('storyboard_artist') && !o.label.includes('review') && r && r.content) r.content.panels = r.content.panels.slice(0, 2) })
+const rK = await run({ command: 'IDEA', idea: IDEA }, agentK, sK.parallel, noop, noop)
+ok(rK.project_state.artifacts.storyboard.checks.failed.some(x => x.includes('missing: K1')), 'K: a camera-plan shot with no panel fails the board check')
+
+// L. A check-fix retry of a revision doesn't carry the previous version twice.
+const sL = makeStub({ score: (dept, label) => (dept === 'cinematographer' && label.endsWith('review 1') ? 6 : 8) })
+let brokeOnce = false
+const agentL = wrap(sL, (r, o) => { if (o.label === 'cinematographer · revise 1' && !brokeOnce && r && r.content) { brokeOnce = true; r.content.shots[0].lens_intent = 'wide' } })
+await run({ command: 'IDEA', idea: IDEA }, agentL, sL.parallel, noop, noop)
+const retry = sL.calls.find(c => c.label === 'cinematographer · revise 1 · fix checks 1')
+ok(retry && !retry.prompt.includes('YOUR PREVIOUS VERSION') && retry.prompt.includes('Last attempt:'), 'L: the retry has the failed attempt, not the previous version too')
+
 console.log(fails ? `\n${fails} FAILED` : '\nALL PASS')
 if (fails) process.exit(1)

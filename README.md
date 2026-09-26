@@ -22,8 +22,11 @@ Lucas. Approval gates are enforced in code, not in a prompt.
    without blocking the run.
 3. **The build.** Strategy → three routes (the creative director's recommendation is built on) →
    script → cast and world in parallel, broken down from the script (every character the script
-   names is cast under the same ID) → direction, looks and sound in parallel → shot plan →
-   storyboard and continuity → generation plan. Narrative formats get a screenwriter and a
+   names is cast under the same ID) → direction, looks and sound in parallel → shot plan (what
+   the camera does) → storyboard (what each shot adds: exact lines and cards, sound cues,
+   continuity states, generation risk; joined onto the shot plan in code) → generation plan
+   (a method, prompt, references and acceptance checks per shot). Each department has a lane:
+   what it decides and what it leaves to others. Narrative formats get a screenwriter and a
    beat sheet for the whole piece; this build fully plans up to 120 seconds, and longer pieces
    plan their strongest sequence plus an outline of the rest.
 4. **The A bar, per department.** Every department's work goes through code checks (timing that
@@ -41,21 +44,28 @@ Lucas. Approval gates are enforced in code, not in a prompt.
    direction itself (the idea's development, strategy, route) go to Lucas.
 7. **Review.** The package lands on the desk with the grade, each reviewer's verdict, every
    department's grade (anything below A is flagged in red, never hidden), the script, open
-   questions and the three routes. Lucas can:
+   questions and the three routes, with the reasons behind any grade below A (the reviewer's
+   notes, the failed check, the panel's open notes). Lucas can:
    - **Approve the package** (this also confirms the route),
    - **Rebuild on another route** (the studio rebuilds and brings it back; nothing is approved), or
    - **Request changes**: his notes are routed to the departments that own them, revised to the
      same bar, re-checked, and the package comes back.
 
    An approval applies only to the exact versions Lucas was shown; if anything changed since, the
-   approval is not applied and the current versions are presented again.
+   approval is not applied and the current versions are reviewed and presented again. Once
+   applied, the package is frozen. At the route choice (in `gates` mode), notes revise the
+   strategy or the routes themselves.
 8. **Next: enhancement.** After approval, the next phase is either the full descriptive script
    (every scene written out) or paid media generation, which stays blocked until Lucas sets a
    budget and the tools are connected.
 
-A run makes roughly 60–130 agent calls for a full package. Each run is capped (220 calls by
-default); a run that reaches the cap saves exactly where it stopped, including half-finished
-reviews and notes not yet applied, and the next run continues from there.
+A full package takes roughly 130–190 agent calls: about 14 for development, strategy and routes
+(measured), 45–55 for the first build of the nine departments, and 45–55 more for each panel or
+integrity round that sends notes back to the script. Each run is capped at 220 calls
+(`--budget` changes it); a run that reaches the cap saves exactly where it stopped, including
+half-finished reviews and notes not yet applied, and the next run continues from there. A
+script note that changes only words rebuilds only sound, storyboard and generation; a change
+to the story's structure rebuilds everything built on the script.
 
 ### The studio's standards
 
@@ -130,3 +140,12 @@ reviewed versions and any note. Anyone the page is shared with can read it but n
 After deciding, tell Claude **"pick up my approvals"** (or **"pick up my ideas"** for new ideas).
 Claude reads the desk, marks what it picked up, runs the studio, and puts the result back on the
 desk. A decision or idea can be undone on the desk until Claude picks it up.
+
+### Tests
+
+- `node tests/creative-studio.test.mjs`: the workflow with stub agents (no model calls):
+  gates, approvals, route changes, notes, budget stops and resumes, the schema split, and
+  every audit fix.
+- `node tests/studio-runner.test.mjs`: `tools/studio.mjs` end to end with stub agents: new →
+  run → save → `package.md` and `desk.json` → a version-checked approval.
+- `tests/results/`: records of the real runs.

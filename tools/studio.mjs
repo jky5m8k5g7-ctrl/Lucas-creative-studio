@@ -9,6 +9,7 @@
 //        [--review end|gates] [--budget N]   gates: stop at the route choice before building
 //   node tools/studio.mjs resume <slug>                  continue after a run hit its call budget
 //   node tools/studio.mjs approve <slug> <decision.json> apply an Approval Desk decision
+//        (checked against the versions the desk showed; --no-version-check for one given in chat)
 //   node tools/studio.mjs notes <slug> "<notes>" [--decision-id id]
 //   node tools/studio.mjs save <slug> <workflow-output-file>
 //   node tools/studio.mjs status <slug>
@@ -65,7 +66,8 @@ function writeRun(slug, args) {
   const marker = 'const input = args || {}'
   if (!src.includes(marker)) die('the workflow no longer has the args line this runner patches')
   const embedded = { ...studioInputs(), projectId: slug.toUpperCase().replace(/-/g, '_'), ...args }
-  const run = src.replace(marker, `// Inputs embedded by tools/studio.mjs for project "${slug}".\nconst EMBEDDED_ARGS = ${JSON.stringify(embedded)}\nconst input = { ...EMBEDDED_ARGS, ...(args || {}) }`)
+  // A replacer function, so "$&" or "$$" in Lucas's text or the state is inserted literally.
+  const run = src.replace(marker, () => `// Inputs embedded by tools/studio.mjs for project "${slug}".\nconst EMBEDDED_ARGS = ${JSON.stringify(embedded)}\nconst input = { ...EMBEDDED_ARGS, ...(args || {}) }`)
   const out = path.join(projectDir(slug), '.run.js')
   fs.writeFileSync(out, run)
   const roles = Object.keys(embedded.craft)
@@ -115,15 +117,25 @@ function cmdResume(slug, f) {
 
 // A decision as the Approval Desk stores it: { gate_id, decision, selected_route_id, comment,
 // approver_id, decided_at, id | decision_id }.
-function cmdApprove(slug, decisionFile) {
+function cmdApprove(slug, decisionFile, f) {
   const d = readJSON(decisionFile)
   // route_change: Lucas picked a different route at package review; the studio rebuilds on it
   // and brings the package back (the pipeline records no approval for work he hasn't seen).
   if (d.decision !== 'approved' && d.decision !== 'route_change') die(`that decision is "${d.decision}", not an approval; use notes for requested changes`)
   if (d.decision === 'route_change' && !d.selected_route_id) die('a route change needs selected_route_id')
   if (!d.approver_id) die('the decision has no approver_id, so it did not come from the Approval Desk')
+  const state = loadState(slug)
+  const g = state.pending_gate
+  if (!g || g.gate_id !== d.gate_id) die(`${slug} is not waiting on the ${d.gate_id} gate (it is ${g ? `at ${g.gate_id}` : 'not at a gate'}); the desk card is out of date. Republish projects/${slug}/desk.json and ask Lucas to decide again.`)
+  // An approval applies only to the versions Lucas saw: the desk records them with the decision.
+  if (d.decision === 'approved') {
+    const shown = (d.artifact_ids_and_revisions || []).slice().sort()
+    const current = (g.artifacts_for_review || []).filter(a => a.status !== 'stale').map(a => `${a.artifact_id}@r${a.revision}`).sort()
+    if (!shown.length && !f['no-version-check']) die('the decision lists no versions, so it can\'t be checked against what Lucas saw. Pass --no-version-check only for an approval Lucas gave in chat about the current package.')
+    if (shown.length && shown.join() !== current.join()) die(`the desk card showed ${shown.join(', ')}, but the project is now at ${current.join(', ')}. Republish projects/${slug}/desk.json and ask Lucas to decide again.`)
+  }
   const approval = { approved: true, selected_route_id: d.selected_route_id || undefined, approver_id: d.approver_id, decided_at: d.decided_at, comment: d.comment || '', decision_id: d.decision_id || d.id }
-  writeRun(slug, { command: 'APPROVE', priorState: loadState(slug), approvals: { [d.gate_id]: approval } })
+  writeRun(slug, { command: 'APPROVE', priorState: state, approvals: { [d.gate_id]: approval } })
 }
 
 function cmdNotes(slug, notes, f) {
@@ -133,7 +145,7 @@ function cmdNotes(slug, notes, f) {
 
 function cmdSave(slug, outFile) {
   const raw = readJSON(outFile)
-  const out = raw.result || raw
+  const out = { ...(raw.result || raw), totalTokens: raw.totalTokens || null }
   if (!out.project_state) die(`${outFile} has no project_state: the run failed or this isn't a workflow output`)
   const dir = projectDir(slug)
   fs.mkdirSync(dir, { recursive: true })
@@ -163,19 +175,38 @@ const GRADED = ['development', 'strategy', 'concepts', 'script', 'casting_bible'
 function grades(s) {
   return GRADED.filter(k => art(s, k)).map(k => {
     const q = art(s, k).quality
-    return { key: k, label: LABELS[k], artifact: `${art(s, k).artifact_id} r${art(s, k).revision}`, grade: q ? (q.incomplete ? 'unfinished' : q.grade) : 'not graded', lowest: q ? q.min : null, rounds: q ? q.rounds : 0, failed_checks: (art(s, k).checks && art(s, k).checks.failed) || [], scores: q ? q.scores : null }
+    const grade = q ? (q.incomplete ? 'unfinished' : q.grade) : 'not graded'
+    return {
+      key: k, label: LABELS[k], artifact: `${art(s, k).artifact_id} r${art(s, k).revision}`, status: art(s, k).status,
+      grade, lowest: q ? q.min : null, rounds: q ? q.rounds : 0, failed_checks: (art(s, k).checks && art(s, k).checks.failed) || [], scores: q ? q.scores : null,
+      // What a reviewer still wants, shown wherever the grade isn't A.
+      notes: grade === 'A' ? [] : ((q && q.notes) || []).map(n => (typeof n === 'string' ? n : `${n.target ? `${n.target}: ` : ''}${n.note}`)),
+    }
   })
 }
+
+// Envelope items from current work only (stale work is being replaced).
+const live = s => Object.entries(s.artifacts || {}).filter(([, a]) => a && a.status !== 'stale' && !a.not_run)
+const lucasBlockers = s => live(s).flatMap(([k, a]) => (a.blockers || [])
+  .filter(b => /lucas/i.test(b.responsible_agent || '') || a.status === 'blocked')
+  .map(b => `${LABELS[k] || k}: ${b.issue}${b.resolution ? ` (${b.resolution})` : ''}`))
+const otherBlockers = s => live(s).flatMap(([k, a]) => (a.blockers || [])
+  .filter(b => !/lucas/i.test(b.responsible_agent || '') && a.status !== 'blocked')
+  .map(b => ({ department: LABELS[k] || k, ...b })))
+const questionsFor = s => [...new Set([...(s.needs_human_input || []), ...(s.open_questions || []), ...lucasBlockers(s)])]
+const panelNote = pr => (pr && pr.grade_on_earlier_versions
+  ? `The panel's grade is from before these were changed: ${pr.revised_after_review.map(k => LABELS[k] || k).join(', ')}${(pr.fixed_after_review || []).length ? ` (integrity fixes to ${pr.fixed_after_review.map(k => LABELS[k] || k).join(', ')}, and what was rebuilt on them)` : ''}.`
+  : '')
 
 function summary(slug, s, out) {
   const g = s.pending_gate
   const lines = [`${slug}: ${C(s, 'development').working_title || s.brief.name || s.project_id} · stage ${s.stage_reached}`]
-  if (out) lines.push(`agent calls this run: ${out.budget_ledger.agent_calls_used_this_run}/${out.budget_ledger.agent_calls_allowed_per_run}${out.budget_ledger.limit_reached ? ' (budget reached: run `resume`)' : ''}`)
+  if (out) lines.push(`agent calls this run: ${out.budget_ledger.agent_calls_used_this_run}/${out.budget_ledger.agent_calls_allowed_per_run}${out.totalTokens ? `, ${(out.totalTokens / 1e6).toFixed(2)}M tokens` : ''}${out.budget_ledger.limit_reached ? ' (budget reached: run `resume`)' : ''}`)
   const approved = (s.approval_log || []).some(e => e.gate_id === 'production_plan' && e.decision === 'approved')
   lines.push(g ? `waiting on Lucas: ${g.gate_id}${g.blocked_by_stale ? ' (blocked: stale work)' : ''}` : s.limit_reached ? 'paused: call budget reached (run resume)' : approved ? 'package approved: next is the enhancement phase (full script, or paid media with a budget)' : 'no gate pending')
   if (s.package_review) lines.push(`package: ${s.package_review.grade} (round ${s.package_review.round}, ${s.package_review.approvals}/${s.package_review.of} reviewers would approve)`)
   grades(s).forEach(x => lines.push(`  ${x.label.padEnd(22)} ${String(x.grade).padEnd(11)} ${x.lowest != null ? `lowest ${x.lowest}` : ''}${x.failed_checks.length ? ` · ${x.failed_checks.length} failed check(s)` : ''}`))
-  ;(s.open_questions || []).forEach(q => lines.push(`  ? ${q}`))
+  questionsFor(s).forEach(q => lines.push(`  ? ${q}`))
   return lines.join('\n')
 }
 
@@ -195,7 +226,6 @@ function fields(o, skip = []) {
 
 function renderPackage(slug, s, out) {
   const dev = C(s, 'development')
-  const r = route(s)
   const pr = s.package_review
   const md = []
   md.push(`# ${dev.working_title || s.brief.name || slug}`)
@@ -208,15 +238,21 @@ function renderPackage(slug, s, out) {
     md.push(`Deliverables:\n\n${table(dev.deliverables, [['id', 'ID'], ['type', 'Type'], ['label', 'What'], [d => (d.type === 'video' ? `${d.duration_seconds}s` : d.type === 'still' ? `${d.count} still(s)` : 'outline'), 'Size'], ['aspect_ratio', 'Aspect']])}`)
     if ((dev.verified_product_facts || []).length) md.push(`Facts taken from your idea (the only claims the studio may make):\n\n${list(dev.verified_product_facts.map(f => `${f.fact} (you wrote: "${f.quoted_from_idea}")`))}`)
   }
+
   md.push('## Quality')
   if (pr) {
-    md.push(`Package: **${pr.grade === 'A' ? 'A' : 'below A'}** after ${pr.round} panel round${pr.round === 1 ? '' : 's'}; ${pr.approvals} of ${pr.of} reviewers would approve it today. Averages: ${Object.entries(pr.averages).map(([k, v]) => `${k} ${v}`).join(', ')}.${pr.revised_after_review ? ` Integrity fixes made after the panel's last look: ${pr.revised_after_review.join(', ')}.` : ''}`)
+    md.push(`Package: **${pr.grade === 'A' ? 'A' : 'below A'}** after ${pr.round} panel round${pr.round === 1 ? '' : 's'}; ${pr.approvals} of ${pr.of} reviewers would approve it today. Averages: ${Object.entries(pr.averages).map(([k, v]) => `${k} ${v}`).join(', ')}.${pr.ended ? ` (${pr.ended}.)` : ''} ${panelNote(pr)}`)
     md.push(table(pr.lenses, [['lens', 'Reviewer'], [l => (l.would_approve ? 'yes' : 'no'), 'Would approve'], [l => Object.values(l.scores).join(' / '), 'Spec / Dist / Fit / Craft'], ['verdict', 'Verdict']]))
+    const open = pr.grade === 'A' ? [] : pr.lenses.flatMap(l => (l.notes || []).map(n => `**${l.lens}** → ${n.responsible} · ${n.target}: ${n.note}`))
+    if (open.length) md.push(`Open panel notes (not yet applied; send any you agree with as notes):\n\n${list(open)}`)
   }
-  md.push(table(grades(s), [['label', 'Department'], ['grade', 'Grade'], ['lowest', 'Lowest score'], ['rounds', 'Review rounds'], [x => x.failed_checks.join('; '), 'Failed checks'], ['artifact', 'Version']]))
-  if ((s.open_questions || []).length || (s.needs_human_input || []).length) {
-    md.push(`## Questions for you\n\n${list([...(s.needs_human_input || []), ...(s.open_questions || [])])}`)
-  }
+  const gr = grades(s)
+  md.push(table(gr, [['label', 'Department'], ['grade', 'Grade'], ['lowest', 'Lowest score'], ['rounds', 'Review rounds'], [x => x.failed_checks.length, 'Failed checks'], ['artifact', 'Version']]))
+  const below = gr.filter(x => x.grade !== 'A' && (x.notes.length || x.failed_checks.length))
+  if (below.length) md.push(`### What keeps these below A\n\n${below.map(x => `**${x.label}**\n\n${list([...x.failed_checks.map(c => `Failed check: ${c}`), ...x.notes])}`).join('\n\n')}`)
+  const qs = questionsFor(s)
+  if (qs.length) md.push(`## Questions for you\n\n${list(qs)}`)
+
   const st = C(s, 'strategy')
   if (st.single_minded_proposition) md.push(`## Strategy\n\n**${st.single_minded_proposition}**\n\n${fields(st, ['single_minded_proposition'])}`)
   const cs = C(s, 'concepts')
@@ -230,6 +266,7 @@ function renderPackage(slug, s, out) {
     md.push(`### Beat sheet\n\n${table(sc.story.beat_sheet, [['scene_id', 'Scene'], ['heading', 'Heading'], ['characters', 'Who'], ['what_happens', 'What happens'], ['turn', 'What turns']])}`)
     ;(sc.deliverable_scripts || []).forEach(d => md.push(`### ${d.deliverable_id} · ${d.duration_s}s: ${d.idea_in_one_line || ''}\n\n${table(d.beats, [[b => `${b.start_s}–${b.end_s}s`, 'Time'], ['picture', 'Picture'], ['sound', 'Sound'], ['vo', 'Dialogue / VO'], ['on_screen_text', 'On screen']])}${d.cta ? `\nCTA: ${d.cta}\n` : ''}`))
     if ((sc.stills_copy || []).length) md.push(`### Stills\n\n${table(sc.stills_copy, [['still_id', 'Still'], ['picture', 'Picture'], ['headline', 'Headline'], ['subline', 'Subline']])}`)
+    if ((sc.decisions || []).length) md.push(`### Writing decisions\n\n${table(sc.decisions, [['choice', 'Choice'], ['reason', 'Why'], ['source', 'From']])}`)
   }
   const cast = C(s, 'casting_bible').characters || []
   if (cast.length) md.push(`## Cast\n\n${cast.map(c => `### ${c.character_id}\n\n${fields(c, ['character_id'])}`).join('\n\n')}`)
@@ -241,17 +278,51 @@ function renderPackage(slug, s, out) {
   if (scenes.length) md.push(`## Director's treatment\n\n${scenes.map(x => `### ${x.scene_id}\n\n${fields(x, ['scene_id'])}`).join('\n\n')}`)
   const cues = C(s, 'sound_plan').cues || []
   if (cues.length) md.push(`## Sound\n\n${table(cues, [['cue_id', 'Cue'], ['deliverable_ids', 'For'], ['type', 'Type'], ['timing', 'When'], ['description', 'What we hear'], ['licensing_or_consent_requirement', 'Rights']])}`)
+
+  // Shots and panels, one section per deliverable in its running order, then every field of each.
   const shots = C(s, 'camera_plan').shots || []
-  if (shots.length) md.push(`## Shot plan\n\n${table(shots, [['shot_id', 'Shot'], ['deliverable_ids', 'For'], [x => `${x.duration_frames}f @${x.fps}`, 'Length'], ['framing', 'Framing'], ['lens_intent', 'Lens'], ['camera_movement', 'Move'], ['lighting', 'Light'], ['action', 'Action']])}`)
   const panels = C(s, 'storyboard').panels || []
-  if (panels.length) md.push(`## Storyboard\n\n${table(panels, [['shot_id', 'Panel'], ['purpose', 'Purpose'], ['action', 'Action'], ['framing', 'Framing'], ['dialogue_or_voiceover', 'Dialogue / VO'], ['on_screen_text', 'On screen'], ['sound_cues', 'Sound']])}${(C(s, 'storyboard').contradictions_flagged || []).length ? `\nContradictions flagged:\n\n${list(C(s, 'storyboard').contradictions_flagged)}\n` : ''}`)
+  const panelById = Object.fromEntries(panels.map(p => [p.shot_id, p]))
+  const byDeliverable = (items, d) => items.filter(x => (x.deliverable_ids || []).includes(d.id))
+  const deliverables = (s.brief.deliverables || []).filter(d => d.type !== 'outline')
+  if (shots.length) {
+    const blocks = []
+    deliverables.forEach(d => {
+      const mine = byDeliverable(shots, d)
+      if (!mine.length) return
+      let t = 0
+      const rows = mine.map(sh => { const start = t; t += (sh.duration_frames || 0) / (sh.fps || 24); return { ...sh, ...(panelById[sh.shot_id] || {}), start: `${start.toFixed(1)}s` } })
+      blocks.push(`### ${d.id} · ${d.type === 'video' ? `${d.duration_seconds}s` : `${d.count || 1} still(s)`} ${d.aspect_ratio || ''}\n\n${table(rows, [['shot_id', 'Shot'], ['start', 'At'], [x => `${x.duration_frames}f @${x.fps}`, 'Length'], ['framing', 'Framing'], ['lens_intent', 'Lens'], ['action', 'Action'], ['dialogue_or_voiceover', 'Dialogue / VO'], ['on_screen_text', 'On screen'], ['sound_cues', 'Sound'], ['generation_risk', 'Generation risk']])}`)
+    })
+    const unassigned = shots.filter(sh => !deliverables.some(d => (sh.deliverable_ids || []).includes(d.id)))
+    if (unassigned.length) blocks.push(`### Other shots\n\n${table(unassigned, [['shot_id', 'Shot'], ['deliverable_ids', 'For'], ['framing', 'Framing'], ['action', 'Action']])}`)
+    md.push(`## Shot plan and storyboard\n\n${blocks.join('\n\n')}`)
+    md.push(`### Every shot in full\n\n${shots.map(sh => `#### ${sh.shot_id}\n\n${fields({ ...sh, ...(panelById[sh.shot_id] || {}) }, ['shot_id'])}`).join('\n\n')}`)
+    const flags = C(s, 'storyboard').contradictions_flagged || []
+    if (flags.length) md.push(`### Contradictions the storyboard flagged\n\n${list(flags)}`)
+  }
   const tracked = C(s, 'continuity_bible').tracked_elements || []
   if (tracked.length) md.push(`## Continuity\n\n${tracked.map(e => `- **${e.element_id}** (${e.element_type}): ${(e.states_by_shot || []).map(x => `${x.shot_id}: ${x.state}`).join('; ')}`).join('\n')}`)
-  const jobs = C(s, 'generation_plan').jobs || []
-  if (jobs.length) md.push(`## Generation plan (not run; no paid media without your approval and a budget)\n\n${table(jobs, [['job_id', 'Job'], ['shot_id', 'Shot'], ['job_type', 'Type'], ['prompt', 'Prompt'], ['estimated_cost_unit', 'Est. cost']])}`)
+  const gen = C(s, 'generation_plan')
+  const jobs = gen.jobs || []
+  if (jobs.length) {
+    md.push(`## Generation plan (not run; no paid media without your approval and a budget)\n\n${table(jobs, [['job_id', 'Job'], ['shot_id', 'Shot'], ['job_type', 'Type'], ['method', 'Method'], [j => (j.capability_supported ? 'yes' : 'NO'), 'Supported'], ['estimated_cost_unit', 'Est. cost']])}`)
+    const unsupported = jobs.filter(j => !j.capability_supported)
+    if (unsupported.length || (gen.missing_capabilities || []).length) md.push(`### Not supported yet\n\n${list([...unsupported.map(j => `${j.job_id} (${j.shot_id}): ${j.capability_notes}`), ...(gen.missing_capabilities || []).map(m => `Missing capability: ${m}`)])}`)
+    md.push(`### Every job in full\n\n${jobs.map(j => `#### ${j.job_id} · ${j.shot_id}\n\n${fields(j, ['job_id', 'shot_id'])}`).join('\n\n')}`)
+  }
   const qc = C(s, 'quality_reports')
-  if (qc.issues) md.push(`## Integrity check\n\nRecommendation: ${qc.recommendation}.\n\n${table(qc.issues, [['severity', 'Severity'], ['shot_or_timecode', 'Where'], ['evidence', 'Issue'], ['responsible_agent', 'Owner']])}`)
-  if (out) md.push(`---\n\n_Run: ${out.command}, ${out.budget_ledger.agent_calls_used_this_run} agent calls._`)
+  if (qc.issues) {
+    md.push(`## Integrity check\n\nRecommendation: ${qc.recommendation}.\n\n${table(qc.issues, [['severity', 'Severity'], ['shot_or_timecode', 'Where'], ['evidence', 'Issue'], ['responsible_agent', 'Owner']])}`)
+    if ((qc.checks || []).length) md.push(`### Checks run\n\n${table(qc.checks, [['check_id', 'Check'], ['category', 'Category'], ['result', 'Result'], ['evidence', 'Evidence']])}`)
+  }
+
+  // Everything each department assumed or couldn't resolve; other pages cite these by ID.
+  const env = live(s).filter(([k, a]) => LABELS[k] && ((a.assumptions || []).length || (a.blockers || []).length))
+  if (env.length) {
+    md.push(`## Assumptions and blockers\n\n${env.map(([k, a]) => `### ${LABELS[k]}\n\n${list([...(a.assumptions || []), ...(a.blockers || []).map(b => `Blocker (${b.responsible_agent}): ${b.issue}${b.resolution ? ` → ${b.resolution}` : ''}`)])}`).join('\n\n')}`)
+  }
+  if (out) md.push(`---\n\n_Run: ${out.command}, ${out.budget_ledger.agent_calls_used_this_run} agent calls${out.totalTokens ? `, ${(out.totalTokens / 1e6).toFixed(2)}M tokens` : ''}._`)
   return md.join('\n\n') + '\n'
 }
 
@@ -291,13 +362,20 @@ function deskDocs(slug, s, out) {
         built_route_id: s.selected_concept_id || null,
         recommendation: cs.recommendation_rationale || '',
         package_grade: pr ? pr.grade : null,
-        panel: pr ? { round: pr.round, approvals: pr.approvals, of: pr.of, averages: pr.averages, revised_after_review: pr.revised_after_review || [], lenses: pr.lenses.map(l => ({ lens: l.lens, would_approve: l.would_approve, verdict: l.verdict, scores: l.scores })) } : null,
-        departments: grades(s).map(x => ({ key: x.key, label: x.label, grade: x.grade, lowest: x.lowest, rounds: x.rounds, failed_checks: x.failed_checks.length })),
+        panel: pr ? {
+          round: pr.round, approvals: pr.approvals, of: pr.of, averages: pr.averages, ended: pr.ended || null,
+          revised_after_review: (pr.revised_after_review || []).map(k => LABELS[k] || k), grade_note: panelNote(pr),
+          lenses: pr.lenses.map(l => ({ lens: l.lens, would_approve: l.would_approve, verdict: l.verdict, scores: l.scores, notes: pr.grade === 'A' ? [] : (l.notes || []).map(n => ({ dept: n.responsible, target: n.target, note: n.note })) })),
+        } : null,
+        departments: grades(s).map(x => ({ key: x.key, label: x.label, grade: x.grade, lowest: x.lowest, rounds: x.rounds, failed_checks: x.failed_checks, notes: x.notes })),
         script: (C(s, 'script').deliverable_scripts || []).map(d => ({ deliverable_id: d.deliverable_id, duration_s: d.duration_s, idea_in_one_line: d.idea_in_one_line, cta: d.cta, beats: (d.beats || []).map(b => ({ t: `${b.start_s}–${b.end_s}s`, picture: b.picture, sound: b.sound, vo: b.vo, text: b.on_screen_text })) })),
         cast: (C(s, 'casting_bible').characters || []).map(c => ({ id: c.character_id, role: c.role_in_story, presence: c.screen_presence })),
-        open_questions: [...(s.needs_human_input || []), ...(s.open_questions || [])],
+        open_questions: questionsFor(s),
         blocked_reason: g.blocked_by_stale ? `Can't be approved yet: ${g.blocked_by_stale.length} pieces of work are stale. Claude re-runs the project to rebuild them.` : null,
         stale: g.blocked_by_stale || [],
+        open_issues: g.blocked_by_stale ? questionsFor(s) : [],
+        next: g.blocked_by_stale ? `Tell Claude "resume ${slug}" to rebuild the stale work.` : null,
+        caveat: g.changed_since_review ? `Your last approval wasn't applied: the package changed after you saw it${(g.changed || []).length ? ` (${g.changed.join(', ')} were rebuilt)` : ''}. These are the current versions; approve again if they still work for you.` : null,
         review_items: (g.artifacts_for_review || []).map(a => ({ artifact_id: a.artifact_id, revision: a.revision, kind: a.kind })),
         package_file: `projects/${slug}/package.md`,
       },
@@ -311,7 +389,7 @@ function deskDocs(slug, s, out) {
         title: g.blocked_by ? 'The studio needs an answer' : 'Pick the route',
         ask: g.blocked_by ? `The ${g.blocked_by.join(' and ')} couldn't be finished from your idea alone. Answer the questions below and the studio carries on from here.` : 'Approve the strategy and one route. Nothing downstream is built until you do.',
         needs_answer: !!g.blocked_by,
-        open_questions: [...(s.needs_human_input || []), ...(s.open_questions || [])],
+        open_questions: questionsFor(s),
         from_run: `${out ? out.command : 'run'} · ${new Date().toISOString().slice(0, 10)}`,
         strategy: C(s, 'strategy').single_minded_proposition ? { proposition: C(s, 'strategy').single_minded_proposition, tension: C(s, 'strategy').audience_tension } : null,
         routes: (cs.routes || []).map(r => ({ route_id: r.route_id, central_idea: r.central_idea, emotional_promise: r.emotional_promise, product_role: r.product_role, execution_example: r.execution_example })),
@@ -342,7 +420,7 @@ const f = flags(rest)
 switch (cmd) {
   case 'new': cmdNew(slug, f._[0], f); break
   case 'resume': cmdResume(slug, f); break
-  case 'approve': cmdApprove(slug, f._[0]); break
+  case 'approve': cmdApprove(slug, f._[0], f); break
   case 'notes': cmdNotes(slug, f._[0], f); break
   case 'save': cmdSave(slug, f._[0]); break
   case 'status': cmdStatus(slug); break

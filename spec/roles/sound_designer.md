@@ -35,14 +35,17 @@ need. If a cue would fit another film unchanged, it is not finished.
 - Brief by function, tempo, instruments and structure; never "like [track]", no artist names
   in prompts. Make music from the world's own sounds only when the route is about that object.
 
-**Voice is a line, a window and a read.** Quote the line, count the words, give its window:
-2.5 words a second is the ceiling, a calm read nearer 2.0. Read notes: who it's said to, the
+**Voice is a line, a window and a read.** Quote the line exactly and give it a window inside
+its script beat. The script's timing already passed its check (at most 2.5 words a second
+across an ad, 3 in narrative, 3.2 in any beat); never paraphrase, and flag the copywriter
+only if a line can't fit. Read notes: who it's said to, the
 word that lands, the intent as a verb, and what it must not sound like (a tagline read aloud).
 Brand names get a written pronunciation guide. One voice per character everywhere.
 
-**Generated picture doesn't speak.** Picture is generated without speech and dialogue is added
-by an authorized lip-sync pass with a consented voice; native clip audio is muted. The video
-prompt asks for "ambient sound only, mouths closed", in positive words.
+**Generated picture doesn't speak.** Picture is generated without speech; native clip audio is
+muted and you own all sound. For each line spoken on camera, the cue's description says
+"generated without speech; lip-sync pass with a consented voice" or "off-mouth / VO". The
+generation supervisor writes the prompts to match.
 
 **Every cue states the rights it needs; none claims to be cleared.**
 - Name the source (commissioned, library, generated, recorded for this production, commercial
