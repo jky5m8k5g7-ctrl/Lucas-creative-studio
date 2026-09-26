@@ -148,7 +148,7 @@ function cmdNew(slug, idea, f) {
   writeRun(slug, { command: 'IDEA', idea: idea.trim(), ideaHints: hints, ...(d.direction.length ? { direction: d.direction } : {}), ...(Object.keys(d.targets).length ? { targets: d.targets } : {}), ...runOptions(f) })
 }
 
-// Options any run takes: --review end|gates, --budget <agent calls per run>.
+// Options any run takes: --review end|gates, --budget <agent calls per run>, --quality on|off.
 function runOptions(f) {
   const o = {}
   if (f.review) {
@@ -159,6 +159,12 @@ function runOptions(f) {
     const n = Number(f.budget)
     if (!(n >= 1)) die('--budget is a number of agent calls')
     o.maxAgentCalls = n
+  }
+  // --quality on|off: the A-quality review loop (on for idea runs; a project started from a brief
+  // before the loop existed has it off until a run turns it on).
+  if (f.quality) {
+    if (!['on', 'off'].includes(f.quality)) die('--quality is "on" or "off"')
+    o.quality = f.quality === 'on'
   }
   return o
 }
@@ -193,7 +199,7 @@ function cmdApprove(slug, decisionFile, f) {
     if (shown.length && shown.join() !== current.join()) die(`the desk card showed ${shown.join(', ')}, but the project is now at ${current.join(', ')}. Republish projects/${slug}/desk.json and ask Lucas to decide again.`)
   }
   const approval = { approved: true, selected_route_id: d.selected_route_id || undefined, approver_id: d.approver_id, decided_at: d.decided_at, comment: d.comment || '', decision_id: did, ...(d.decision === 'route_change' ? { route_change: true } : {}) }
-  writeRun(slug, { command: 'APPROVE', priorState: state, approvals: { [d.gate_id]: approval } })
+  writeRun(slug, { command: 'APPROVE', priorState: state, approvals: { [d.gate_id]: approval }, ...runOptions(f) })
 }
 
 function cmdNotes(slug, notes, f) {
