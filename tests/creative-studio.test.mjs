@@ -479,5 +479,20 @@ const rKd3a = await run({ command: 'APPROVE', priorState: J(rKd0.project_state),
 const rKd3 = await run({ command: 'APPROVE', priorState: J(rKd3a.project_state), approvals: { production_plan: approve({ decision_id: 'dec_K3', selected_route_id: 'R3', route_change: true }) }, direction: [{ id: 'LD-01', note: 'K3', departments: ['cinematographer'] }] }, sKd.agent, sKd.parallel, noop, noop)
 ok(rKd3a.project_state.production_plan_applied && rKd3.project_state.selected_concept_id === 'R3' && !rKd3.project_state.production_plan_applied && rKd3.pending_gate.gate_id === 'production_plan', 'K2: a route change with direction on an approved package rebuilds and comes back')
 
+// F2. A review call that fails is retried once; failing twice leaves the review unfinished, and the
+// package review runs it again before the package reaches Lucas.
+let camFails = 1
+const sF2 = makeStub({ score: (dept, label) => (dept === 'cinematographer' && label.endsWith('review 1') ? 7 : 8) })
+const agentF2 = async (prompt, o) => { if (o.label === 'cinematographer · review 2' && camFails > 0) { camFails--; sF2.calls.push({ label: o.label, prompt }); return null } return sF2.agent(prompt, o) }
+const rF2 = await run({ command: 'IDEA', idea: IDEA }, agentF2, sF2.parallel, noop, noop)
+const qF2 = rF2.project_state.artifacts.camera_plan.quality
+ok(sF2.calls.filter(c => c.label === 'cinematographer · review 2').length === 2 && qF2.rounds === 2 && qF2.grade === 'A' && !qF2.incomplete, 'F2: a failed review call is retried once and the review counts')
+camFails = 2
+const sF3 = makeStub({ score: (dept, label) => (dept === 'cinematographer' && label.endsWith('review 1') ? 7 : 8) })
+const agentF3 = async (prompt, o) => { if (o.label === 'cinematographer · review 2' && camFails > 0) { camFails--; sF3.calls.push({ label: o.label, prompt }); return null } return sF3.agent(prompt, o) }
+const rF3 = await run({ command: 'IDEA', idea: IDEA }, agentF3, sF3.parallel, noop, noop)
+const qF3 = rF3.project_state.artifacts.camera_plan.quality
+ok(rF3.project_state.decision_log.some(d => /review call for round 2 failed twice/.test(d.summary)) && sF3.calls.filter(c => c.label === 'cinematographer · review 2').length === 3 && qF3.grade === 'A' && !qF3.incomplete, 'F2: a review that failed twice stays unfinished and runs again before the package reaches Lucas: ' + JSON.stringify({ calls: sF3.calls.filter(c => c.label === 'cinematographer · review 2').length, g: qF3.grade, inc: !!qF3.incomplete }))
+
 console.log(fails ? `\n${fails} FAILED` : '\nALL PASS')
 if (fails) process.exit(1)

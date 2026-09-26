@@ -1679,6 +1679,8 @@ async function produce(state, key, opts) {
   const attempts = []
   let violations = (prior && prior.checks && prior.checks.failed) || []
   let refused = false
+  // A review call that failed twice: the review didn't happen, so it stays unfinished.
+  let reviewFailed = false
   let madeNew = false
 
   // One make: the agent's work, re-run up to twice while code checks fail. Out of budget, it
@@ -1760,9 +1762,16 @@ async function produce(state, key, opts) {
     for (let round = (quality ? quality.rounds : 0) + 1; round <= maxRounds; round++) {
       // The previous review is the one of the version being revised (after a kept round, not the last round).
       const last = history.length ? { scores: (quality && quality.scores) || history[history.length - 1].scores, notes: quality && quality.notes } : null
-      const crit = await runAgent(state, 'quality_control', criticPrompt(state, spec, role, asWork(res), last), { schema: CRITIQUE_SCHEMA, phase: ph, label: `${spec.dept} · review ${round}` })
+      const reviewCall = () => runAgent(state, 'quality_control', criticPrompt(state, spec, role, asWork(res), last), { schema: CRITIQUE_SCHEMA, phase: ph, label: `${spec.dept} · review ${round}` })
+      let crit = await reviewCall()
+      // A reviewer that returns nothing usable (a malformed answer, a dead call) gets one retry.
+      if (!crit || (!crit.not_run && !crit.specificity)) crit = await reviewCall()
       if (crit && crit.not_run) { refused = true; break }
-      if (!crit || !crit.specificity) { pending = null; break }
+      if (!crit || !crit.specificity) {
+        reviewFailed = true
+        state.decision_log.push({ stage: spec.stage, summary: `${spec.label}: the review call for round ${round} failed twice, so this version is unreviewed; its review runs again on the next build.` })
+        break
+      }
       const scores = { specificity: crit.specificity.score, distinctiveness: crit.distinctiveness.score, fit: crit.fit.score, craft: crit.craft.score }
       const min = Math.min(...Object.values(scores))
       history.push({ round, scores, min, failed_checks: violations.length })
@@ -1797,10 +1806,12 @@ async function produce(state, key, opts) {
       if (best.round === rounds) delete quality.kept_round
     }
     const keepBest = !!(best && lastReviewed && best !== lastReviewed && better(best, lastReviewed))
-    // Out of budget mid-review: save the best reviewed version to revise next when a revision
-    // scored below it, or, under a bar, instead of a revision no reviewer has scored yet.
-    if (refused && pending && (keepBest || (target && best && pending === 'review'))) restore({ incomplete: true, pending: 'revise' })
-    else if (refused && pending) quality = { ...(quality || { grade: 'not_reviewed', scores: null, min: null, rounds: 0, history: [], notes: [], keep: [] }), history, incomplete: true, pending }
+    // Stopped mid-review (out of budget, or a review call that failed): save the best reviewed
+    // version to revise next when a revision scored below it, or, under a bar, instead of a
+    // revision no reviewer has scored yet.
+    const stopped = refused || reviewFailed
+    if (stopped && pending && (keepBest || (target && best && pending === 'review'))) restore({ incomplete: true, pending: 'revise' })
+    else if (stopped && pending) quality = { ...(quality || { grade: 'not_reviewed', scores: null, min: null, rounds: 0, history: [], notes: [], keep: [] }), history, incomplete: true, pending }
     else if (quality) {
       delete quality.incomplete
       delete quality.pending
@@ -1843,7 +1854,9 @@ async function produce(state, key, opts) {
 
 const anyStale = (state, keys) => (keys || Object.keys(state.artifacts)).some(k => state.artifacts[k] && state.artifacts[k].status === 'stale')
 const BUILT = BUILD_ORDER.concat(['continuity_bible'])
-const packageNeedsWork = state => anyStale(state, BUILT) || BUILD_ORDER.some(k => hasPendingNotes(state, k))
+// Work to do before the package is reviewed or presented: stale work, pending notes, and a review
+// that didn't finish (a failed review call; a budget stop is caught by limit_reached first).
+const packageNeedsWork = state => anyStale(state, BUILT) || BUILD_ORDER.some(k => hasPendingNotes(state, k) || (state.settings.quality && unfinishedReview(state, k)))
 const unfinishedReview = (state, k) => !!(state.artifacts[k] && state.artifacts[k].quality && state.artifacts[k].quality.incomplete)
 const hasPendingNotes = (state, k) => !!(state.pending_notes && (state.pending_notes[k] || []).length)
 // Blocked work is retried on the next run: it was missing something (an answer from Lucas, or
