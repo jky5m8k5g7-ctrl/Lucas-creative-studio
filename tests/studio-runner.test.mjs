@@ -159,5 +159,35 @@ try {
   fs.rmSync(DDIR, { recursive: true, force: true })
 }
 
+// recover: a lost run is rebuilt from its journal up to the latest point where every call finished.
+const RSLUG = 'zz-recover-test'
+const RDIR = path.join(ROOT, 'projects', RSLUG)
+fs.rmSync(RDIR, { recursive: true, force: true })
+try {
+  studio('new', RSLUG, 'Emberline makes a cast-iron skillet, pre-seasoned with flaxseed oil. A dad teaching his kid breakfast.')
+  const run = await loadWorkflow(path.join(RDIR, '.run.js'))
+  const st = makeStub()
+  const lines = [{ type: 'launched' }]
+  let k = 0
+  const journaled = async (prompt, o) => { const key = `k${++k}`; lines.push({ type: 'started', key, label: o.label }); const r = await st.agent(prompt, o); lines.push({ type: 'result', key, result: r }); return r }
+  await run({}, journaled, st.parallel, () => {}, () => {})
+  // Lose the run a third of the way in: keep that many finished calls and one that never finished.
+  const cut = lines.findIndex((l, i) => i > 0 && l.type === 'started' && lines.slice(1, i).filter(x => x.type === 'result').length >= Math.floor(k / 3))
+  const lost = lines.slice(0, cut).concat([{ type: 'started', key: 'lost', label: lines[cut].label }])
+  const jdir = path.join(tmp, 'lost-run')
+  fs.mkdirSync(jdir, { recursive: true })
+  fs.writeFileSync(path.join(jdir, 'journal.jsonl'), lost.map(l => JSON.stringify(l)).join('\n') + '\n')
+  const msg = execFileSync('node', [path.join(ROOT, 'tools/recover.mjs'), RSLUG, jdir], { cwd: ROOT, encoding: 'utf8' })
+  const recovered = JSON.parse(fs.readFileSync(path.join(RDIR, 'state.json'), 'utf8'))
+  const kept = Number((msg.match(/Recovered (\d+) of (\d+)/) || [])[1])
+  ok(kept > 0 && kept <= Math.floor(k / 3) + 1 && recovered.limit_reached && recovered.artifacts.development, `recover: a lost run's finished calls are kept (${kept} recovered) and the state is saved`)
+  studio('resume', RSLUG)
+  const labels = []
+  const r2 = await (await loadWorkflow(path.join(RDIR, '.run.js')))({}, async (p, o) => { labels.push(o.label); return st.agent(p, o) }, st.parallel, () => {}, () => {})
+  ok(r2.pending_gate && r2.pending_gate.gate_id === 'production_plan' && !labels.includes('development_producer'), 'recover: the resumed run finishes the package without redoing recovered work')
+} finally {
+  fs.rmSync(RDIR, { recursive: true, force: true })
+}
+
 console.log(fails ? `\n${fails} FAILED` : '\nALL PASS')
 if (fails) process.exit(1)

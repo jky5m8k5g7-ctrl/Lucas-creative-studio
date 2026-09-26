@@ -97,6 +97,13 @@ Each writes `projects/<slug>/.run.js` (not committed); run it with
 When a saved state is too large to embed (a Workflow script is capped at 512 KiB), the runner
 writes it to part scripts in `projects/<slug>/.run-parts/` and the run loads them first.
 
+**A run that was lost** (a container restart, a stopped task) is recovered from its journal with
+`node tools/recover.mjs <slug> <run transcript dir>`: it replays the lost run's script with each
+call answered by the result it actually returned, up to the latest point where every call had
+finished, and saves that state. `resume` then continues from it. A Workflow `resumeFromRunId`
+reuses cached calls only up to the first one that ran in a different order, which departments
+built in parallel break, so recovery matches calls by label instead.
+
 **Direction mid-build.** `direct` records a note from Lucas for the departments it names. Their
 makers, reviewers and revisers get it as binding direction, and so do integrity QC and the
 package panel; other departments' prompts don't change. A project with a saved state resumes with

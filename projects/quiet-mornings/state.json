@@ -1,300 +1,989 @@
 {
-  "project_id": "PROJECT_001",
-  "artifact_seq": 3,
+ "project_id": "PROJECT_001",
+ "artifact_seq": 6,
+ "brief": {
+  "name": "Quiet Mornings",
+  "brand": "Solace Home Goods (fictional test brand, not a real company)",
+  "product_or_subject": "the Solace ceramic pour-over coffee dripper",
+  "one_line_brief": "Make a $38 ceramic pour-over feel essential to a calm morning, not just another kitchen gadget.",
+  "objective": "Drive DTC site visits and add-to-carts among home-coffee enthusiasts.",
+  "audience": "Urban professionals aged 25-40 who make coffee at home and value ritual over convenience.",
+  "key_message": "A five-minute ritual that slows your morning down, on purpose.",
+  "tone": [
+   "quiet",
+   "warm",
+   "tactile"
+  ],
+  "verified_product_facts": [
+   "Hand-glazed stoneware ceramic",
+   "Dishwasher safe",
+   "Made in small batches"
+  ],
+  "references": [],
+  "deliverables": [
+   {
+    "id": "D01",
+    "type": "video",
+    "duration_seconds": 15,
+    "aspect_ratio": "9:16"
+   },
+   {
+    "id": "D02",
+    "type": "still",
+    "count": 2,
+    "aspect_ratio": "4:5"
+   }
+  ],
+  "must_include": [
+   "A clear product role in the story",
+   "A readable closing product moment"
+  ],
+  "must_avoid": [
+   "Generic luxury imagery without a story",
+   "Unsupported performance claims"
+  ],
+  "deadline": null,
+  "budget": {
+   "currency": "USD",
+   "runner_llm_cap": null,
+   "media_and_render_cap": null,
+   "spent": 0,
+   "reserved": 0
+  }
+ },
+ "artifacts": {
   "brief": {
-    "name": "Quiet Mornings",
-    "brand": "Solace Home Goods (fictional test brand, not a real company)",
-    "product_or_subject": "the Solace ceramic pour-over coffee dripper",
-    "one_line_brief": "Make a $38 ceramic pour-over feel essential to a calm morning, not just another kitchen gadget.",
-    "objective": "Drive DTC site visits and add-to-carts among home-coffee enthusiasts.",
-    "audience": "Urban professionals aged 25-40 who make coffee at home and value ritual over convenience.",
-    "key_message": "A five-minute ritual that slows your morning down, on purpose.",
-    "tone": [
+   "artifact_id": "brief-001",
+   "project_id": "PROJECT_001",
+   "task_id": "01_intake",
+   "owner_agent": "producer",
+   "kind": "brief",
+   "revision": 1,
+   "status": "draft",
+   "based_on": [],
+   "content": {
+    "normalized_brief": {
+     "name": "Quiet Mornings",
+     "brand": "Solace Home Goods (fictional test brand, not a real company)",
+     "product_or_subject": "the Solace ceramic pour-over coffee dripper",
+     "one_line_brief": "Make a $38 ceramic pour-over feel essential to a calm morning, not just another kitchen gadget.",
+     "objective": "Drive DTC site visits and add-to-carts among home-coffee enthusiasts.",
+     "audience": "Urban professionals aged 25-40 who make coffee at home and value ritual over convenience.",
+     "key_message": "A five-minute ritual that slows your morning down, on purpose.",
+     "tone": [
       "quiet",
       "warm",
       "tactile"
-    ],
-    "verified_product_facts": [
+     ],
+     "verified_product_facts": [
       "Hand-glazed stoneware ceramic",
       "Dishwasher safe",
       "Made in small batches"
-    ],
-    "references": [],
-    "deliverables": [
+     ],
+     "references": [],
+     "deliverables": [
       {
-        "id": "D01",
-        "type": "video",
-        "duration_seconds": 15,
-        "aspect_ratio": "9:16"
+       "id": "D01",
+       "type": "video",
+       "duration_seconds": 15,
+       "aspect_ratio": "9:16"
       },
       {
-        "id": "D02",
-        "type": "still",
-        "count": 2,
-        "aspect_ratio": "4:5"
+       "id": "D02",
+       "type": "still",
+       "count": 2,
+       "aspect_ratio": "4:5"
       }
-    ],
-    "must_include": [
+     ],
+     "must_include": [
       "A clear product role in the story",
       "A readable closing product moment"
-    ],
-    "must_avoid": [
+     ],
+     "must_avoid": [
       "Generic luxury imagery without a story",
       "Unsupported performance claims"
-    ],
-    "deadline": null,
-    "budget": {
+     ],
+     "deadline": null,
+     "budget": {
       "currency": "USD",
       "runner_llm_cap": null,
       "media_and_render_cap": null,
       "spent": 0,
       "reserved": 0
+     }
     }
+   },
+   "asset_uri": null,
+   "assumptions": [],
+   "sources": [],
+   "blockers": []
   },
-  "artifacts": {
-    "brief": {
-      "artifact_id": "brief-001",
-      "project_id": "PROJECT_001",
-      "task_id": "01_intake",
-      "owner_agent": "producer",
-      "kind": "brief",
-      "revision": 1,
-      "status": "draft",
-      "based_on": [],
-      "content": {
-        "normalized_brief": {
-          "name": "Quiet Mornings",
-          "brand": "Solace Home Goods (fictional test brand, not a real company)",
-          "product_or_subject": "the Solace ceramic pour-over coffee dripper",
-          "one_line_brief": "Make a $38 ceramic pour-over feel essential to a calm morning, not just another kitchen gadget.",
-          "objective": "Drive DTC site visits and add-to-carts among home-coffee enthusiasts.",
-          "audience": "Urban professionals aged 25-40 who make coffee at home and value ritual over convenience.",
-          "key_message": "A five-minute ritual that slows your morning down, on purpose.",
-          "tone": [
-            "quiet",
-            "warm",
-            "tactile"
-          ],
-          "verified_product_facts": [
-            "Hand-glazed stoneware ceramic",
-            "Dishwasher safe",
-            "Made in small batches"
-          ],
-          "references": [],
-          "deliverables": [
-            {
-              "id": "D01",
-              "type": "video",
-              "duration_seconds": 15,
-              "aspect_ratio": "9:16"
-            },
-            {
-              "id": "D02",
-              "type": "still",
-              "count": 2,
-              "aspect_ratio": "4:5"
-            }
-          ],
-          "must_include": [
-            "A clear product role in the story",
-            "A readable closing product moment"
-          ],
-          "must_avoid": [
-            "Generic luxury imagery without a story",
-            "Unsupported performance claims"
-          ],
-          "deadline": null,
-          "budget": {
-            "currency": "USD",
-            "runner_llm_cap": null,
-            "media_and_render_cap": null,
-            "spent": 0,
-            "reserved": 0
-          }
-        }
-      },
-      "asset_uri": null,
-      "assumptions": [],
-      "sources": [],
-      "blockers": []
-    },
-    "strategy": {
-      "artifact_id": "strategy-002",
-      "project_id": "PROJECT_001",
-      "task_id": "02_strategy",
-      "owner_agent": "strategist",
-      "kind": "strategy",
-      "revision": 1,
-      "status": "draft",
-      "based_on": [
-        "brief-001"
-      ],
-      "content": {
-        "audience_tension": "The target audience — urban professionals aged 25-40 who make coffee at home and say they value ritual over convenience — live inside schedules built for speed. For most of that group, coffee on a weekday is something you get (a pod, a drip machine on autopilot, a coffee-shop stop) rather than something you make. The tension is between wanting mornings to feel intentional and self-directed, and defaulting to whatever costs the least time, because deliberately slowing down can feel indulgent or impractical on a Tuesday. The brief names this tension directly by setting 'ritual' against 'convenience' as competing values, by pricing the product at $38 (a considered purchase, not an impulse one), and by warning against generic luxury imagery — the tension is not 'I want to look rich,' it's 'I want five minutes that are mine before the day takes them.'",
-        "desired_behavior": "A viewer sees the :15 vertical video or one of the two 4:5 stills on social, recognizes the five-minute pour-over moment as a version of a morning ritual they want for themselves (not as an ad for 'a kitchen gadget'), and takes a direct-response action: clicks through to the Solace DTC site and adds the $38 pour-over dripper to cart. The objective is explicitly DTC visits and add-to-carts, not brand-awareness alone, so the creative must carry a clear, low-friction path from feeling to action.",
-        "product_relevance": "The ceramic pour-over cannot be a backdrop prop for a generic 'calm morning' mood — it has to be the literal mechanism that makes the ritual happen: the user stands at it, pours, waits, watches the water bloom the grounds. Its three verified attributes reinforce that role rather than sit apart from it: hand-glazed stoneware and small-batch production make the object itself read as considered and singular (supporting 'ritual', not 'appliance'), while dishwasher-safe care keeps the ritual repeatable on an ordinary Tuesday rather than precious or occasional. This is how the strategy satisfies the brief's required 'clear product role in the story' and 'readable closing product moment' without leaning on unverified performance claims (e.g., taste, extraction quality, temperature control) that were not supplied as facts.",
-        "single_minded_proposition": "The Solace pour-over is the five hands-on minutes you take back for yourself before the day takes the rest of your time — a small, repeatable act of choosing slow on purpose. (This operationalizes the brief's own key message, 'A five-minute ritual that slows your morning down, on purpose,' as a proposition the creative director can build routes against.)",
-        "proof_points": [
-          "Hand-glazed stoneware ceramic (verified fact): each piece carries visible handmade variation, giving the object a tactile, one-of-a-kind quality that a mass-produced plastic or metal drip gadget cannot claim — supports 'ritual object' over 'kitchen appliance.'",
-          "Made in small batches (verified fact): reinforces a considered, non-commodity positioning consistent with a $38 price point and with the brief's instruction to avoid generic luxury imagery — the claim to make is 'made with care in limited runs,' not 'exclusive' or 'luxury.'",
-          "Dishwasher safe (verified fact): removes the plausible objection that a 'ritual' object is too precious or high-maintenance to use every weekday — the ritual survives real life, which is what makes it repeatable rather than a one-time novelty.",
-          "Structural (not brand-specific) pour-over mechanic: manual pour-over brewing requires the user's continuous attention for several minutes, unlike a pod or programmable drip machine — this is a general characteristic of the pour-over method and is treated here as a category fact, not a tested claim about the Solace product's performance, taste, or extraction quality."
-        ],
-        "success_criteria": [
-          "Increase in click-throughs from the campaign's video and still placements to the Solace DTC product page, among the stated home-coffee-enthusiast audience segment.",
-          "Add-to-cart rate on site visits attributed to this campaign's creative, tracked against the campaign's own traffic (not an invented industry benchmark, since no baseline was supplied).",
-          "Qualitative signal that the 'ritual, on purpose' message is landing as intended — e.g., audience comments, saves, or shares that reference slowing down / morning ritual language rather than generic product-feature language.",
-          "Creative compliance checks the strategist can hand to the creative director and QC: every route keeps a clear, legible product role in the story and a readable closing product moment (both explicit brief requirements), and makes no performance, taste, or research claim beyond the three verified facts.",
-          "Note: no numeric targets (specific CTR%, add-to-cart %, conversion rate) are set here, because the brief and upstream context supplied no baseline or target figures; these should be defined by the producer/brand with actual analytics before being used as pass/fail thresholds."
-        ],
-        "supplied_facts": [
-          "Verified product fact: hand-glazed stoneware ceramic.",
-          "Verified product fact: dishwasher safe.",
-          "Verified product fact: made in small batches.",
-          "Brief fact: price point is $38.",
-          "Brief fact: objective is to drive DTC site visits and add-to-carts among home-coffee enthusiasts.",
-          "Brief fact: audience is urban professionals aged 25-40 who make coffee at home and value ritual over convenience.",
-          "Brief fact: key message is 'a five-minute ritual that slows your morning down, on purpose.'",
-          "Brief fact: tone is quiet, warm, tactile.",
-          "Brief fact: must include a clear product role in the story and a readable closing product moment.",
-          "Brief fact: must avoid generic luxury imagery without a story, and unsupported performance claims.",
-          "Brief fact: deliverables are one 15-second 9:16 video (D01) and two 4:5 stills (D02)."
-        ],
-        "sourced_research": [],
-        "hypotheses": [
-          "Hypothesis: this audience associates fast-format coffee (pods, programmable drip machines, coffee-shop pickup) with the rushed pace of their weekday, creating an unmet desire for a deliberately slower alternative — this is a reasoned inference from the brief's own 'ritual over convenience' framing, not sourced audience or market research.",
-          "Hypothesis: for this audience, handmade/small-batch cues signal intentionality and self-care rather than status or luxury, which is why the proposition leans on 'ritual/self-possession' rather than premium framing — inferred from the brief's tone words and its explicit instruction to avoid generic luxury imagery, not from tested creative research.",
-          "Hypothesis: removing the 'high-maintenance object' concern (via dishwasher-safe care) meaningfully lowers a real adoption barrier to daily use — a plausible behavioral read, not a validated finding.",
-          "Hypothesis: a $38 price point sits in a 'considered but attainable' zone for this audience (enough to feel intentional, not so much it reads as a luxury purchase) — an inference from the price and audience description, not a tested pricing study."
-        ]
-      },
-      "asset_uri": null,
-      "assumptions": [
-        "No research or reference_reader tool was bound in this run; all audience and behavioral reasoning above is the strategist's own inference from the supplied brief, not sourced market or audience research. All such reasoning is labeled as hypothesis in content.hypotheses, not fact.",
-        "The brief's references array is empty, so no reference asset was available or treated as visually inspected in producing this strategy.",
-        "Solace Home Goods is confirmed fictional/a test brand; nothing here implies a real company, real product performance, or claims beyond the three verified_product_facts supplied.",
-        "No real person's likeness, casting, or availability is addressed at this stage — that is out of scope for the strategist role and belongs to casting_director per the studio workflow.",
-        "Numeric success targets are intentionally left unset (see content.success_criteria) since the brief and upstream context gave no baseline figures or target percentages; setting real targets requires producer/brand input before use as an approval gate.",
-        "This artifact is proposed strategist output per the studio's shared_context rules (\"Workers read an immutable task snapshot and return proposed artifacts\") and is expected to be validated by the producer and built on by the creative_director at stage 03_concepts before any human approval gate."
-      ],
-      "sources": [
-        "Project brief / normalized_brief for PROJECT_001 supplied in this task's upstream_context (Quiet Mornings, Solace Home Goods).",
-        "creative_studio_agents.json — studio workflow and strategist role/instruction definition.",
-        "No external market research, audience studies, or category data were consulted or are cited; content.sourced_research is empty for that reason."
-      ],
-      "blockers": []
-    },
-    "concepts": {
-      "artifact_id": "concept_options-003",
-      "project_id": "PROJECT_001",
-      "task_id": "03_concepts",
-      "owner_agent": "creative_director",
-      "kind": "concept_options",
-      "revision": 1,
-      "status": "draft",
-      "based_on": [
-        "strategy-002"
-      ],
-      "content": {
-        "routes": [
-          {
-            "route_id": "R1",
-            "central_idea": "Before the phone, the inbox, or anyone else gets a piece of you, there are five minutes that are only yours — marked by the pour.",
-            "emotional_promise": "Quiet self-possession: the felt relief of claiming a few minutes before the day starts claiming them for you.",
-            "product_role": "The Solace dripper is the literal boundary object. The film's one deliberate action — setting the phone face-down and reaching for the dripper instead — makes the product the mechanism of the choice, not a backdrop to it. It stays in frame through the pour, the bloom, and the final held mug, closing on an unhurried, fully lit shot of the dripper itself on the counter.",
-            "visual_language": "Quiet and continuous, no contrast-cutting: warm low window light, muted stoneware palette (terracotta, cream, soft grey), handheld-but-steady camera, close but not macro. Sound carries more of the emotion than music — water, steam, ceramic set down, a phone buzzing once, off-screen and ignored.",
-            "execution_example": "15s / 9:16 (D01): Open tight on a phone screen lighting up on a counter; a hand turns it face-down without looking. Cut to the same hand lifting the Solace dripper, setting it on a mug, spooning grounds. Slow spiral pour, water blooming the grounds in close-up (2-3s held). Cut to the person at a window, mug in both hands, steam rising, a single distant notification sound goes unanswered. Final beat (2s): dripper alone on the counter in soft full light, product fully legible, with an illustrative closing line such as 'Made in small batches' (exact copy owned by copywriter). The two 4:5 stills (D02) pull directly from this beat structure: still 1 = the pour/bloom close-up with the dripper as clear hero object; still 2 = the closing counter shot, product fully visible and legible, doubling as a clean DTC-linkable product image."
-          },
-          {
-            "route_id": "R2",
-            "central_idea": "The bloom itself — the moment water first meets the grounds — is the ritual's whole point, and the hand-glazed ceramic is filmed as the singular object that stages it.",
-            "emotional_promise": "Presence: the satisfaction of doing one small thing slowly enough to actually notice it happening.",
-            "product_role": "The dripper's surface and form are the visual subject, not just present in the shot. Macro texture on the hand-glazed stoneware (visible glaze variation, no two pieces identical) is used to make the tactile, handmade proof point legible on screen, then the frame pulls back to show the object in full use — giving the product both an intimate role and a clear closing moment.",
-            "visual_language": "Macro and shallow depth of field, slow motion on water contact and steam, warm directional morning light, near-silent sound design (pour, drip, a single ceramic clink) with minimal or no music. No other objects compete in frame — discipline here is what keeps it from reading as generic 'luxury lifestyle' imagery.",
-            "execution_example": "15s / 9:16 (D01): Near-entirely macro — dry grounds catching light, first pour, the bloom rising and settling, steam curling off the surface, a fingertip resting briefly on the glaze's texture. In the last 3 seconds, camera pulls back for the first time to a clean, fully lit shot of the dripper and finished mug on the counter, with a hand entering frame to lift the mug — the human presence and the product both land together as the closing moment. Illustrative closing line: 'Hand-glazed. Small batch. Yours.' The two 4:5 stills (D02) isolate: still 1 = the bloom macro shot; still 2 = the pulled-back closing counter shot, framed as a clean product/DTC image."
-          },
-          {
-            "route_id": "R3",
-            "central_idea": "An ordinary Tuesday, not a weekend — the deliberate choice to reach for the slow thing instead of the fast thing, on a day that gave no permission to slow down.",
-            "emotional_promise": "Quiet agency: permission to choose slowness even when nothing about the day is asking for it.",
-            "product_role": "The dripper is staged as the chosen alternative in an explicit two-beat decision (reach for the fast option, then don't — reach for this instead), which makes its role in the story unmissable. It remains the visual anchor through the pour and into a final in-focus product shot.",
-            "visual_language": "Two-beat structure with a movement contrast rather than a lighting contrast (to avoid a glossy before/after ad feel): a slightly quicker, handheld beat for the 'fast' cue, settling into a locked-off, steady frame for the pour. Same muted warm palette throughout so the shift feels like a change in pace, not a change in world.",
-            "execution_example": "15s / 9:16 (D01): Opens on an out-of-focus stack of notifications/alarm on a phone, a hand starting to reach for it — then redirects to the Solace dripper sitting on the counter instead. One continuous, steady pour; the frame holds on the bloom. Final beat: person seated, mug in both hands, dripper still visible in soft foreground focus. On-screen line (illustrative, copywriter to finalize): 'A five-minute ritual, on purpose.' The two 4:5 stills (D02): still 1 = the redirected-hand moment (phone out of focus behind, dripper sharp in the foreground) carrying the tension itself; still 2 = the seated closing shot with the product legible in frame."
-          }
-        ],
-        "recommended_route_id": "R1",
-        "recommendation_rationale": "R1 (\"the line before the day\") most directly dramatizes the strategy's own audience tension — ritual vs. the pull of convenience — through one specific, small, believable action (turning the phone face-down) rather than a generic mood board or an explicit before/after contrast edit. That keeps it furthest from the brief's 'generic luxury imagery without a story' risk while still giving the product an unambiguous role and a clean, legible closing shot that doubles easily as a DTC-linkable image. Its single continuous pace (no hard tonal cut) also fits the brief's 'quiet, warm, tactile' tone more precisely than R3's two-beat contrast, and it extends more naturally to both required still crops than R2's mostly-macro treatment, which risks losing legible product context if used as a static image on its own. R2 and R3 remain strong alternates: R2 is the more sensory, tactile-proof-point-forward option if the brand wants to foreground the hand-glazed/small-batch facts even more literally; R3 is the more literal, message-forward option if the producer wants the 'on purpose' contrast made explicit rather than implied."
-      },
-      "asset_uri": null,
-      "assumptions": [
-        "No real people are depicted or implied: any on-camera hands/figures in the execution examples are fictional, generic talent concepts, not a real individual's likeness — casting_director will formalize this in the casting_bible at the next stage.",
-        "No reference imagery was supplied with this brief (references: [] in the project record) and no reference_reader tool is bound in this run, so none was or could be visually inspected; the visual-language descriptions above are original creative direction, not derived from any inspected reference asset.",
-        "On-screen/closing lines quoted in the execution examples (e.g., 'Made in small batches', 'A five-minute ritual, on purpose') are illustrative placeholders to show how the required closing product moment could read; final wording is the copywriter's deliverable at the next stage, not locked copy.",
-        "Assumed the depicted moment is a solitary, at-home morning scenario (person alone, no household/family context), consistent with the brief's 'five-minute ritual... on purpose' framing and the strategist's audience read — this is a creative choice, not a stated brief requirement.",
-        "Assumed a single named location/setup (home kitchen counter, window light) is sufficient for a :15 spot and two stills; no additional location was specified in the brief.",
-        "Treated 'made in small batches' and 'hand-glazed' as visually demonstrable through texture/variation in-camera, and 'dishwasher safe' as better suited to supporting copy than to any on-screen visual, since it is not something a viewer can see in a shot."
-      ],
-      "sources": [
-        "Project brief PROJECT_001 (\"Quiet Mornings\", Solace Home Goods) as supplied in this task's context, including verified_product_facts, deliverables, must_include/must_avoid, and tone.",
-        "Upstream strategy artifact (Brand and Audience Strategist output) supplied in task context: audience_tension, desired_behavior, product_relevance, single_minded_proposition, proof_points, success_criteria, and explicitly labeled hypotheses.",
-        "No external market research, audience research, or competitive review was sourced for this stage; sourced_research in the upstream strategy artifact was empty, and no research tool was used here."
-      ],
-      "blockers": []
-    }
-  },
-  "approvals": {},
-  "decision_log": [
-    {
-      "stage": "01_intake",
-      "summary": "Brief normalized",
-      "missing_fields": []
-    },
-    {
-      "stage": "02_strategy",
-      "summary": "Strategy drafted",
-      "artifact_id": "strategy-002"
-    },
-    {
-      "stage": "03_concepts",
-      "summary": "Three routes proposed",
-      "artifact_id": "concept_options-003"
-    },
-    {
-      "stage": "03_concepts",
-      "summary": "Stopped for required human approval: concept"
-    }
-  ],
-  "approval_log": [
-    {
-      "gate_id": "concept",
-      "decision": "pending"
-    }
-  ],
-  "pending_gate": {
-    "gate_id": "concept",
-    "rule": "Approve the normalized brief, strategy, and one selected concept ID.",
-    "artifacts_for_review": [
-      {
-        "artifact_id": "brief-001",
-        "kind": "brief",
-        "revision": 1,
-        "status": "draft"
-      },
-      {
-        "artifact_id": "strategy-002",
-        "kind": "strategy",
-        "revision": 1,
-        "status": "draft"
-      },
-      {
-        "artifact_id": "concept_options-003",
-        "kind": "concept_options",
-        "revision": 1,
-        "status": "draft"
-      }
+  "strategy": {
+   "artifact_id": "strategy-002",
+   "project_id": "PROJECT_001",
+   "task_id": "02_strategy",
+   "owner_agent": "strategist",
+   "kind": "strategy",
+   "revision": 1,
+   "status": "draft",
+   "based_on": [
+    "brief-001"
+   ],
+   "content": {
+    "audience_tension": "The target audience — urban professionals aged 25-40 who make coffee at home and say they value ritual over convenience — live inside schedules built for speed. For most of that group, coffee on a weekday is something you get (a pod, a drip machine on autopilot, a coffee-shop stop) rather than something you make. The tension is between wanting mornings to feel intentional and self-directed, and defaulting to whatever costs the least time, because deliberately slowing down can feel indulgent or impractical on a Tuesday. The brief names this tension directly by setting 'ritual' against 'convenience' as competing values, by pricing the product at $38 (a considered purchase, not an impulse one), and by warning against generic luxury imagery — the tension is not 'I want to look rich,' it's 'I want five minutes that are mine before the day takes them.'",
+    "desired_behavior": "A viewer sees the :15 vertical video or one of the two 4:5 stills on social, recognizes the five-minute pour-over moment as a version of a morning ritual they want for themselves (not as an ad for 'a kitchen gadget'), and takes a direct-response action: clicks through to the Solace DTC site and adds the $38 pour-over dripper to cart. The objective is explicitly DTC visits and add-to-carts, not brand-awareness alone, so the creative must carry a clear, low-friction path from feeling to action.",
+    "product_relevance": "The ceramic pour-over cannot be a backdrop prop for a generic 'calm morning' mood — it has to be the literal mechanism that makes the ritual happen: the user stands at it, pours, waits, watches the water bloom the grounds. Its three verified attributes reinforce that role rather than sit apart from it: hand-glazed stoneware and small-batch production make the object itself read as considered and singular (supporting 'ritual', not 'appliance'), while dishwasher-safe care keeps the ritual repeatable on an ordinary Tuesday rather than precious or occasional. This is how the strategy satisfies the brief's required 'clear product role in the story' and 'readable closing product moment' without leaning on unverified performance claims (e.g., taste, extraction quality, temperature control) that were not supplied as facts.",
+    "single_minded_proposition": "The Solace pour-over is the five hands-on minutes you take back for yourself before the day takes the rest of your time — a small, repeatable act of choosing slow on purpose. (This operationalizes the brief's own key message, 'A five-minute ritual that slows your morning down, on purpose,' as a proposition the creative director can build routes against.)",
+    "proof_points": [
+     "Hand-glazed stoneware ceramic (verified fact): each piece carries visible handmade variation, giving the object a tactile, one-of-a-kind quality that a mass-produced plastic or metal drip gadget cannot claim — supports 'ritual object' over 'kitchen appliance.'",
+     "Made in small batches (verified fact): reinforces a considered, non-commodity positioning consistent with a $38 price point and with the brief's instruction to avoid generic luxury imagery — the claim to make is 'made with care in limited runs,' not 'exclusive' or 'luxury.'",
+     "Dishwasher safe (verified fact): removes the plausible objection that a 'ritual' object is too precious or high-maintenance to use every weekday — the ritual survives real life, which is what makes it repeatable rather than a one-time novelty.",
+     "Structural (not brand-specific) pour-over mechanic: manual pour-over brewing requires the user's continuous attention for several minutes, unlike a pod or programmable drip machine — this is a general characteristic of the pour-over method and is treated here as a category fact, not a tested claim about the Solace product's performance, taste, or extraction quality."
+    ],
+    "success_criteria": [
+     "Increase in click-throughs from the campaign's video and still placements to the Solace DTC product page, among the stated home-coffee-enthusiast audience segment.",
+     "Add-to-cart rate on site visits attributed to this campaign's creative, tracked against the campaign's own traffic (not an invented industry benchmark, since no baseline was supplied).",
+     "Qualitative signal that the 'ritual, on purpose' message is landing as intended — e.g., audience comments, saves, or shares that reference slowing down / morning ritual language rather than generic product-feature language.",
+     "Creative compliance checks the strategist can hand to the creative director and QC: every route keeps a clear, legible product role in the story and a readable closing product moment (both explicit brief requirements), and makes no performance, taste, or research claim beyond the three verified facts.",
+     "Note: no numeric targets (specific CTR%, add-to-cart %, conversion rate) are set here, because the brief and upstream context supplied no baseline or target figures; these should be defined by the producer/brand with actual analytics before being used as pass/fail thresholds."
+    ],
+    "supplied_facts": [
+     "Verified product fact: hand-glazed stoneware ceramic.",
+     "Verified product fact: dishwasher safe.",
+     "Verified product fact: made in small batches.",
+     "Brief fact: price point is $38.",
+     "Brief fact: objective is to drive DTC site visits and add-to-carts among home-coffee enthusiasts.",
+     "Brief fact: audience is urban professionals aged 25-40 who make coffee at home and value ritual over convenience.",
+     "Brief fact: key message is 'a five-minute ritual that slows your morning down, on purpose.'",
+     "Brief fact: tone is quiet, warm, tactile.",
+     "Brief fact: must include a clear product role in the story and a readable closing product moment.",
+     "Brief fact: must avoid generic luxury imagery without a story, and unsupported performance claims.",
+     "Brief fact: deliverables are one 15-second 9:16 video (D01) and two 4:5 stills (D02)."
+    ],
+    "sourced_research": [],
+    "hypotheses": [
+     "Hypothesis: this audience associates fast-format coffee (pods, programmable drip machines, coffee-shop pickup) with the rushed pace of their weekday, creating an unmet desire for a deliberately slower alternative — this is a reasoned inference from the brief's own 'ritual over convenience' framing, not sourced audience or market research.",
+     "Hypothesis: for this audience, handmade/small-batch cues signal intentionality and self-care rather than status or luxury, which is why the proposition leans on 'ritual/self-possession' rather than premium framing — inferred from the brief's tone words and its explicit instruction to avoid generic luxury imagery, not from tested creative research.",
+     "Hypothesis: removing the 'high-maintenance object' concern (via dishwasher-safe care) meaningfully lowers a real adoption barrier to daily use — a plausible behavioral read, not a validated finding.",
+     "Hypothesis: a $38 price point sits in a 'considered but attainable' zone for this audience (enough to feel intentional, not so much it reads as a luxury purchase) — an inference from the price and audience description, not a tested pricing study."
     ]
+   },
+   "asset_uri": null,
+   "assumptions": [
+    "No research or reference_reader tool was bound in this run; all audience and behavioral reasoning above is the strategist's own inference from the supplied brief, not sourced market or audience research. All such reasoning is labeled as hypothesis in content.hypotheses, not fact.",
+    "The brief's references array is empty, so no reference asset was available or treated as visually inspected in producing this strategy.",
+    "Solace Home Goods is confirmed fictional/a test brand; nothing here implies a real company, real product performance, or claims beyond the three verified_product_facts supplied.",
+    "No real person's likeness, casting, or availability is addressed at this stage — that is out of scope for the strategist role and belongs to casting_director per the studio workflow.",
+    "Numeric success targets are intentionally left unset (see content.success_criteria) since the brief and upstream context gave no baseline figures or target percentages; setting real targets requires producer/brand input before use as an approval gate.",
+    "This artifact is proposed strategist output per the studio's shared_context rules (\"Workers read an immutable task snapshot and return proposed artifacts\") and is expected to be validated by the producer and built on by the creative_director at stage 03_concepts before any human approval gate."
+   ],
+   "sources": [
+    "Project brief / normalized_brief for PROJECT_001 supplied in this task's upstream_context (Quiet Mornings, Solace Home Goods).",
+    "creative_studio_agents.json — studio workflow and strategist role/instruction definition.",
+    "No external market research, audience studies, or category data were consulted or are cited; content.sourced_research is empty for that reason."
+   ],
+   "blockers": []
   },
-  "needs_human_input": [],
-  "stage_reached": "03_concepts",
-  "limit_reached": false
+  "concepts": {
+   "artifact_id": "concept_options-003",
+   "project_id": "PROJECT_001",
+   "task_id": "03_concepts",
+   "owner_agent": "creative_director",
+   "kind": "concept_options",
+   "revision": 1,
+   "status": "approved",
+   "based_on": [
+    "strategy-002"
+   ],
+   "content": {
+    "routes": [
+     {
+      "route_id": "R1",
+      "central_idea": "Before the phone, the inbox, or anyone else gets a piece of you, there are five minutes that are only yours — marked by the pour.",
+      "emotional_promise": "Quiet self-possession: the felt relief of claiming a few minutes before the day starts claiming them for you.",
+      "product_role": "The Solace dripper is the literal boundary object. The film's one deliberate action — setting the phone face-down and reaching for the dripper instead — makes the product the mechanism of the choice, not a backdrop to it. It stays in frame through the pour, the bloom, and the final held mug, closing on an unhurried, fully lit shot of the dripper itself on the counter.",
+      "visual_language": "Quiet and continuous, no contrast-cutting: warm low window light, muted stoneware palette (terracotta, cream, soft grey), handheld-but-steady camera, close but not macro. Sound carries more of the emotion than music — water, steam, ceramic set down, a phone buzzing once, off-screen and ignored.",
+      "execution_example": "15s / 9:16 (D01): Open tight on a phone screen lighting up on a counter; a hand turns it face-down without looking. Cut to the same hand lifting the Solace dripper, setting it on a mug, spooning grounds. Slow spiral pour, water blooming the grounds in close-up (2-3s held). Cut to the person at a window, mug in both hands, steam rising, a single distant notification sound goes unanswered. Final beat (2s): dripper alone on the counter in soft full light, product fully legible, with an illustrative closing line such as 'Made in small batches' (exact copy owned by copywriter). The two 4:5 stills (D02) pull directly from this beat structure: still 1 = the pour/bloom close-up with the dripper as clear hero object; still 2 = the closing counter shot, product fully visible and legible, doubling as a clean DTC-linkable product image."
+     },
+     {
+      "route_id": "R2",
+      "central_idea": "The bloom itself — the moment water first meets the grounds — is the ritual's whole point, and the hand-glazed ceramic is filmed as the singular object that stages it.",
+      "emotional_promise": "Presence: the satisfaction of doing one small thing slowly enough to actually notice it happening.",
+      "product_role": "The dripper's surface and form are the visual subject, not just present in the shot. Macro texture on the hand-glazed stoneware (visible glaze variation, no two pieces identical) is used to make the tactile, handmade proof point legible on screen, then the frame pulls back to show the object in full use — giving the product both an intimate role and a clear closing moment.",
+      "visual_language": "Macro and shallow depth of field, slow motion on water contact and steam, warm directional morning light, near-silent sound design (pour, drip, a single ceramic clink) with minimal or no music. No other objects compete in frame — discipline here is what keeps it from reading as generic 'luxury lifestyle' imagery.",
+      "execution_example": "15s / 9:16 (D01): Near-entirely macro — dry grounds catching light, first pour, the bloom rising and settling, steam curling off the surface, a fingertip resting briefly on the glaze's texture. In the last 3 seconds, camera pulls back for the first time to a clean, fully lit shot of the dripper and finished mug on the counter, with a hand entering frame to lift the mug — the human presence and the product both land together as the closing moment. Illustrative closing line: 'Hand-glazed. Small batch. Yours.' The two 4:5 stills (D02) isolate: still 1 = the bloom macro shot; still 2 = the pulled-back closing counter shot, framed as a clean product/DTC image."
+     },
+     {
+      "route_id": "R3",
+      "central_idea": "An ordinary Tuesday, not a weekend — the deliberate choice to reach for the slow thing instead of the fast thing, on a day that gave no permission to slow down.",
+      "emotional_promise": "Quiet agency: permission to choose slowness even when nothing about the day is asking for it.",
+      "product_role": "The dripper is staged as the chosen alternative in an explicit two-beat decision (reach for the fast option, then don't — reach for this instead), which makes its role in the story unmissable. It remains the visual anchor through the pour and into a final in-focus product shot.",
+      "visual_language": "Two-beat structure with a movement contrast rather than a lighting contrast (to avoid a glossy before/after ad feel): a slightly quicker, handheld beat for the 'fast' cue, settling into a locked-off, steady frame for the pour. Same muted warm palette throughout so the shift feels like a change in pace, not a change in world.",
+      "execution_example": "15s / 9:16 (D01): Opens on an out-of-focus stack of notifications/alarm on a phone, a hand starting to reach for it — then redirects to the Solace dripper sitting on the counter instead. One continuous, steady pour; the frame holds on the bloom. Final beat: person seated, mug in both hands, dripper still visible in soft foreground focus. On-screen line (illustrative, copywriter to finalize): 'A five-minute ritual, on purpose.' The two 4:5 stills (D02): still 1 = the redirected-hand moment (phone out of focus behind, dripper sharp in the foreground) carrying the tension itself; still 2 = the seated closing shot with the product legible in frame."
+     }
+    ],
+    "recommended_route_id": "R1",
+    "recommendation_rationale": "R1 (\"the line before the day\") most directly dramatizes the strategy's own audience tension — ritual vs. the pull of convenience — through one specific, small, believable action (turning the phone face-down) rather than a generic mood board or an explicit before/after contrast edit. That keeps it furthest from the brief's 'generic luxury imagery without a story' risk while still giving the product an unambiguous role and a clean, legible closing shot that doubles easily as a DTC-linkable image. Its single continuous pace (no hard tonal cut) also fits the brief's 'quiet, warm, tactile' tone more precisely than R3's two-beat contrast, and it extends more naturally to both required still crops than R2's mostly-macro treatment, which risks losing legible product context if used as a static image on its own. R2 and R3 remain strong alternates: R2 is the more sensory, tactile-proof-point-forward option if the brand wants to foreground the hand-glazed/small-batch facts even more literally; R3 is the more literal, message-forward option if the producer wants the 'on purpose' contrast made explicit rather than implied."
+   },
+   "asset_uri": null,
+   "assumptions": [
+    "No real people are depicted or implied: any on-camera hands/figures in the execution examples are fictional, generic talent concepts, not a real individual's likeness — casting_director will formalize this in the casting_bible at the next stage.",
+    "No reference imagery was supplied with this brief (references: [] in the project record) and no reference_reader tool is bound in this run, so none was or could be visually inspected; the visual-language descriptions above are original creative direction, not derived from any inspected reference asset.",
+    "On-screen/closing lines quoted in the execution examples (e.g., 'Made in small batches', 'A five-minute ritual, on purpose') are illustrative placeholders to show how the required closing product moment could read; final wording is the copywriter's deliverable at the next stage, not locked copy.",
+    "Assumed the depicted moment is a solitary, at-home morning scenario (person alone, no household/family context), consistent with the brief's 'five-minute ritual... on purpose' framing and the strategist's audience read — this is a creative choice, not a stated brief requirement.",
+    "Assumed a single named location/setup (home kitchen counter, window light) is sufficient for a :15 spot and two stills; no additional location was specified in the brief.",
+    "Treated 'made in small batches' and 'hand-glazed' as visually demonstrable through texture/variation in-camera, and 'dishwasher safe' as better suited to supporting copy than to any on-screen visual, since it is not something a viewer can see in a shot."
+   ],
+   "sources": [
+    "Project brief PROJECT_001 (\"Quiet Mornings\", Solace Home Goods) as supplied in this task's context, including verified_product_facts, deliverables, must_include/must_avoid, and tone.",
+    "Upstream strategy artifact (Brand and Audience Strategist output) supplied in task context: audience_tension, desired_behavior, product_relevance, single_minded_proposition, proof_points, success_criteria, and explicitly labeled hypotheses.",
+    "No external market research, audience research, or competitive review was sourced for this stage; sourced_research in the upstream strategy artifact was empty, and no research tool was used here."
+   ],
+   "blockers": []
+  },
+  "script": {
+   "artifact_id": "script-004",
+   "project_id": "PROJECT_001",
+   "task_id": "04_script_cast_world",
+   "owner_agent": "copywriter",
+   "kind": "script",
+   "revision": 1,
+   "status": "draft",
+   "based_on": [
+    "concept_options-003"
+   ],
+   "content": {
+    "story": {
+     "logline": "At 7:00 a.m. NORA turns her buzzing phone face-down and reaches for the Solace dripper instead, and until 7:05 the day gets nothing from her.",
+     "beat_sheet": [
+      {
+       "scene_id": "S1",
+       "heading": "INT. NORA'S KITCHEN - COUNTER - 7:00 AM",
+       "characters": [
+        "NORA"
+       ],
+       "what_happens": "Her phone lights up with 7:00 on the screen and buzzes on the counter. NORA flips it face-down without looking, lifts the Solace dripper off the dish rack, seats it on her chipped mug and presses a folded paper filter into the cone.",
+       "turn": "The day's first demand is refused, and the hand that refused it goes to the dripper. Her five minutes start here, at 7:00."
+      },
+      {
+       "scene_id": "S2",
+       "heading": "INT. NORA'S KITCHEN - COUNTER - CONTINUOUS",
+       "characters": [
+        "NORA"
+       ],
+       "what_happens": "Cut to grounds already heaped in the filter. She pours a slow spiral from the kettle, and the grounds swell and dome up inside the dripper. Nothing else happens in frame.",
+       "turn": "The five minutes began at 7:00 with the flip, and the pour is what fills them. The frame now belongs to the ritual, not the phone."
+      },
+      {
+       "scene_id": "S3",
+       "heading": "INT. NORA'S KITCHEN - COUNTER - MOMENTS LATER",
+       "characters": [
+        "NORA"
+       ],
+       "what_happens": "A last drip falls as she lifts the dripper off the mug and sets it down beside the face-down phone. The phone lights up again, and its glow leaks out around the edges onto the wood as it rattles. Her hand stays on the mug until the glow dies. Card: 'Everyone else gets you at 7:05.'",
+       "turn": "The second demand gets nothing either, and the card says when it will: 7:05. The boundary holds, and the dripper is what drew it."
+      },
+      {
+       "scene_id": "S4",
+       "heading": "INT. NORA'S KITCHEN - COUNTER - MOMENTS LATER",
+       "characters": [],
+       "what_happens": "The mug is gone. The Solace dripper stands empty on the counter, whole and legible, and the phone is still face-down and dark at the edge of frame. The verified facts come on screen, then the CTA.",
+       "turn": "She took the coffee and left the phone. The tool becomes the hero, and the viewer is told where to buy one."
+      }
+     ]
+    },
+    "deliverable_scripts": [
+     {
+      "deliverable_id": "D01",
+      "duration_s": 15,
+      "idea_in_one_line": "The pour is the boundary: at 7:00 the phone goes face-down and the dripper comes up, and nobody gets her until 7:05.",
+      "beats": [
+       {
+        "beat_id": "D01-B1",
+        "start_s": 0,
+        "end_s": 1.5,
+        "picture": "HOOK. A phone lies face-up on a wooden counter beside a dish rack. Its generic lock screen lights up with 7:00 in large digits, readable, and it buzzes. At about 0.8s NORA's hand comes into frame, flips the phone face-down without her looking, and keeps moving toward the dish rack.",
+        "sound": "Phone buzz rattling on wood, then the flat clack of glass landing face-down. Then silence.",
+        "vo": "",
+        "on_screen_text": ""
+       },
+       {
+        "beat_id": "D01-B2",
+        "start_s": 1.5,
+        "end_s": 4,
+        "picture": "The same hand lifts the Solace dripper off the dish rack, seats it on a chipped white mug, and presses a folded paper filter down into the cone.",
+        "sound": "Stoneware clicking onto the mug rim; the dry crinkle of the paper filter pressed into the cone.",
+        "vo": "",
+        "on_screen_text": "Nobody gets you before the pour."
+       },
+       {
+        "beat_id": "D01-B3",
+        "start_s": 4,
+        "end_s": 7.5,
+        "picture": "Cut to grounds already heaped in the filter. NORA's hand tips a gooseneck kettle and pours a slow spiral onto them. The grounds swell, bubble and dome up against the paper inside the dripper. Hold on the bloom.",
+        "sound": "Thin stream of water on wet grounds; the soft fizz of the bloom. No music.",
+        "vo": "",
+        "on_screen_text": ""
+       },
+       {
+        "beat_id": "D01-B4a",
+        "start_s": 7.5,
+        "end_s": 9,
+        "picture": "NORA's hand lifts the Solace dripper off the chipped mug, a last drip falling from its tip into the coffee, and sets it down on the wooden counter beside the face-down phone.",
+        "sound": "A last drip plinking into the coffee; stoneware set down on wood.",
+        "vo": "",
+        "on_screen_text": ""
+       },
+       {
+        "beat_id": "D01-B4b",
+        "start_s": 9,
+        "end_s": 11,
+        "picture": "The face-down phone lights up, and a glow leaks out around its edges onto the wood as it rattles. Beside it, NORA's hand wraps around the chipped mug and stays there until the glow dies.",
+        "sound": "One phone buzz rattling against the wood, left unanswered. It stops. Room tone.",
+        "vo": "",
+        "on_screen_text": "Everyone else gets you at 7:05."
+       },
+       {
+        "beat_id": "D01-B5",
+        "start_s": 11,
+        "end_s": 12.5,
+        "picture": "Moments later, with the mug and hand gone, the Solace dripper stands empty on the wooden counter with its filter out, and its glaze has pooled unevenly at the foot. At the frame edge, clear of the dripper, the phone lies face-down and dark. The whole product is in frame and legible.",
+        "sound": "Room tone; the kettle ticking as it cools off-screen.",
+        "vo": "",
+        "on_screen_text": "Hand-glazed stoneware. Made in small batches."
+       },
+       {
+        "beat_id": "D01-B6",
+        "start_s": 12.5,
+        "end_s": 15,
+        "picture": "Same picture as B5, held: the empty Solace dripper on the wooden counter with its glaze pooled unevenly at the foot, and the phone face-down and dark at the frame edge. The whole product is legible. Nothing in frame moves.",
+        "sound": "Room tone and the kettle ticking as it cools, to the last frame. No music, no sting.",
+        "vo": "",
+        "on_screen_text": "Shop the Solace dripper. Link in bio."
+       }
+      ],
+      "cta": "Shop the Solace dripper. Link in bio."
+     }
+    ],
+    "stills_copy": [
+     {
+      "still_id": "D02-1",
+      "picture": "The pour and bloom. NORA's hand tips a gooseneck kettle, and a thin spiral of water lands on grounds that have domed up inside the Solace dripper, which sits on a chipped white mug. A phone lies face-down at the edge of the counter. Copy stays clear of the dripper, the kettle and the pour; exact placement is up to design.",
+      "headline": "Nobody gets you before the pour.",
+      "subline": "Hand-glazed stoneware, made in small batches. Shop the Solace dripper, link in bio."
+     },
+     {
+      "still_id": "D02-2",
+      "picture": "The closing counter shot, which doubles as the DTC product image. The Solace dripper stands empty on a bare wooden counter, with no filter, mug or phone. The glaze has pooled unevenly at its foot. The whole product is in frame and legible, and the copy sits clear of it.",
+      "headline": "Five minutes, on purpose.",
+      "subline": "Hand-glazed, and it still goes in the dishwasher. Shop the Solace dripper, link in bio."
+     }
+    ],
+    "decisions": [
+     {
+      "choice": "A deliberate break from the route's execution example: the window-and-mug shot is cut. In its place (B4b), the face-down phone lights up a second time, its glow leaking around the edges onto the wood as it rattles, and NORA's hand stays on the mug until the glow dies.",
+      "reason": "The window shot is the first thing the taste notes reject. The replacement keeps R1's idea and the product's role. With the sound off, the second refusal reads from the edge glow and the 7:05 card. With the sound on, the rattle lands alone in room tone. This corrects the last version, which relied on the phone creeping a few millimetres, and that would not show on a phone screen.",
+      "source": "Taste notes: 'Anyone gazing out a window holding a mug' (reject); Craft brief: 'The story must read from picture and on-screen text alone'; Route R1 product_role"
+     },
+     {
+      "choice": "NORA appears only as hands and forearms. No face appears in the spot or in either still.",
+      "reason": "Her hands carry the story: flip, lift, filter, pour, set down, hold. A face would push the spot toward stock lifestyle footage.",
+      "source": "Taste notes: 'Hands before faces'; Craft brief: stock-lifestyle picture rejects"
+     },
+     {
+      "choice": "The hook is the phone flip. The lock screen's 7:00 is readable for about 0.8s before NORA's hand arrives, and the flip is complete by 1.5s. There is no VO and no card over it.",
+      "reason": "It is a specific action in the first frame and the route's one deliberate choice. A readable 7:00 sets up the 7:05 card, so the clock works for people watching muted.",
+      "source": "Craft brief: hook rule; Route R1 execution example; reviewer note 1"
+     },
+     {
+      "choice": "The spot has no VO: 0 spoken words in 15s. The 7:00-to-7:05 idea moves to the B4b card, 'Everyone else gets you at 7:05.' (6 words), which bookends the B2 card 'Nobody gets you before the pour.' 'Five minutes, on purpose.' now appears only on still 2.",
+      "reason": "The last version's line ('Everyone else can have you at seven-oh-five') was 9 spoken words in a 3.5s beat, about 2.6 per second. It also ran over the buzz that is the story's turn, and only people with the sound on got the payoff. As a card it reaches muted viewers, and the buzz lands on its own. The open still runs 7.5s with no VO, as before.",
+      "source": "Craft brief: timing budget and sound-off rule; Taste notes: 'Restraint over explanation', 'Dry over sentimental'; reviewer note 1"
+     },
+     {
+      "choice": "The old B4 is split into B4a (7.5-9.0s: the dripper is lifted off the mug and set down) and B4b (9.0-11.0s: the second buzz, the hand staying on the mug, the 7:05 card). B5 and B6 keep their IDs, so the review notes still point to the right beats.",
+      "reason": "One action per beat. The old 3.5s beat carried four actions, a card and a VO. Now the buzz and the card that answers it get 2s to themselves.",
+      "source": "Reviewer note 1; Craft brief: 'one card per roughly 2 seconds'"
+     },
+     {
+      "choice": "B2 ends with a folded paper filter pressed into the cone, and B3 opens on grounds already heaped in it. The spooning happens in the cut.",
+      "reason": "This fixes the filter that was never put in. Lifting, seating and filtering fit into 2.5s; adding the spoon did not.",
+      "source": "Reviewer note 3; Quality bar: continuity that holds, nothing physically implausible"
+     },
+     {
+      "choice": "No music at all. Real sounds carry the mood: the buzz rattling on wood, the flat clack of glass landing face-down, stoneware clicking onto the mug rim, the filter crinkle, the kettle stream, the bloom fizz, the last drip, stoneware on wood, and the kettle ticking as it cools.",
+      "reason": "The taste notes allow music 'late, if at all'. Leaving it out keeps the second buzz audible, and that buzz is the turn.",
+      "source": "Taste notes: 'Sound design before music'; Route R1 visual_language"
+     },
+     {
+      "choice": "The product works as a tool in B2 to B4a (lifted, poured through, set down) and becomes the hero in B5 to B6 (4s in total). New timing: B5 (11.0-12.5s) holds the product with the facts card for 1.5s before the CTA, and B6 (12.5-15.0s) gives the CTA 2.5s, the longest any card is on screen.",
+      "reason": "This meets both must-includes and the craft brief's 1.5s minimum product hold. It also gives the line that drives conversion the most reading time.",
+      "source": "Brief must-include; Craft brief: product moment; Taste notes: 'The product is a tool, then a hero'; Brief objective: DTC visits and add-to-carts; reviewer note 5"
+     },
+     {
+      "choice": "In B5 and B6 the mug is gone, and the phone is still face-down and dark at the edge of frame, clear of the dripper: she took the coffee and left the phone. Still 2 drops the phone so it works as a clean product image.",
+      "reason": "The packshot keeps the idea on screen until the CTA, so the last 4 seconds belong to this route and not to just any ceramic cone. The dripper stays dominant and legible.",
+      "source": "Route R1 product_role: 'the literal boundary object'; Quality bar: ending with no idea attached; Taste notes: ending reject; reviewer note 4"
+     },
+     {
+      "choice": "The coffee drip on the outer glaze is cut from B5, B6 and still 2. The glaze pooled unevenly at the foot and the kettle ticking as it cools carry the hold.",
+      "reason": "With the filter out, nothing could put coffee there, and on the DTC image it would read as a dripper that spills.",
+      "source": "Reviewer note 4; Brief objective: add-to-carts"
+     },
+     {
+      "choice": "Only three facts are stated: 'Hand-glazed stoneware' and 'Made in small batches' on the B5 card and still 1, and dishwasher safe on still 2 only, as 'it still goes in the dishwasher'. The pooled glaze shows the hand-glazing in the picture. Nothing is said about taste, speed or quality, and the price stays off screen.",
+      "reason": "Only verified facts may be stated. The dishwasher line turns a spec into a dry, human line.",
+      "source": "Brief: verified product facts; must avoid 'Unsupported performance claims'"
+     },
+     {
+      "choice": "The CTA 'Shop the Solace dripper. Link in bio.' runs over the product frame. There is no logo-on-colour end card.",
+      "reason": "It is a specific verb plus a destination, which serves DTC visits and add-to-carts. An ending with only a logo is a taste reject.",
+      "source": "Craft brief: CTA rule; Taste notes: ending reject; Brief objective"
+     },
+     {
+      "choice": "Each scene has one real detail: the dripper lives on the dish rack, the chipped white mug, and the phone left face-down after she has gone.",
+      "reason": "Each makes the kitchen lived-in rather than generic luxury, and each does a job in the story.",
+      "source": "Taste notes: 'One real detail per scene', 'Real kitchens have a dish rack'; Brief must-avoid: generic luxury imagery"
+     },
+     {
+      "choice": "All cards and still copy sit in negative space and never over the dripper. On still 1, copy stays clear of the dripper, the kettle and the pour, and design decides the exact placement.",
+      "reason": "The product stays legible in every frame it appears in, and the pour stays uncovered.",
+      "source": "Craft brief: on-screen text rule; reviewer note 5"
+     }
+    ]
+   },
+   "asset_uri": null,
+   "assumptions": [
+    "The product is called 'the Solace dripper', following the route. The brief only says 'ceramic pour-over', so the name must be confirmed before the end card and still sublines are locked.",
+    "'Five minutes', '7:00' and '7:05' frame the approved key message ('A five-minute ritual...'). They are not a measured brew-time claim. If legal reads them as a performance claim, the fallbacks are ready: B4b card becomes 'Everyone else can have you later.' (6 words) and the still 2 headline becomes 'On purpose.'",
+    "The B1 lock screen shows 7:00 so that the B4b 7:05 card pays off. The lock screen is a generic mock-up (see the rights items below).",
+    "The B4b edge glow has to register at the scene's light level. If it doesn't, the director fixes it with tighter framing on the phone. The story needs the glow to be seen, and a card or VO should not stand in for it.",
+    "The coffee grounds are spooned off-screen between B2 and B3. The filter is removed off-screen between B4b and B5.",
+    "The dripper is assumed to sit directly on a mug with a paper filter, as in the route's execution example. If the product needs a different filter or a carafe, the actions in B2 to B4a need to change.",
+    "The glaze pooling in B5, B6 and still 2 assumes that real units show visible hand-glaze variation. If they look uniform, drop that detail and rely on the on-screen fact.",
+    "The $38 price is left off screen because it is not in the verified-facts list. The client can approve adding it to the end card or the still 2 subline.",
+    "'Link in bio' assumes organic placement. For paid placement, use the platform's 'Shop now' button pointing to the DTC product page, and keep 'Shop the Solace dripper' as the card copy.",
+    "RIGHT, PENDING: hand-performer release for the performer whose hands and forearms play NORA. Source: the talent agreement, to be issued. Scope: organic and paid social, 9:16 video and 4:5 stills, term and territory TBD. Owner: producer. NORA is a fictional character and uses no real person's name. Not cleared.",
+    "RIGHT, NOT CURRENTLY NEEDED: VO-performer usage. This version has no VO. If one is restored, a voice-performer release is needed with the same scope (organic and paid social, 9:16 video, term TBD). Owner: producer. Pending.",
+    "RIGHT, PENDING: the lock screen in B1. The handset and OS interface are third-party trade dress, so production needs a de-branded handset and a generic lock-screen mock-up showing only 7:00. Source: made by props or graphics. Scope: all placements above. Owner: producer. Not cleared.",
+    "RIGHT, PENDING: the fictional notification in B1. A generic banner with no real app name, logo, sender or readable message. Source: made by production. Scope: all placements above. Owner: producer. Needs sign-off.",
+    "RIGHT, PENDING: props. The kettle, mug and anything else in frame are to be unbranded or cleared. Source: production design. Scope: all placements above. Owner: producer. Not cleared.",
+    "RIGHT, PENDING: sound effects. They are to be recorded on set, or licensed from a library for the same scope (organic and paid social, term TBD). Owner: producer, with sound. Not cleared.",
+    "No reference imagery was supplied or inspected, and no reference_reader tool is bound in this run."
+   ],
+   "sources": [
+    "PROJECT_001 brief (objective, audience, key message, tone, deliverables, must include/avoid)",
+    "Verified product facts: Hand-glazed stoneware ceramic; Dishwasher safe; Made in small batches",
+    "Route R1 (central idea, product_role, visual_language, execution_example)",
+    "Strategy: single-minded proposition and audience tension",
+    "Copywriter craft brief",
+    "Studio taste notes (example notes written to test the mechanism)",
+    "Reviewer notes on the previous version"
+   ],
+   "blockers": [],
+   "checks": {
+    "failed": [],
+    "attempts": [
+     0,
+     0
+    ]
+   },
+   "quality": {
+    "grade": "A",
+    "scores": {
+     "specificity": 8,
+     "distinctiveness": 8,
+     "fit": 9,
+     "craft": 8
+    },
+    "min": 8,
+    "rounds": 2,
+    "history": [
+     {
+      "round": 1,
+      "scores": {
+       "specificity": 8,
+       "distinctiveness": 7,
+       "fit": 8,
+       "craft": 7
+      },
+      "min": 7,
+      "failed_checks": 0
+     },
+     {
+      "round": 2,
+      "scores": {
+       "specificity": 8,
+       "distinctiveness": 8,
+       "fit": 9,
+       "craft": 8
+      },
+      "min": 8,
+      "failed_checks": 0
+     }
+    ],
+    "evidence": {
+     "specificity": "All six earlier notes were addressed, and every beat now names an action and a sound that someone can build or record: \"The face-down phone lights up, and a glow leaks out around its edges onto the wood as it rattles. Beside it, NORA's hand wraps around the chipped mug and stays there until the glow dies.\" The sound track is written just as concretely: \"Stoneware clicking onto the mug rim; the dry crinkle of the paper filter pressed into the cone.\" and \"Room tone; the kettle ticking as it cools off-screen.\" The continuity gap is closed with \"presses a folded paper filter down into the cone\" followed by \"Cut to grounds already heaped in the filter.\" It stops short of 9 because of one question graphics and props would still ask. The B1 picture says only \"Its generic lock screen lights up with 7:00 in large digits, readable, and it buzzes\", but the rights list asks production to build \"the fictional notification in B1. A generic banner with no real app name, logo, sender or readable message.\" From the page alone, nobody can tell whether a banner appears on screen.",
+     "distinctiveness": "The 7:00-to-7:05 clock and keeping the phone in the product frame make the ending belong to this route: \"Everyone else gets you at 7:05.\" and, in B5, \"At the frame edge, clear of the dripper, the phone lies face-down and dark.\" The last 4 seconds are no longer a packshot any ceramic cone could fill, and the decision says why: \"She took the coffee and left the phone.\" The detail nobody asked for is \"the kettle ticking as it cools off-screen\", which holds the final frame without music. It stops short of 9 because a competitor's ceramic dripper could still be swapped in and the story would play. The only detail that belongs to this product alone is \"its glaze has pooled unevenly at the foot\", and that detail depends on real units showing glaze variation, as the script's own assumptions admit.",
+     "fit": "Lucas's route (\"Before the phone, the inbox, or anyone else gets a piece of you, there are five minutes that are only yours — marked by the pour\") is recognizable and sharper as two dry cards that bookend the spot: \"Nobody gets you before the pour.\" and \"Everyone else gets you at 7:05.\" The product is the mechanism of the choice: \"flips the phone face-down without her looking, and keeps moving toward the dish rack\", then \"lifts the Solace dripper off the dish rack.\" Only verified facts are stated (\"Hand-glazed stoneware. Made in small batches.\"). The price and the product name are flagged, not assumed: \"The $38 price is left off screen because it is not in the verified-facts list.\" Both must-includes are met: the tool comes before the hero, and there is a legible closing frame. The CTA serves the DTC objective: \"Shop the Solace dripper. Link in bio.\" The window-and-mug stock shot is cut, with a stated reason. The stills follow the route's plan, with still 1 as the pour and still 2 as a clean DTC image.",
+     "craft": "Every earlier craft note was fixed. The VO is gone (\"The spot has no VO: 0 spoken words in 15s\"). The overloaded beat is split into \"B4a (7.5-9.0s ...)\" and \"B4b (9.0-11.0s ...)\". The end cards are retimed to B5 11.0–12.5 and B6 12.5–15.0. The rights are listed as pending, each with a source, scope and owner (\"RIGHT, PENDING: hand-performer release ... Owner: producer. Not cleared.\"). The beats run back to back from 0 to 15. Every card is 7 words or fewer, and the story reads with the sound off. It stops short of 9 for two reasons. First, the product's first hero moment has to carry a two-sentence card: \"Hand-glazed stoneware. Made in small batches.\" is 6 words in 1.5s, the fastest read in the spot. Second, the decisions contain stale or inaccurate lines. \"The open still runs 7.5s with no VO, as before\" is left over from a version that had VO. \"gives the CTA 2.5s, the longest any card is on screen\" is wrong, because the B2 card also runs 1.5–4.0s."
+    },
+    "notes": [
+     {
+      "target": "D01-B1 picture, and the assumptions item 'RIGHT, PENDING: the fictional notification in B1'",
+      "note": "Make the picture and the rights list agree. B1 shows only a lock screen with 7:00 and a buzz, but the rights list tells production to build a generic notification banner. Decide which one it is and write it into the B1 picture. Either write: 'Its generic lock screen lights up: 7:00 in large digits, and one generic notification banner with no readable text slides in beneath it; it buzzes once.' Or keep the clock only and delete the banner rights item. Keep the single buzz so that 'Then silence.' still holds. Do not add anything else to B1.",
+      "source": "Quality bar, Specificity: 'can the next department act on it without asking a question?'; Quality bar, Craft: 'every cross-reference ... is right'"
+     },
+     {
+      "target": "D01-B5 on_screen_text; decisions entries on product-moment timing and on VO",
+      "note": "Keep the 11.0–12.5s timing. Cut the facts card to 3 words or fewer so the product's first 1.5s as hero goes to looking, not reading. Use 'Hand-glazed. Small batches.' or just 'Hand-glazed stoneware.' The pooled glaze shows that fact in the picture, and 'Made in small batches' already appears on the still 1 subline. Then fix the decisions text. Delete 'The open still runs 7.5s with no VO, as before.' Change 'the longest any card is on screen' to 'tied with the B2 card for the longest on screen'.",
+      "source": "Craft brief: 'at most 7 words per card, one card per roughly 2 seconds' and 'the product is fully legible and held for at least 1.5 seconds before the end card'; Taste notes: 'Restraint over explanation'"
+     },
+     {
+      "target": "D02-2 subline",
+      "note": "'Hand-glazed, and it still goes in the dishwasher.' can be read as 'still, after years of use'. That reading is a durability claim, and durability is not a verified fact. Keep the dry turn but close off that reading, e.g. 'Hand-glazed. Goes in the dishwasher anyway.' Also add a legal fallback to the assumptions, the same way the 7:05 fallback is listed: 'Hand-glazed and dishwasher safe.'",
+      "source": "Brief: verified product facts and must-avoid 'Unsupported performance claims'; Taste notes: 'Dry over sentimental'"
+     }
+    ],
+    "keep": [
+     "The B1 hook: 7:00 readable on the lock screen before the hand arrives, the flip finished by 1.5s, with no VO and no card over it",
+     "Zero VO and no music, with the sound list as written: the buzz rattling on wood, the flat clack of glass landing face-down, stoneware clicking onto the mug rim, the filter crinkle, the bloom fizz, the last drip plinking, the kettle ticking as it cools",
+     "The two bookend cards: 'Nobody gets you before the pour.' and 'Everyone else gets you at 7:05.'",
+     "B4b: the glow leaking around the edges of the face-down phone onto the wood, and the hand staying on the chipped mug until the glow dies",
+     "The phone left face-down and dark at the frame edge in B5 and B6 (she took the coffee and left the phone), while still 2 stays clean for the DTC page",
+     "The glaze pooled unevenly at the foot, which shows hand-glazing in the picture instead of asserting it",
+     "NORA as hands and forearms only, and the window-and-mug shot cut with the taste-note reason stated",
+     "The dripper living on the dish rack and the chipped white mug as the real details",
+     "The CTA 'Shop the Solace dripper. Link in bio.' held 2.5s over the product frame, with no logo-on-colour end card",
+     "Still 1 copy placed 'clear of the dripper, the kettle and the pour', with exact placement left to design",
+     "The B4a/B4b split, with B5 and B6 keeping their IDs",
+     "The rights list, each item with source, scope and owner and marked pending, plus the legal fallbacks for 7:05, the product name and the price"
+    ]
+   }
+  },
+  "casting_bible": {
+   "artifact_id": "casting_bible-005",
+   "project_id": "PROJECT_001",
+   "task_id": "04_script_cast_world",
+   "owner_agent": "casting_director",
+   "kind": "casting_bible",
+   "revision": 1,
+   "status": "review_required",
+   "based_on": [
+    "concept_options-003",
+    "script-004"
+   ],
+   "content": {
+    "characters": [
+     {
+      "character_id": "NORA",
+      "role_in_story": "Principal and the only person in the cast. She appears as hands and forearms only. Her habit: every weekday at 7:00 she makes the pour before anyone else gets any of her. Objective: get the coffee poured and her hand around the mug while the phone gets nothing back from her. At B1 she turns it face-down and never turns it back. At B4b she doesn't touch it. She appears in D01-B1 to B4b and in D02-1. D01-B5, B6 and D02-2 have no person in them. The script sets the name and gender (NORA, she). Playing age is 33-39, target 36. That is a choice, not a story need: it sits inside the 25-40 audience and is old enough for the habit to look long-standing. Her age shows in knuckle creases, tendons and veins. I break two defaults on purpose. The category's default hand is late-20s, pale and slim, with a gloss manicure and stacked gold rings on a linen cuff. The generator's stock hand is long, tapered, poreless and light-skinned. The taste note 'Hands before faces' only works if the hand isn't stock, and breaking both also keeps us clear of the brief's must-avoid on generic luxury imagery. Heritage is South Asian American. It is recorded for continuity and kept out of the prompt, and with no face on screen it shows only as skin hex and texture. She has one mark from her life: a writer's callus on her right middle finger, from years of writing by hand. She still keeps her lists on paper rather than in the phone. This is backstory only and adds no prop, scene or copy. It puts the audience's 'ritual over convenience' into a single mark (taste note: 'one real detail... that only this place or person would have'). She is not presented as a customer or an expert, and there is no testimonial.",
+      "screen_presence": "One-frame read: a hand in its mid-thirties, with creased knuckles, short bare nails, a writer's callus and a mole on the back. It flattens a buzzing phone face-down on the first try and is already moving on toward the dish rack, so the flip reads as habit, not as someone acting calm. The hand never searches or hovers. It lands on an object, takes it and lets go. She lifts the dripper off the rack the way she'd lift a mug she uses every day, not like a presented object. During the pour her forearm stays still and only her wrist circles. Between actions her hands stop completely: flat, no tapping.",
+      "performance_style": "Understated. Silent: no dialogue, no lip-sync, no VO. No face is cast. At rest her hand lies flat and does nothing. Every move plays at the real-time pace of a daily habit, so there is no slow motion (taste reject). The flip is one continuous move of about 0.4 s that carries straight into the reach. Her one change comes at B4b: as the phone lights, her thumb slides once across the chip on the mug rim, over about half a second, and settles on it until the glow dies. The refusal plays as choosing the mug. Her hand never moves toward the phone, and her grip on the mug doesn't tighten.",
+      "wardrobe_fit_notes": "Height 167 cm (range 165-169). She is the only principal, so there is no one to scale against. Medium build, shoulders level with the hips, forearms as in the anchors. Right-handed. The mole and callus are on the right hand, and the director decides which hand does what in each shot. Hand: about 18 cm long and 8.5 cm across the knuckles. Product-scale constraint: in a one-hand grip on the dripper (B2, B4a), glaze must show on both sides of her hand. Her 8.5 cm knuckle breadth must therefore be at least 2 cm less than the rim diameter, which is pending from the client. If the rim is under 10.5 cm, the hand spec comes back to casting. Sleeves end at least 5 cm above the wrist bone on both arms, so no cuff crosses the dripper or the pour. Nothing on the fingers or wrists: a ring or watch would click on stoneware over the designed sound, and a watch would add a second clock against the story's 7:00 and 7:05. The sleeve colour must differ in value from both the skin (#6F4A34) and the dripper glaze, so the edge of the hand reads against each. Nails (joint lock, stylist): short, natural and unpolished, filed straight, with the right thumb cuticle slightly ragged. Skin finish (joint lock, stylist): matte, with no lotion or oil sheen, kept the same in every setup.",
+      "visual_identity_anchors": [
+       "[macro] Build: a broad, square hand, 8.5 cm across the knuckles against a wrist about 6 cm across. Short, blunt fingers: the middle finger is about 7 cm, shorter than the palm is wide. Forearm about 26 cm around at its widest, with sparse, fine dark hair (#2A1E17) along the outer edge. This breaks the generator's long, tapered hand.",
+       "[macro] Skin: #6F4A34 on the back of the hand and forearm, with visible pores. Palms and fingertip pads are lighter, #B3886A. The back-of-hand hex is what reads in the widest counter shot.",
+       "[micro] Age texture: creased knuckles, darker than the surrounding skin (#4A2F20), on both hands. Two raised veins run from the wrist across the back of each hand.",
+       "[micro] Mark and asymmetry: a flat 4 mm mole (#3B2519) on the back of the right hand, 2 cm toward the wrist from the middle-finger knuckle. The left hand has none.",
+       "[micro] Writer's callus: a raised, matte pad about 5 mm across, a shade lighter than the finger (#86624A), on the thumb side of the right middle finger at the top joint, where a pen rests. It reads in the B1-B3 close-ups."
+      ],
+      "fictional_talent": true
+     }
+    ]
+   },
+   "asset_uri": null,
+   "assumptions": [
+    "NORA is the only character the script names. The beat sheet lists her in S1-S3, and S4 has no one in it. No one else is cast or added.",
+    "No face is cast, because the script shows NORA as hands and forearms only. If a later edit adds her face, casting reopens to set face anchors, so the generator doesn't pick them by default.",
+    "NORA is fictional and is not modelled on any real person. No reference imagery was supplied, and none was inspected. Nothing here clears rights for how she is made, generated or live. Those rights are pending with the producer (see blockers).",
+    "The market is assumed to be the US, from the $ price and 'link in bio'. Coffee equipment isn't age-restricted, so no code minimum applies.",
+    "'The product comes in one size' is an assumption, not a verified fact. The hand-scale constraint depends on the dripper's height and rim diameter, which have been requested from the client (see blockers). The 2 cm margin (about 1 cm of glaze showing on each side of her hand) is my number.",
+    "The dripper's glaze colour isn't specified. The route gives only the palette: terracotta, cream, soft grey. I chose skin #6F4A34 to differ in value from both cream and terracotta. Once the glaze colour is locked, check the separation at B2, B4a and D02-1.",
+    "The B4b thumb move assumes the mug's chip is on the rim. The script says only 'chipped white mug'. Props should place the chip on the rim, on the side facing her thumb.",
+    "The callus's origin (she writes her lists by hand) is backstory for the performer and for keeping the generated hand consistent. It adds no prop, scene or copy.",
+    "No human-review flags apply: no child, no disability or visible difference, no religious dress, no pregnancy, and no one 70 or over.",
+    "Heritage and age are casting choices, not story needs. The script sets the name and gender (NORA, she).",
+    "All six reviewer notes are applied as written. None conflicted with the brief, the verified facts or another note."
+   ],
+   "sources": [
+    "Brief PROJECT_001: objective, audience, must-include, must-avoid, verified facts",
+    "Route R1: central_idea, product_role, visual_language",
+    "Script: beat sheet S1-S4; D01-B1 to B6; stills D02-1 and D02-2; script decisions (hands only, no VO, the window shot cut)",
+    "Casting Director craft brief",
+    "Studio taste notes: 'Hands before faces', 'One real detail per scene', the slow-motion reject, 'Hands doing a specific task read as real'",
+    "Reviewer notes on the previous casting version"
+   ],
+   "blockers": [
+    {
+     "issue": "Rights for a generated NORA are not cleared.",
+     "responsible_agent": "producer",
+     "resolution": "Source: the chosen generator's output-use terms, plus any AI-content labelling the platforms require for paid and organic social. Scope: D01 (15 s, 9:16) and D02-1 (4:5), on social and the DTC site, in the US. Owner: producer. Status: pending."
+    },
+    {
+     "issue": "A live hand performer, if one is used for any insert or for the D02-1 still, needs a release.",
+     "responsible_agent": "producer",
+     "resolution": "Source: a hand-model release. Scope: the same media as above (D01 and D02-1, social and the DTC site), with the term set by the producer to match the media plan, in the US. The performer must be 21 or older and match the five anchors. Owner: producer. Status: pending."
+    },
+    {
+     "issue": "The dripper's height and rim diameter are not supplied, and it is unverified whether more than one size is sold. The hand-scale constraint depends on these.",
+     "responsible_agent": "producer (request to the client, Solace Home Goods)",
+     "resolution": "The client confirms the height, the rim diameter and the sizes sold. If the rim is under 10.5 cm, casting reopens the hand breadth before generation or a live casting call."
+    }
+   ],
+   "checks": {
+    "failed": [],
+    "attempts": [
+     0,
+     0
+    ]
+   },
+   "quality": {
+    "grade": "A",
+    "scores": {
+     "specificity": 9,
+     "distinctiveness": 8,
+     "fit": 9,
+     "craft": 8
+    },
+    "min": 8,
+    "rounds": 2,
+    "history": [
+     {
+      "round": 1,
+      "scores": {
+       "specificity": 8,
+       "distinctiveness": 7,
+       "fit": 8,
+       "craft": 7
+      },
+      "min": 7,
+      "failed_checks": 0
+     },
+     {
+      "round": 2,
+      "scores": {
+       "specificity": 9,
+       "distinctiveness": 8,
+       "fit": 9,
+       "craft": 8
+      },
+      "min": 8,
+      "failed_checks": 0
+     }
+    ],
+    "evidence": {
+     "specificity": "Up from 8. All six previous notes are addressed, and the remaining gaps now have numbers or a named blocker. The body is given in measurements: \"Hand: about 18 cm long and 8.5 cm across the knuckles... If the rim is under 10.5 cm, the hand spec comes back to casting.\" The one change at B4b is something a hand performer or a generator can play: \"as the phone lights, her thumb slides once across the chip on the mug rim, over about half a second, and settles on it until the glow dies.\" The stylist gets constraints to work to: \"Sleeves end at least 5 cm above the wrist bone on both arms... The sleeve colour must differ in value from both the skin (#6F4A34) and the dripper glaze.\" The open questions (glaze colour, rim diameter) are raised as blockers or assumptions, so nobody has to guess.",
+     "distinctiveness": "Up from 7. The new mark ties NORA to R1's argument between the phone and the ritual, not just to the coffee category: \"a writer's callus on her right middle finger, from years of writing by hand. She still keeps her lists on paper rather than in the phone.\" The jewellery rule only makes sense in this script: \"a watch would add a second clock against the story's 7:00 and 7:05.\" The defaults are named and broken on purpose: \"The category's default hand is late-20s, pale and slim, with a gloss manicure and stacked gold rings on a linen cuff.\" Drop this hand into another brand's pour-over spot and the callus backstory, the thumb on the chip and the reason for no watch all stop meaning anything. It stops short of 9 because two of its most memorable details (the callus and the thumb on the chip) came from the last round of notes, not from the bible itself.",
+     "fit": "Up from 8. The contradiction with B1 is gone, and the objective now plays R1's refusal as an action: \"Objective: get the coffee poured and her hand around the mug while the phone gets nothing back from her. At B1 she turns it face-down and never turns it back. At B4b she doesn't touch it.\" The beat references are correct: \"She appears in D01-B1 to B4b and in D02-1. D01-B5, B6 and D02-2 have no person in them.\" Only verified facts are used, and the size question is kept out of the facts: \"'The product comes in one size' is an assumption, not a verified fact.\" Nobody is presented as a real customer: \"She is not presented as a customer or an expert, and there is no testimonial.\" Breaking the manicure-and-gold-rings default also covers the must-avoid on generic luxury imagery, and it says so.",
+     "craft": "Up from 7. Rights are now left pending with a source, a scope and an owner for both ways of making her: \"Source: the chosen generator's output-use terms, plus any AI-content labelling the platforms require... Owner: producer. Status: pending.\" and \"Source: a hand-model release... The performer must be 21 or older and match the five anchors.\" The anchors can now be locked and are physically plausible: \"[macro] Build: a broad, square hand, 8.5 cm across the knuckles against a wrist about 6 cm across. Short, blunt fingers: the middle finger is about 7 cm.\" For a 167 cm woman those proportions hold up. It names one register: \"Understated. Silent: no dialogue, no lip-sync, no VO.\" It leaves the product hand to the director: \"the director decides which hand does what in each shot.\" Grooming is marked \"(joint lock, stylist)\". A few small continuity problems keep it at 8. The macro anchors include detail that only shows in close-up (\"with visible pores\", \"sparse, fine dark hair (#2A1E17)\"). The forearm hair can be groomed away but isn't marked as a stylist joint lock. The age read names \"tendons\", which none of the anchors lock."
+    },
+    "notes": [
+     {
+      "target": "characters[NORA].visual_identity_anchors: macro/micro tagging",
+      "note": "Keep each anchor to its own reading distance and stay at five. Macro build: the 8.5 cm knuckles against the 6 cm wrist, and short, blunt fingers (about 7 cm middle finger). Macro skin: #6F4A34 on the back of the hand and forearm, #B3886A on the palms and fingertip pads. Move \"visible pores\" and the forearm hair (#2A1E17) into the micro age-texture anchor. Tag the forearm hair \"joint lock, stylist\", because grooming can remove it between setups.",
+      "source": "Craft brief: \"Tag each macro (reads in the widest shot) or micro (close-up)\"; \"Hairstyle, beard and grooming are shared with the stylist: tag them 'joint lock, stylist'\""
+     },
+     {
+      "target": "characters[NORA].role_in_story: age markers vs anchors",
+      "note": "\"Her age shows in knuckle creases, tendons and veins\" names tendons, but the anchors don't lock them. Either add \"extensor tendons visible on the back of the hand when the fingers extend\" to the micro age-texture anchor, or cut \"tendons\". The age read and the continuity list should name the same traits.",
+      "source": "Craft brief: \"Anchors are what continuity locks\"; Quality bar Craft: \"continuity that holds\""
+     },
+     {
+      "target": "characters[NORA].visual_identity_anchors: writer's callus",
+      "note": "Keep the callus where it is, but make the claim about when it shows match that spot. Replace \"It reads in the B1-B3 close-ups\" with \"It shows only when the middle and index fingers are apart. Never move it to the back or the top of the finger to make it read.\" In a closed grip the thumb side of the middle finger is pressed against the index finger. Without this lock, a generator or a retoucher will move the callus to where it can be seen, and it will jump from shot to shot. Leave which moments show it to the director.",
+      "source": "Craft brief: \"Anchors are what continuity locks\"; \"Leave holds, framing and the product hand per shot to the director\"; Quality bar Craft: \"nothing physically implausible\""
+     }
+    ],
+    "keep": [
+     "The rewritten objective: \"get the coffee poured and her hand around the mug while the phone gets nothing back from her. At B1 she turns it face-down and never turns it back. At B4b she doesn't touch it.\"",
+     "The named and deliberately broken category default (late-20s, pale, slim, gloss manicure, stacked gold rings on a linen cuff) and generator stock hand (long, tapered, poreless, light-skinned), each with its reason",
+     "The single B4b change: the thumb slides once across the chip on the mug rim over about 0.5 s and settles there. Also keep the rules that she never reaches for the phone and her grip never tightens",
+     "The rule of nothing on the fingers or wrists, with its reason: a watch would be a second clock against 7:00 and 7:05",
+     "The writer's callus, with its origin in role_in_story (she keeps her lists on paper, not in the phone) as backstory only, with no added prop or copy",
+     "The mole on the right hand only, with its hex and exact position, as the asymmetry",
+     "The hand-scale constraint: knuckle breadth at least 2 cm less than the rim diameter, and the hand spec comes back to casting if the rim is under 10.5 cm. Also keep the client-dimensions blocker",
+     "Both rights blockers (generated NORA and a live hand performer), each with its source, scope, owner and pending status",
+     "Heritage recorded in role_in_story and kept out of the anchors and the prompt",
+     "The nails and matte skin finish as joint locks with the stylist, and the sleeve constraints (ending at least 5 cm above the wrist bone, and a different value from both the skin and the glaze)",
+     "Playing age 33-39, target 36, with the reason given, and the assumption that no face is cast, which reopens casting if a face is ever added"
+    ]
+   }
+  },
+  "world_bible": {
+   "artifact_id": "world_bible-006",
+   "project_id": "PROJECT_001",
+   "task_id": "04_script_cast_world",
+   "owner_agent": "production_designer",
+   "kind": "world_bible",
+   "revision": 1,
+   "status": "review_required",
+   "based_on": [
+    "concept_options-003",
+    "script-004"
+   ],
+   "content": {
+    "locations": [
+     {
+      "location_id": "LOC-01",
+      "description": "LOC-01 · INT. NORA'S KITCHEN - COUNTER. One set carries all four script headings: S1 (D01-B1 flip; D01-B2 lift, seat, filter), S2 (D01-B3 pour and bloom; still D02-1), S3 (D01-B4a set-down; D01-B4b second buzz), S4 (D01-B5 to B6 hold; still D02-2). Place and year: USA, 2026, ASSUMED from the USD price and 'link in bio'. It is a pre-war walk-up rental in a northeastern city, with NEMA 5-15 sockets, a US gas range and a 12-hour clock. No signage, street or plates are in view. NORA has cooked for one here for about four years (ASSUMED). Before D01-B1: last night she hand-washed one plate, one tumbler, one fork and the dripper and left them in the rack. The dripper stands upright so it drains through its exit hole. The phone charged here overnight, not by her bed. This morning she lit the burner under the kettle and put the chipped mug on its spot. One real detail per scene (taste notes): S1 has the dish rack and the charging cable ('real kitchens have a dish rack and a charging cable'). S2 has the scorch band on the kettle base. S3 has the pale ring with a coffee spot at its centre, which the dripper lands on. S4 has the phone left face-down. The window is never the subject of a shot, and nobody looks out of it (taste-note reject). These surfaces must stay blank, because generators add logos to them: dripper exterior, phone case back, phone glass (except '7:00'), kettle, mug, plate, tumbler, rack and tray, filters, cable, adapter, outlet plate, range backguard and knobs, hood, cabinet fronts, fridge door, window glass. The only text on the set is the lock screen '7:00' (D01-B1): #1B1F24 generic sans digits on a flat light #E4E7EA field (13:1), with no date, notifications or status-bar text. It is composited, not generated. Background behaviour: the only things that move are hands, water, mug steam (B3 to B4b) and phone light (B1, B4b). In B5 to B6 and D02-2 there is no steam and no phone light, and the window is shut and out of frame. Frame locks are props besides the product, 5 at most. PROP-07 is the set surface; it is in every frame and not counted. B1: 02/03/04/08. B2: 02/03/04/05/08. B3: 03/05/06. B4a: 02/03/05/08. B4b: 02/03/08. B5 to B6: 02/08. D02-1: 02/03/05/06/08. D02-2: none (bare counter). No canister, spoon or filter box appears in any frame; the spooning happens in the cut. No taste note is broken.",
+      "spatial_layout": "Room: 2.6 W × 3.4 D × 2.75 H m (ASSUMED). Walls run clockwise in plan: A entrance, B counter run, C window, D fridge. Origin is corner A/B. x runs along A toward D (0-260) and y toward C (0-340), in cm. Heights are from the floor. Bearings: 0° = toward wall C, clockwise, so 90° faces the room. DR-01: wall A, x 150-230, 80 cm leaf hinged at x 150, swings in toward wall B. View through it: a dim hall in flat #D8D3C8 paint, nothing readable. WIN-01: wall C, x 10-100, double-hung, sash #6B6E67 semi-gloss. Sill at 100 cm, 9 cm above the counter end, which runs under it. Head at 215 cm. Faces east (ASSUMED) and stays shut. View: the brick backs of row houses 20 m away (#8C5140, one fire escape), with no signs, street or plates. Counter run on wall B: depth x 0-63.0 (15 oak strips × 4.2 cm), top at 91 cm (light work). y 0-40: base cabinet, out of every frame. Gas range y 40-116, cooktop at 91 cm; the kettle burner is front-right at 46/100. Over the range: a recirculating hood in white enamel #EDEDEA, blank, underside at 167 cm (76 cm clear). PROP-07 oak top runs y 116-340 to wall C. Stainless drop-in sink cut-out at x 10-56, y 125-185; chrome faucet at 5/155, kept out of hero frames. Upper cabinets on wall B at y 116-200 only, underside at 145 cm (54 cm over the counter), #6B6E67 semi-gloss, plain knobs, no marks. Nothing hangs over the range or the work zone. PROP-04 rack at x 8-40, y 190-236. OUT-01: NEMA 5-15 duplex with an ivory plate, wall B at y 240, 104 cm high; the wall paint laps 2 mm onto the plate edge. Work zone: y 245-340, ending at wall C under WIN-01. The set-down ring is 60 cm from wall C, the mug 32 cm and the filter stack 18 cm. Wall D: fridge at x 190-260, y 150-211, white enamel #EDEDEA, blank, no magnets. Wall D from y 220 to 340 stays bare paint, because it is what the gloss glaze reflects. Aisle: 127 cm (x 63-190). Centre positions (x/y): PROP-02 phone 48/255 (case x 44.2-51.8, y 247.3-262.7). PROP-01 in the rack 27.3/213, on the mug 27.3/308, set-down and ring 27.3/280, all three on one line. PROP-03 mug 27.3/308. PROP-05 stack 7.5/322 (x 2-13, y 314-330). Strip seams fall at x = 4.2n (21.0, 25.2, 29.4, 33.6 and so on). The foot (x 22.3-32.3) crosses the seams at 25.2 and 29.4, each 2.1 cm off centre, and clears 21.0 and 33.6 by 1.3 cm. Product clear zone (B5 to B6, D02-2): x 16.3-38.3, y 269-291, 0-25 cm above the counter top.",
+      "palette": [
+       "#7A5A3E aged white-oak butcher block, oiled matte, PROP-07 top, with #5E4430 hairline glue seams; dominant, 45% of master (D01-B4a counter view)",
+       "#6B6E67 grey-green landlord paint: washable eggshell on walls A-D incl. backsplash, semi-gloss on sash and cabinets; secondary 29%",
+       "#F2EFE8 white gloss glaze (PROP-03 mug) with #F1EEE6 bleached crepe paper (PROP-05 filter collar); neutral 7%",
+       "#E3D9C6 oatmeal-cream satin glaze with #5A4636 iron speck, pooling to #B59A72 gloss, #C9A77E gloss rim band, raw foot #A88663 matte; PROP-01 only; accent 7%. No other object on the set may carry this cream",
+       "#3E4447 charcoal matte silicone (PROP-02 case) with #E9E6DF matte cable (PROP-08); neutral 4%. The last 8% of the master is NORA's hand and sleeve (cast and wardrobe lane) and coffee #3B2416",
+       "#A4583F terracotta matte enamel, PROP-06 kettle; accent, 0% of master (off-screen in B4a), about 12% of D01-B3 and D02-1"
+      ],
+      "props": [
+       {
+        "prop_id": "PROP-01",
+        "description": "Solace pour-over dripper, the product. Shape and size ASSUMED from ceramic size-02 cones (no verified dimensions, colour or finish): handle-less cone, 8.5 cm tall, rim Ø 11.5 cm. It is 7.5 cm deep from the rim to a single 6 mm exit hole, which sits 5 mm above the underside plane. Base flange: an annulus with outer Ø 10.0 cm, central opening Ø 4.5 cm, and an outer edge 4 mm tall. Hand-glazed stoneware (verified). Body glaze: oatmeal-cream satin #E3D9C6 with #5A4636 iron speck (0.5-1.5 mm, about 15 per 10 cm²). The glaze breaks thin over the rim to a 2 mm toasted gloss band #C9A77E. At the foot it pools unevenly into gloss #B59A72, 3-12 mm tall. The thickest 4 cm arc is the dripper's 'front' and the primary swap-test detail. Raw foot, ASSUMED: the flange's 4 mm outer edge and a 0.8 cm underside band (outer Ø 10.0, inner Ø 8.4) are unglazed #A88663 matte. The band stands 1.5 mm proud of the glazed inner underside, so only the band touches a flat counter. On the mug (Ø 8.0) the band hangs 2 mm outside the rim and centres the dripper, with glazed underside on glazed rim (the B2 click). The exterior carries no logo or text. Any maker's stamp on the real piece must sit on the underside, which no frame sees. Appears in no other location.",
+        "persistent_state_notes": "ST1 (D01-B1): upright on the PROP-04 rack at 27.3/213, dry, front facing 90°. ST2 (D01-B2, not before B2): lifted and seated on PROP-03 at 27.3/308, front 90°, with PROP-05 ST2 in the cone. ST3 (D01-B3; D02-1): same spot, grounds going from PROP-05 ST3 to ST4 under the kettle stream. ST4 (D01-B4a, not before B3): lifted off the mug with a last drip from the exit hole into the coffee. It is then set down with its foot exactly on the PROP-07 ring at 27.3/280, front 90°, with the spent filter (PROP-05 ST5) still in it. Later drips fall 5 mm onto the centre drip spot, hidden inside the foot. ST5 (D01-B5 to B6, not before B4b): same 27.3/280, front 90°, filter out, interior empty. The outer glaze is dry, with no coffee, fingerprints or crumbs anywhere in the clear zone. D02-2: ST5 with PROP-02 and PROP-08 struck. Whenever it rests on the counter, its foot straddles the seams at 25.2 and 29.4 symmetrically."
+       },
+       {
+        "prop_id": "PROP-02",
+        "description": "NORA's phone: a generic 2026 slab, 15 × 7.2 × 0.9 cm, in a charcoal matte silicone case #3E4447 (15.4 × 7.6 × 1.1 cm). The case lip stands 1.2 mm proud of the glass, which is the gap the B4b light leaks through. The case back is blank: one plain rectangular cut-out top-left showing two black lenses, with no logo and no raised multi-lens module (this avoids look-alike trade dress). USB-C port at the bottom. The lock screen is its only screen state (reviewer option a): a flat light #E4E7EA field with '7:00' in #1B1F24 generic sans, 13:1, composited. B1 and B4b therefore emit the same cool light from one source. The case against the oak is 1.6:1, so it recedes behind the product's 4.5:1. Appears in no other location.",
+        "persistent_state_notes": "ST1 (before D01-B1, through about 0.8 s of B1): face-up at 48/255, top toward 0°, plugged into PROP-08. The lock screen lights ('7:00', composited) and it buzzes. ST2 (from about 0.8 s of D01-B1, not before B1; through B4a; D02-1): flipped about its long axis so the cable stays in the port. Face-down and dark at the same 48/255, top still toward 0°. ST3 (D01-B4b, 9.0-11.0 s): same position. The same lock screen lights face-down, so nothing is legible. Its #E4E7EA light leaks 5-15 mm onto the oak around all four edges, through the 1.2 mm gap the case lip holds. It rattles in place (3 mm travel at most) and settles back at 48/255. The light is gone by 11.0 s. ST4 (D01-B5 to B6): face-down and dark at 48/255, outside the clear zone. D02-2: struck, along with its cable."
+       },
+       {
+        "prop_id": "PROP-03",
+        "description": "NORA's chipped white mug: straight-sided diner mug, Ø 8.0 × 9.5 cm, about 330 ml, white gloss #F2EFE8 over a buff body, no print. Chip on the rim at bearing 165°: 7 × 4 mm, 2 mm deep, raw buff #CDBBA0 matte against the gloss, caused by a knock on the faucet. Coffee tide line inside, 2 cm below the rim, #B79C7A: the level she fills to every day. Handle points 0°. Appears in no other location.",
+        "persistent_state_notes": "ST1 (D01-B1 to the start of B2): empty at 27.3/308, handle 0°, chip 165°, tide line visible. ST2 (D01-B2, not before B2): PROP-01 seated on it. ST3 (D01-B3; D02-1): coffee #3B2416 rising, light steam. ST4 (D01-B4a to B4b, not before B3): dripper off. Coffee sits on the tide line, 2 cm below the rim, with a #6B4A30 edge ring and thin steam. In B4b NORA's hand wraps the body over 45-135°, leaving the handle and chip clear. ST5 (D01-B5 to B6, not before B4b): gone, because she took it. Struck for D02-2."
+       },
+       {
+        "prop_id": "PROP-04",
+        "description": "Dish rack: matte white epoxy-coated steel wire #D6D4CD, 46 × 32 × 13 cm, on a grey polypropylene drip tray #BFC0BA angled toward the sink, with no maker tag. It holds last night's hand wash for one: a white #F2EFE8 plate in the slots on the wall-B side, an inverted tumbler, and a stainless fork in the cutlery cup (small, bowl face-down to limit mirror). Appears in no other location.",
+        "persistent_state_notes": "ST1 (D01-B1): at x 8-40, y 190-236, holding PROP-01 upright at 27.3/213 plus the plate, tumbler and fork, all dry. ST2 (D01-B2 on, not before B2): PROP-01 gone, everything else unchanged. It is out of the B3, B4a, B4b, B5 to B6 and D02 frames; if it enters one, it is in ST2."
+       },
+       {
+        "prop_id": "PROP-05",
+        "description": "Paper cone filters in bleached white crepe #F1EEE6 (reviewer option a): a loose stack of 8, with no box and no print, so packaging never enters a frame. Grounds: medium-fine, about 18-20 g for one mug (ASSUMED), dry colour #4A3122. Rim separation: the collar against the gloss rim band #C9A77E is 1.9:1, plus crepe against gloss. The collar against the #6B6E67 wall is 4.5:1. The bloom #2E1E14 inside the white paper is 13.8:1. Appears in no other location.",
+        "persistent_state_notes": "ST1 (D01-B1 to B2): stack lying flat at 7.5/322 (x 2-13, y 314-330) against wall B. ST2 (D01-B2, not before B2): one filter, seam folded, pressed into PROP-01 with a 1.0 cm collar above the rim; the stack is now 7. ST3 (first frame of D01-B3, not before B2): dry grounds heaped, peak 3.0 cm below the rim (4.0 cm below the collar top). ST4 (D01-B3 bloom; D02-1): grounds wet #2E1E14, domed about 1 cm and bubbling, peak 2.0 cm below the rim. The paper darkens to #B09A7C up to 1 cm below the rim; the paper at the rim and the collar stay dry #F1EEE6. ST5 (D01-B4a to B4b): spent flat bed 3.5 cm below the rim, still in the dripper, paper wet to 0.5 cm below the rim, collar dry. ST6 (D01-B5 on, not before B4b): binned off-screen. The stack of 7 is unchanged and kept out of the B5 to B6 and D02-2 frames."
+       },
+       {
+        "prop_id": "PROP-06",
+        "description": "Stovetop gooseneck kettle, 0.9 L: squat cylinder Ø 13 × 11 cm, domed lid with an oiled beech knob #9C7650, riveted loop handle in oiled beech, spout tip Ø 5 mm. Terracotta matte enamel #A4583F everywhere, including the spout, so there is no bare steel and no mirror path to design. Wear: a 1 cm scorch band at the base, #6E3A2A, from the gas flame every morning. No maker stamp. Against the cream dripper it measures 3.7:1. Appears in no other location.",
+        "persistent_state_notes": "ST1 (D01-B1 to B2): off-screen on the front-right burner at 46/100, heating. ST2 (D01-B3; D02-1): in NORA's hand, tipped, spout tip 1-3 cm above the rim (4-6 cm above the dry bed), pouring a thin spiral. ST3 (D01-B4a to B6, not before B3): back on the same burner with the gas off, off-screen, ticking as it cools (sound only)."
+       },
+       {
+        "prop_id": "PROP-07",
+        "description": "Counter top: white-oak butcher block, 4 cm thick, 15 strips of 4.2 cm running along y (x 0-63.0), oiled matte and aged to #7A5A3E. Top at 91 cm; the front edge at x 63.0 is eased. Seams at x = 4.2n are tight glue lines: 0.5 mm hairlines of #5E4430 where oil has darkened the joint, flush, with no gaps. Mark 1 is the secondary swap-test detail (ASSUMED, because it needs a raw foot). It is a ring centred at 27.3/280, outer Ø 10.0 cm with a 0.8 cm band, matching the foot. It is dry matte #8E6F52 against the oiled #7A5A3E (1.4:1). Cause: after 3-4 minutes over the steaming mug, the raw foot comes down hot and damp and lifts the oil where it touches, every morning for four years. It came out of the rack dry. Mark 1b is a centre drip spot at 27.3/280: Ø 1.8 cm, #4A3526, matte and dry (1.8:1 on the oak), with 3-4 satellite drops of 2-4 mm within 2 cm of centre. Cause: the last drips falling 5 mm from the 6 mm exit hole after each set-down. A mug's ring has no centre spot, so this pair can only be a dripper's. Mark 2 is front-edge wear at x 59-63, y 250-330: the arris is rounded and bleached to satin #8C6C4E where her forearms and hands rest. Mark 3 is a black water stain #3F3024, 3 × 8 cm, at the sink cut-out's front corner 56/185, running y 185-193, from iron and water on oak. There are no knife marks in the work zone. Appears in no other location.",
+        "persistent_state_notes": "ST1 (D01-B1 until the set-down in B4a; D02-1): ring and drip spot visible and bare. ST2 (from the D01-B4a set-down, not before B4a; B5 to B6; D02-2): the ring is covered exactly by PROP-01's foot (Ø 10.0 on Ø 10.0), with the drip spot hidden inside it, and no stain shows outside the foot. The DTC image therefore never shows a mark the product made. In B5 to B6 and D02-2 the clear zone has no crumbs, dust, grounds or fingerprints, and every seam is a closed hairline."
+       },
+       {
+        "prop_id": "PROP-08",
+        "description": "Charging cable and adapter: a 1 m USB-C cable in off-white matte #E9E6DF, unbranded, and a blank white cube adapter in OUT-01 (NEMA 5-15). It follows the taste note 'real kitchens have a dish rack and a charging cable', and it shows why the phone is waiting on this counter at 7:00. Appears in no other location.",
+        "persistent_state_notes": "ST1 (D01-B1 to B6; D02-1): runs from OUT-01 (wall B, y 240, 104 cm) down wall B to the counter, then along y 241-244 to PROP-02's port at 48/247. One loose 10 cm loop at x 20 lies within y 238-248. It never crosses y 266, so it stays out of the clear zone, and the flip does not change it. D02-2: struck with the phone."
+       }
+      ],
+      "product_placement": "Where it works: PROP-01 does its job in the PROP-07 work zone at the end of the counter run by wall C, never on a plinth. It brews on PROP-03 at 27.3/308, 32 cm from wall C (D01-B2 to B4a, D02-1). It rests on its ring at 27.3/280, 60 cm from wall C (D01-B4a to B6, D02-2). The front (the glaze pool's thickest arc) faces 90°, toward the room, in every state. It enters in the rack in D01-B1. Its job starts in D01-B2 and changes PROP-04 ST1→ST2, PROP-03 ST1→ST2 and PROP-05 ST1→ST2. The B4a set-down changes PROP-07 ST1→ST2.\n\nSwap test, primary: the uneven glaze pool at the foot (gloss #B59A72, 3-12 mm, thickest 4 cm arc = front). It exists because the piece is hand-glazed (verified: 'Hand-glazed stoneware'); an evenly machine-glazed same-tier cone has a level glaze line. The script holds on it in D01-B5, B6 and D02-2.\n\nSwap test, secondary (ASSUMED, needs a raw foot): the Ø 10.0 cm ring with a centre drip spot at 27.3/280, a mark only a dripper leaves. The B4a set-down lands the foot exactly on it, and it stays hidden in B5 to B6 and D02-2.\n\nContrast under an even key (grey card #767676):\n- Body #E3D9C6 on the wall #6B6E67: 3.7:1. On the oak #7A5A3E: 4.5:1.\n- On the white mug #F2EFE8 the body is only 1.2:1. The foot band hanging outside the mug rim separates them: raw #A88663 matte on the mug is 2.9:1, and the gloss pool #B59A72 is 2.3:1, a finish change from satin to gloss to raw.\n- The pool against the body is 1.9:1, plus satin to gloss.\n- Top edge in B3 and D02-1: the bleached collar #F1EEE6 against the gloss rim band #C9A77E is 1.9:1, plus crepe against gloss. The collar on the wall is 4.5:1. The bloom #2E1E14 in the white filter is 13.8:1.\n\nMirror path: only the gloss pool, the rim band and the mug glaze (about 5%) reflect. They see WIN-01 and bare wall D (#6B6E67), so reflections read grey plus one window highlight; the highlight shape is a DP request.\n\nClear zone for B5 to B6 and D02-2: x 16.3-38.3, y 269-291, 0-25 cm above the top. Nothing in it moves. The phone (#3E4447 on oak, 1.6:1) sits outside it at 48/255 and stays lower in contrast than the product. No plaques, tags, price cards or packaging appear. The exterior carries no logo; supers are composited in edit and never placed over the dripper."
+     }
+    ]
+   },
+   "asset_uri": null,
+   "assumptions": [
+    "ASSUMED: the country is the USA and the year is 2026, based on the USD price and the 'link in bio' CTA. That locks NEMA 5-15 sockets, a US gas range, a 12-hour '7:00' on the lock screen and a USB-C phone. No signage, street or plates are visible.",
+    "ASSUMED: the kitchen is a pre-war walk-up rental in a northeastern US city, chosen to fit the urban 25-40 audience. NORA lives alone (upstream assumption) and has used the kitchen for about four years; that history is invented to justify the wear. No dishwasher appears in any frame, and no frame shows the room lacks one, so still 2's 'it still goes in the dishwasher' is not contradicted. The rack holds a one-person hand wash.",
+    "ASSUMED product look, with no dimensions, colour or finish supplied, sized from ceramic size-02 cones: handle-less single-hole cone, 8.5 cm tall, rim Ø 11.5 cm, base flange outer Ø 10.0 cm, cream satin glaze pooling to gloss at the foot, raw foot ring, no exterior mark. Every hex, contrast figure, both swap-test details and D02-2 depend on it, so it is logged as a pending producer item in blockers. If the real glaze is dark (relative luminance below 0.2), repaint the walls lighter and re-run the 3:1 checks before build.",
+    "Swap test (reviewer note 1): the uneven glaze pool is now the primary detail, because it rests on the verified fact 'Hand-glazed stoneware'. The ring plus centre drip spot is the secondary detail, ASSUMED because it needs an unglazed foot. The ring now matches the foot exactly (outer Ø 10.0 cm, 0.8 cm band). Its cause is corrected to heat and steam after brewing, since the foot leaves the rack dry. If the real foot is glazed, drop Mark 1 and Mark 1b and keep the pool.",
+    "The mug is now Ø 8.0 cm (was 8.5), so the foot band (inner Ø 8.4) hangs 2 mm outside the mug rim and centres the dripper. The glazed underside then sits on the glazed rim, which gives the scripted 'stoneware clicking onto the mug rim'. The chip spec, 165° bearing and the 45-135° hand wrap are unchanged.",
+    "Phone light (reviewer note 2): I chose option (a), a light #E4E7EA lock-screen field with #1B1F24 digits (13:1). B1 and B4b now emit the same cool light from one screen state, and '7:00' is still composited. How bright the leaked edge light reads on the oak is a DP request.",
+    "Filters (reviewer note 4): I chose option (a), bleached #F1EEE6 crepe with a 1.0 cm collar, rather than cutting an unbleached collar to 0.5 cm. The unbleached paper was 1.2:1 on the rim band and almost duplicated the #B59A72 pool. The white collar gives 1.9:1 plus crepe against gloss on the rim band, 4.5:1 against the wall, and 13.8:1 behind the bloom. For the dose, ASSUMED 18-20 g, the dry bed peaks 3.0 cm below the rim and the bloom 2.0 cm below it.",
+    "Counter geometry (reviewer note 3): the counter is 63.0 cm deep, exactly 15 strips of 4.2 cm, so there is no sliver strip at the front edge. Seams fall at x = 4.2n. The ring, set-down, mug and rack spot all sit on x 27.3, a strip centre, so the lift and the set-down stay on one line. Glue lines are 0.5 mm #5E4430 hairlines, flush.",
+    "Layout fixes (reviewer note 5): the work-zone distances to wall C are restated (ring 60 cm, mug 32 cm, stack 18 cm). Upper cabinets now run at y 116-200 only, and a recirculating hood sits 76 cm above the cooktop. The sink is at x 10-56, so Mark 3 moves to 56/185. Prop states are renamed ST1-ST6 so they never collide with the script's scene IDs S1-S4. The master view is D01-B4a; the rack is not in that frame, so its wire is out of the palette shares. The 8% remainder is NORA's hand and sleeve (cast and wardrobe lane) and coffee.",
+    "PROP-07 is the set surface. It is in every frame and is counted outside the 5-prop frame lock, as in the previous version.",
+    "Contrast ratios are computed from the stated hexes as WCAG relative luminance under an even key (18% grey card #767676). Window light direction and intensity, the phone light balance and the gloss highlights are DP requests, not set decisions.",
+    "Dressing the script does not name: the charging cable (taste note), the rack contents, a filter stack with no box, the kettle's burner and the range hood. The script has no gap that needs a new beat. The filter is binned and the kettle returned off-screen between beats (B4b to B5, and B3 to B4a).",
+    "WIN-01 faces east so that low morning light is plausible. It is kept out of the hold frames and is never the subject of a shot, per the taste-note reject of 'gazing out a window'.",
+    "No reference imagery was supplied or inspected, and no reference_reader tool is bound in this run.",
+    "Only the verified facts are relied on (hand-glazed stoneware, dishwasher safe, made in small batches). The set makes no performance claims and shows no price, award or bestseller cards."
+   ],
+   "sources": [
+    "Brief PROJECT_001: verified product facts ('Hand-glazed stoneware ceramic', 'Dishwasher safe', 'Made in small batches'), must-include, must-avoid, deliverables",
+    "Script: story beat sheet S1-S4, D01 beats B1-B6 (B4a/B4b), stills_copy D02-1/D02-2, decisions on the dish rack, chipped mug, face-down phone and glaze pooled at the foot",
+    "Route R1 product_role and visual_language",
+    "Production Designer craft brief (swap test, 3:1 contrast, seams, state IDs keyed to beats, blank surfaces)",
+    "Taste notes: 'One real detail per scene', 'Real kitchens have a dish rack and a charging cable', window-gazing reject, 'The product is a tool, then a hero'",
+    "Reviewer notes on the previous version and its KEEP list"
+   ],
+   "blockers": [
+    {
+     "issue": "PROP-01 is invented: its shape, size, glaze colourway, raw foot and lack of a stamp are all ASSUMED. Every palette hex, contrast figure, both swap-test details and D02-2 (the still that doubles as the DTC product image) depend on it. Pending item: client product reference (photos or CAD of the shipping glaze colourway, foot finish and any maker's stamp); source: Solace Home Goods; owner: producer.",
+     "responsible_agent": "producer",
+     "resolution": "Get the reference from Solace Home Goods before PROP-01 is locked and before D02-2 is generated; work can go ahead on the ASSUMED spec until then. When it arrives: re-run the 3:1 checks against the real glaze, and repaint the walls lighter if its relative luminance is below 0.2. If the foot is glazed, drop PROP-07 Mark 1 and Mark 1b and keep the glaze pool as the swap test. If the piece carries a maker's stamp on its foot, it stays on the underside, which no frame sees."
+    }
+   ],
+   "checks": {
+    "failed": [],
+    "attempts": [
+     0,
+     0
+    ]
+   },
+   "quality": {
+    "grade": "A",
+    "scores": {
+     "specificity": 9,
+     "distinctiveness": 8,
+     "fit": 9,
+     "craft": 8
+    },
+    "min": 8,
+    "rounds": 2,
+    "history": [
+     {
+      "round": 1,
+      "scores": {
+       "specificity": 9,
+       "distinctiveness": 7,
+       "fit": 8,
+       "craft": 7
+      },
+      "min": 7,
+      "failed_checks": 0
+     },
+     {
+      "round": 2,
+      "scores": {
+       "specificity": 9,
+       "distinctiveness": 8,
+       "fit": 9,
+       "craft": 8
+      },
+      "min": 8,
+      "failed_checks": 0
+     }
+    ],
+    "evidence": {
+     "specificity": "'The foot (x 22.3-32.3) crosses the seams at 25.2 and 29.4, each 2.1 cm off centre, and clears 21.0 and 33.6 by 1.3 cm.' and 'ST3 (first frame of D01-B3, not before B2): dry grounds heaped, peak 3.0 cm below the rim (4.0 cm below the collar top).' Every prop has a centre in cm, a bearing, a hex with a trade finish, and ST states keyed to D01 beat IDs, so a builder or generator can place the room without asking. I spot-checked the numbers and they hold. The WCAG ratios recompute: body on oak 4.47:1, body on wall 3.7:1, collar on rim band 1.91:1, bloom 13.8:1, lock screen 13.3:1, case on oak 1.58:1. The Ø 8.0 × 9.5 cm diner mug holds about 338 ml. An 18-20 g bed in a 7.5 cm deep cone does peak about 3 cm below the rim. A director will still ask one question: how B4b holds the phone glow and the hand on the mug in one frame when they sit 41 cm apart (note 1).",
+     "distinctiveness": "'Mark 1b is a centre drip spot at 27.3/280 ... A mug's ring has no centre spot, so this pair can only be a dripper's.' and 'The phone charged here overnight, not by her bed.' The set's history is the route's own idea. The day's first demand sleeps on the counter where the ritual happens. The dripper lands every morning on its own four-year mark. The mug's tide line is 'the level she fills to every day', and the kettle's scorch band comes 'from the gas flame every morning'. Put this set under another brief and the phone's charging spot and the ring stop meaning anything. It is not a 9 because the product-side swap details (the glaze pool and the raw-foot ring) would still work for a competitor's hand-dipped cone with a raw foot, and the secondary detail rests on an ASSUMED foot.",
+     "fit": "'Swap test, primary: the uneven glaze pool at the foot ... It exists because the piece is hand-glazed (verified: 'Hand-glazed stoneware')' and 'The DTC image therefore never shows a mark the product made.' Only the three verified facts are used, and 'No plaques, tags, price cards or packaging appear.' Per the taste-note reject, the window stays out of every hold frame. The still-2 dishwasher line is protected: 'no frame shows the room lacks one'. The closing product moment has a 22 × 22 cm clear zone, with the product at 4.5:1 on the oak. The client product reference is now logged as a pending producer item with its source and owner. R1 reads from the set alone: the phone charges where the pour happens, and the tool sits between the demand and the mug.",
+     "craft": "All six previous notes are addressed, with correct numbers. (1) The ring now matches the foot (outer Ø 10.0 cm, 0.8 cm band), its cause is heat and steam, and it has a centre drip spot. (2) One light lock-screen state now lights both B1 and B4b: '#E4E7EA field with '7:00' in #1B1F24 ... 13:1'. (3) 'the counter is 63.0 cm deep, exactly 15 strips of 4.2 cm'. (4) The bleached collar gives '1.9:1 plus crepe against gloss'. (5) 'Upper cabinets now run at y 116-200 only, and a recirculating hood sits 76 cm above the cooktop', and the states are renamed ST1-ST6. (6) The blocker names its source and owner. The US lock is right down to trade sizes: a 30-inch range ('Gas range y 40-116'), a 36-inch counter at 91 cm, a 24-inch fridge (y 150-211), and NEMA 5-15 sockets where 'the wall paint laps 2 mm onto the plate edge'. Four things keep it at 8 and not 9. The script says the mug is 'beside' the phone in S3 and B4b, but the plan puts them 41 cm apart, and PROP-05 is missing from the B4b frame lock. The off-white cable is about 5.0:1 on the oak, higher than the product's 4.5:1, and it is in the closing hold. The product's base on the oak is never stated (glaze pool about 2.3:1, raw foot about 1.9:1, matte on matte). The filter fold has to happen inside a 2.5 s beat."
+    },
+    "notes": [
+     {
+      "target": "spatial_layout centre positions (PROP-02 at 48/255, PROP-03 at 27.3/308); frame locks for B1, B4b and D02-1",
+      "note": "At the spot's turn the script puts the phone and the mug side by side. S3: 'sets it down beside the face-down phone... Her hand stays on the mug until the glow dies'. B4b: 'Beside it, NORA's hand wraps around the chipped mug'. D02-1 also keeps the phone at the edge of the pour frame. In the plan the phone case ends at y 262.7 and the mug starts at y 304: 41 cm of counter with the ring between them. A B4b or D02-1 frame therefore has to hold y 247-312, about 65 cm. That shrinks the 5-15 mm edge glow that carries the sound-off second refusal, and it shrinks the 'dripper as clear hero object' in D02-1. Choose one of these and write it down. (a) Compress the layout. Move PROP-02, PROP-03 and the ring so that the phone is within about 15 cm of the rack (B1) and of the mug (B4b, D02-1), NORA's forearm reaching the mug at 45-135° never crosses the phone, and the phone stays out of the B5-B6 clear zone (at x ≥ 44.2 it already clears it at any y). Then re-run the cable path, filter stack, clear zone and frame locks. (b) Keep the phone-ring-mug order on purpose, since the dripper standing between the demand and her hand is R1's 'literal boundary object'. State it as a choice, give the span B4b and D02-1 must hold, and flag 'beside' in S3/B4b to the writer. Fix the locks either way. In B4b the dripper and its spent filter sit between the phone and the mug, so PROP-05 (ST5) belongs in B4b's list. B1's list includes PROP-03, 53 cm from the phone; confirm the mug is meant to be in the hook frame or drop it.",
+      "source": "Craft brief: 'Work from the script ... if the script lacks a moment you need, flag it for the writer'; 'Continuity is position and state, keyed to IDs'; Script S3, D01-B4b, still D02-1; Script decision: 'With the sound off, the second refusal reads from the edge glow and the 7:05 card'"
+     },
+     {
+      "target": "PROP-08 cable; palette entry '#3E4447 charcoal matte silicone ... with #E9E6DF matte cable'; B5-B6 and D02-1 frame locks",
+      "note": "The #E9E6DF off-white cable on the #7A5A3E oak is about 5.0:1. That is higher than the dripper body on the same oak (4.5:1), and the cable is locked into the B5-B6 hold (02/08) and into D02-1. In the closing product moment, the highest-contrast line in frame besides the product is a charging cable. Keep the cable, since the taste note asks for it, but make it recede. Use charcoal matte #3E4447 to match the case (about 1.6:1 on the oak) or another dark, blank matte. State the ratio and update the palette entry. The alternative is to route it so none of it enters the B5-B6 frame and drop 08 from that lock.",
+      "source": "Brief must-include: 'A readable closing product moment'; Craft brief: 'background motion stays lower in contrast than the product in the same frame'; Taste notes: 'Real kitchens have a dish rack and a charging cable'"
+     },
+     {
+      "target": "product_placement contrast list; PROP-01 raw foot and glaze pool on PROP-07 (D01-B5 to B6, D02-2)",
+      "note": "The product's bottom edge in the hold and in the DTC image has no stated ratio. The gloss pool #B59A72 on the oak is about 2.3:1. The raw foot #A88663 on the oak is about 1.9:1, matte against oiled matte, so the 4 mm flange edge has no separation you control, and the primary swap-test detail sits directly on it. Add both figures to the contrast list and name the separation. The cheapest fix in your lane, since the foot is ASSUMED anyway: glaze the flange's 4 mm outer edge so the pool runs down to the counter line, and keep only the 0.8 cm underside band raw. The base then reads as gloss against oiled matte, and the ring mark still works because the band makes it. The other fix is to darken PROP-07's oil tone. At about #5E4430, the pool reaches about 3.3:1 and the body about 6.4:1, but the phone case drops to about 1.1:1 and the glue lines need a new, darker hex.",
+      "source": "Craft brief: 'At least 3:1 relative-luminance contrast between the backing and the part of the product doing the job, both hexes shown ... Tone-on-tone needs a separation you control'; Brief must-include: closing product moment; the work's own primary swap test"
+     },
+     {
+      "target": "PROP-02 case back (face-down in D01-B2 to B6 and D02-1)",
+      "note": "Once the phone is face-down, every frame from B2 to B6 and D02-1 sees the case back. Its top end, where the 'plain rectangular cut-out top-left showing two black lenses' sits, points 0° toward the dripper in the hold. Two lenses in a top-left cut-out is the silhouette that generators complete into a known phone brand. Use a single small round lens cut-out centred at the top, or a case that closes over the lenses, and add the camera cut-out to the list of surfaces that must stay blank.",
+      "source": "Craft brief: 'No third-party logos, readable packaging or look-alike trade dress. Generators add fake logos to blank bottles and devices: list the surfaces that must stay blank'"
+     },
+     {
+      "target": "PROP-05 ST1-ST2 (D01-B2)",
+      "note": "B2 has 2.5 s for three actions: lift the dripper off the rack at y 213, seat it on the mug at y 308, and press 'a folded paper filter' into the cone. ST1 has the stack 'lying flat' and ST2 has 'one filter, seam folded', which reads as a fold done inside the beat. Make the stack pre-creased: 8 filters with their seams already folded, nested at 7.5/322. That is a history detail (she folds a whole pack at once) and it leaves B2 as pick, open, press.",
+      "source": "Quality bar, craft: 'timing that can be performed'; Script D01-B2: 'presses a folded paper filter down into the cone'; Craft brief: 'Every set has a history told by objects'"
+     }
+    ],
+    "keep": [
+     "The counter geometry: 63.0 cm = 15 strips × 4.2 cm, seams at x = 4.2n drawn as flush 0.5 mm #5E4430 hairlines, and rack, mug and ring all on the x 27.3 strip centre, so the foot straddles the seams at 25.2 and 29.4 symmetrically.",
+     "Mark 1 + 1b: a Ø 10.0 cm ring with a 0.8 cm band plus a Ø 1.8 cm centre drip spot, with the heat-and-steam cause. The dripper lands exactly on its own four-year mark in B4a, and the mark stays hidden in B5-B6 and D02-2.",
+     "The uneven glaze pool (3-12 mm, the thickest 4 cm arc = front, facing 90°) as the primary swap test, grounded in 'Hand-glazed stoneware'.",
+     "A single light lock-screen state (#E4E7EA field, #1B1F24 '7:00', 13:1, composited) and the 1.2 mm case-lip gap as the physical path for the B4b edge glow.",
+     "The bleached #F1EEE6 crepe collar, with its ratios stated, and the grounds-bed heights for ST3, ST4 and ST5.",
+     "The history dressing: a one-person hand wash in the rack, 'The phone charged here overnight, not by her bed', the mug chip caused by a knock on the faucet, the tide line at the level she fills to, the kettle's scorch band from the gas flame, and front-edge wear where her forearms rest.",
+     "The US 2026 lock at true trade sizes: NEMA 5-15 with paint lapped onto the plate, a 30-inch range, a 36-inch counter, a 24-inch fridge, and a hood with 76 cm clearance.",
+     "The full list of surfaces that must stay blank, plus the rule that the only text on set is the composited '7:00'.",
+     "The all-enamel kettle, which removes every steel mirror path, and bare wall D designed as what the gloss glaze reflects.",
+     "The PROP-01 blocker: pending, with source (Solace Home Goods), owner (producer), and the re-check steps once the real piece arrives.",
+     "Taste-note compliance: the window is never the subject of a shot and stays out of every hold frame."
+    ]
+   }
+  }
+ },
+ "approvals": {
+  "concept": {
+   "approved": true,
+   "selected_route_id": "R1",
+   "approver_id": "u_OsfGCT21OkB0FcmbJ6xjTA",
+   "decided_at": "2026-09-26T07:27:18.657Z",
+   "comment": "",
+   "decision_id": "9ylwb1gnhnrou8911j4n"
+  }
+ },
+ "decision_log": [
+  {
+   "stage": "01_intake",
+   "summary": "Brief normalized",
+   "missing_fields": []
+  },
+  {
+   "stage": "02_strategy",
+   "summary": "Strategy drafted",
+   "artifact_id": "strategy-002"
+  },
+  {
+   "stage": "03_concepts",
+   "summary": "Three routes proposed",
+   "artifact_id": "concept_options-003"
+  },
+  {
+   "stage": "03_concepts",
+   "summary": "Stopped for required human approval: concept"
+  },
+  {
+   "stage": "04_script_cast_world",
+   "summary": "script: graded A (lowest 8/10) after 2 review rounds",
+   "artifact_id": "script-004"
+  },
+  {
+   "stage": "04_script_cast_world",
+   "summary": "casting bible: graded A (lowest 8/10) after 2 review rounds",
+   "artifact_id": "casting_bible-005"
+  },
+  {
+   "stage": "04_script_cast_world",
+   "summary": "world bible: graded A (lowest 8/10) after 2 review rounds",
+   "artifact_id": "world_bible-006"
+  }
+ ],
+ "approval_log": [
+  {
+   "gate_id": "concept",
+   "decision": "pending"
+  },
+  {
+   "gate_id": "concept",
+   "decision": "approved",
+   "approver_id": "u_OsfGCT21OkB0FcmbJ6xjTA",
+   "decided_at": "2026-09-26T07:27:18.657Z",
+   "comment": "",
+   "decision_id": "9ylwb1gnhnrou8911j4n",
+   "verified": true,
+   "artifact_ids_and_revisions": [
+    "brief-001@r1",
+    "strategy-002@r1",
+    "concept_options-003@r1"
+   ],
+   "selected_route_id": "R1"
+  }
+ ],
+ "pending_gate": null,
+ "needs_human_input": [],
+ "stage_reached": "05_direction_style_sound",
+ "limit_reached": true,
+ "settings": {
+  "idea_mode": false,
+  "quality": true,
+  "review_at_end": false
+ },
+ "questions": {
+  "blockers": []
+ },
+ "open_questions": [],
+ "selected_concept_id": "R1"
 }
