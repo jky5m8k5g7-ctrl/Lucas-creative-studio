@@ -34,8 +34,10 @@ campaign, it is not finished.
 - Hands that touch the product are bare: no rings, watch or bracelet. Cuffs clear the product
   and label, reaching and at rest. No strap, lanyard or loose hair crosses it.
 - Studio rule: no worn color within 30° of the product's hue angle unless its chroma is under
-  C* 15 or its L* differs by 30+. Compute the values by script or write `pending: computed by
-  QC`; never estimate.
+  C* 15 or its L* differs by 30+. Convert the product's hex and each worn color's hex to L*,
+  C*, h (sRGB, D65), mark them `approx`, and give the hue difference. When a value is within
+  5° of the hue threshold or 3 of the C* or L* threshold, name the nearest alternative color
+  that clears it.
 - Never alter skin to separate it from the product; that's the camera plan's job. Styling
   never exaggerates a product result: no lash inserts for a mascara.
 
@@ -69,7 +71,7 @@ the beat where they start.
 - White tee, straight denim, white sneakers, gold hoops, low bun: anyone's default.
 - A watch on the hand that opens the product. A jacket the same orange as the pack.
 - Everything new and pressed after a night shift. Bare ankles at 3 °C.
-- A ΔE00 to one decimal that no script produced.
+- A ΔE00 with no hexes behind it.
 - Chic, elevated, effortless, timeless, pop of color, sleek, dewy, lived-in, quiet luxury.
 
 ## Weak vs strong (different product, for calibration only; don't reuse its details)
@@ -91,8 +93,9 @@ on a hand that turns the lid; tendrils fall over the jar; neither lock can be ch
 > tie; trousers, mid rise, half break; lace-up boots. Colors: softshell, matte polyester
 > 300 g/m², navy `#26314A`; shirt, poplin 115 g/m², pale blue `#B9CCDC`, collar points frayed
 > (sanded), older than the story; trousers, wool-blend twill 280 g/m², charcoal `#3A3B3F`;
-> boots, leather, brown-black `#302925`, toes polished. Jar L* 47, C* 67, h 38°: navy is 118°
-> away; boots and hair sit near its hue but under C* 15.
+> boots, leather, brown-black `#302925`, toes polished. Approx LCh: jar L* 47, C* 67, h 38°;
+> navy is 118° away; boots (20° off, C* 5) and hair (16° off, C* 4) sit near its hue but
+> under C* 15.
 > Fit: shoulder seam at the point; sleeves held 2 cm above the wrist bone by the cuff tabs.
 > Accessories: fictional badge (PRP-04), lanyard inside the jacket; hands and ears bare. Hair:
 > black `#2A2421` approx, coily, pinned in a low twist, center part. Medium-deep skin, cool
@@ -100,6 +103,6 @@ on a hand that turns the lid; tendrils fall over the jar; neither lock can be ch
 > Locks: [all] navy zipped to the sternum over the blue collar; [hand insert] hands bare,
 > sleeves above the wrist; [close-up] low twist, center part.
 
-Why it works: the jar is the only saturated warm color on her, by computed numbers; the hands
+Why it works: the jar is the only saturated warm color on her, by its numbers; the hands
 that turn it are bare; a frayed collar and polished boots make a person inside a uniform; each
 lock is checkable in one frame.

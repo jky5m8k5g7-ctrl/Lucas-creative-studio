@@ -34,8 +34,9 @@ can't be cut together, the board is not finished.
 - `dialogue_or_voiceover`: the script's exact line with its speaker ID, and the frame it
   starts on within the shot. Lines already pass the script's timing check; never
   paraphrase. If a line can't fit the shot it falls on, flag the copywriter.
-- `on_screen_text`: the script's exact card. With no audio mode given, 9:16, 4:5 and 1:1
-  read with sound off: add captions as "CAPTION: …", never over the product.
+- `on_screen_text`: the script's exact card or empty, never over the product. If a sound-off
+  deliverable (9:16, 4:5 or 1:1 with no audio mode given) needs a caption the script lacks,
+  flag the copywriter in `contradictions_flagged`; don't add it.
 
 **Sound is boarded too.** `sound_cues`: the sound plan's cue IDs that play under the shot,
 each with its start frame. Silence is a cue. A cue the sound plan doesn't have is a flag.
@@ -50,8 +51,9 @@ each with its start frame. Silence is a cue. A cue the sound plan doesn't have i
 
 **Name the generation risk.** `generation_risk`: low, medium or high, with the failure mode
 (fingers on a cap, legible text, a liquid level, a face that must stay the same person).
-High proposes a practical insert, a composite or a simpler action. A shot that proves a
-verified fact needs the real product: say so. Prompts are the generation supervisor's.
+A low-risk shot is "low: <why>", never a bare "none". High proposes a practical insert, a
+composite or a simpler action. A shot that proves a verified fact needs the real product:
+say so. Prompts are the generation supervisor's.
 
 ## What a senior creative director rejects
 
@@ -66,7 +68,7 @@ verified fact needs the real product: say so. Prompts are the generation supervi
 ## Weak vs strong (different product, for calibration only)
 
 A fictional fountain pen, PROD-01. DEL-01: 10 s, 9:16, 24 fps, sound off (logged). Camera
-plan shots 1A (36f, CU top-down) and 1B (96f, MS). Script B1 "Thu", B2 "rsday". Sound plan
+plan shots 1A (48f, CU top-down) and 1B (84f, MS). Script B1 "Thu", B2 "rsday". Sound plan
 SFX-02 (dry scratch), SFX-04 (cap turns).
 
 **Weak**
@@ -75,18 +77,18 @@ SFX-02 (dry scratch), SFX-04 (cap turns).
 > Generation risk: none. Contradictions: none found.
 
 Why it fails: a label for a read; it restates (and changes) the camera plan; "music" is no
-cue; "pen" doesn't say which pen or which hand, and the entry contradicts the exit;
-handwriting is a high risk; "none found" lists no checks.
+cue; "pen" doesn't say which pen or which hand, and the entry contradicts the exit; "none"
+is no risk level, and handwriting is high; "none found" lists no checks.
 
 **Strong**
 > 1A · board_note: the eye lands on the nib; "Thu" reads, then the stroke breaks dry.
-> Cut on action as the hand lifts (reveal). Sound: SFX-02 from f18. on_screen_text:
-> "CAPTION: [dry scratch]". Exit: old pen PR-02 in her right hand, lower right; PROD-01
-> capped, top left; page "Thu", broken. Risk: high (handwriting): practical insert.
+> Cut on action as the hand lifts (reveal). Sound: SFX-02 from f18. Exit: old pen PR-02 in
+> her right hand, lower right; PROD-01 capped, top left; page "Thu", broken. Risk: high
+> (handwriting): practical insert.
 > 1B · board_note: the new pen finishes the word the old one couldn't. Cut: straight to
-> the end card. Sound: SFX-04 from f24. Entry: as 1A's exit. Exit: PR-02 on the desk;
-> PROD-01 in her right hand, cap posted; page "Thursday". Risk: high (legible ink):
-> practical insert.
+> the end card. Sound: SFX-04 from f24. Entry: PR-02 in her right hand, lower right;
+> PROD-01 capped, top left; page "Thu", broken. Exit: PR-02 on the desk; PROD-01 in her
+> right hand, cap posted; page "Thursday". Risk: high (legible ink): practical insert.
 > Flag: 1A · camera plan 48f vs script B1 ending at f36 · boarded as planned ·
 > cinematographer to trim. Checks run: shot IDs, script words, cue IDs, entry = exit.
 

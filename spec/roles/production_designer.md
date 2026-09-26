@@ -56,7 +56,7 @@ the same room from it. If the set would suit any product in the category, it is 
   the other locations there. Each location still lists two of its own.
 - Hero and action props get a first position and states (S1, S2), each with the script beat that
   causes it. A repeated position after a change is a new state. Irreversible states carry "not
-  before M#".
+  before B#", the script's beat_id.
 - Lock at most about five props per frame besides the product; generators drift past that.
 
 **Clear every mark; write every word.**

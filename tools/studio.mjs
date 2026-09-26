@@ -6,6 +6,7 @@
 // copy with Workflow({ scriptPath }), then files the output with `save`.
 //
 //   node tools/studio.mjs new <slug> "<idea>" [--format ad_spot] [--seconds 30] [--brand Name]
+//        (or --idea-file <path> for a long idea, read word for word)
 //        [--review end|gates] [--budget N]   gates: stop at the route choice before building
 //   node tools/studio.mjs resume <slug>                  continue after a run hit its call budget
 //   node tools/studio.mjs approve <slug> <decision.json> apply an Approval Desk decision
@@ -84,7 +85,8 @@ function loadState(slug) {
 // ---- commands ----
 
 function cmdNew(slug, idea, f) {
-  if (!idea || !idea.trim()) die('give the idea as the second argument')
+  if (f['idea-file']) idea = read(path.resolve(f['idea-file']))
+  if (!idea || !idea.trim()) die('give the idea as the second argument, or --idea-file <path>')
   const dir = projectDir(slug)
   if (fs.existsSync(path.join(dir, 'state.json'))) die(`${slug} already has a state; pick another name or use resume`)
   fs.mkdirSync(dir, { recursive: true })

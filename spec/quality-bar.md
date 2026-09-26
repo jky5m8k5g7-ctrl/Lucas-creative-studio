@@ -46,8 +46,9 @@ Reviewers start below 8 and let the page argue them up. An 8 is earned, never th
 
 **Craft: would a senior practitioner in this role sign it?**
 - 8+: correct technique for the role (timing that can be performed, lenses that exist,
-  continuity that holds, rights that are cleared), nothing physically implausible, and every
-  cross-reference to another department's IDs is right.
+  continuity that holds), nothing physically implausible, and every cross-reference to another
+  department's IDs is right. Every right and consent the work needs is named with its source,
+  scope and owner and left pending for the producer, never claimed as cleared.
 - 6: an amateur mistake a professional would catch on first read.
 
 ## What always costs points

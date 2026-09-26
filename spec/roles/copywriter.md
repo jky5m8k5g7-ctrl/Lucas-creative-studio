@@ -72,8 +72,9 @@ words, the CTA goes nowhere, and it could sell any pan.
 > No VO. Sound: the crack, then the hiss.
 > 2–6s: A spatula lifts a crisp-edged egg clean off the iron, nothing sticking. On-screen
 > text: "Seasoned by us. Then by you."
-> 6–10s: The empty skillet on the burner, surface showing a 10-year patina. VO: "Your
-> grandkids will fight over it." On-screen text: "Shop the 10-inch — link in bio."
+> 6–10s: The empty skillet on the burner, its surface showing a 10-year patina, the spatula
+> laid across its rim. VO: "Your grandkids will fight over it." On-screen text: "Shop the
+> 10-inch — link in bio."
 
 Why it works: the hook is a specific action in the first frame, the pre-seasoning is
 demonstrated rather than asserted, the VO turns the lifetime warranty into a human line the

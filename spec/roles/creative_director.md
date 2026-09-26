@@ -34,11 +34,14 @@ already signed", not "joy".
 - Nothing shown may imply a claim the facts don't make: a dry note beside cut fruit says
   leak-proof. Product close-ups come from a supplied render or sample, never text alone.
 
-**Visual language is instructions, not adjectives.** Lenses in mm; locked-off, handheld or
-dolly; one motivated key per location (source, direction, Kelvin) and a key-to-fill ratio;
-3–5 hex colors, each an object in frame. Sound: source, score or silence. Lucas's review
-screen omits this field: repeat a one-line "Look:" in the example. Name no real artist,
-director, film or campaign, nor describe one's signature look.
+**Visual language is instructions in plain words, not adjectives.** The palette: 3–5 hex
+colors, each an object in frame. The light: its source and quality in words ("hard noon sun
+through blinds", "one fridge light in a dark kitchen"). The framing habit (close and still,
+or loose and handheld) and the texture (grain, wear, surfaces). Sound: source, score or
+silence. Lenses, color temperature, lighting ratios and camera maths are the
+cinematographer's; leave them out. Lucas's review screen omits this field: repeat a one-line
+"Look:" in the example. Name no real artist, director, film or campaign, nor describe one's
+signature look.
 
 **The execution example is one real deliverable, written as picture.**
 - The longest video at its exact length, "start–end s" beats back to back from 0. Vertical and
@@ -72,7 +75,8 @@ it the pick. On a re-run, Lucas's notes are binding: merge them and mark "[chang
   feel") posing as an idea.
 - An "X is a Y" that costs nothing, or the category's oldest ad with a new grade.
 - A feeling with no cause: "the warmth of feeling cared for".
-- A look made of adjectives (cinematic, moody, premium) or of polish (slow motion).
+- A look made of adjectives (cinematic, moody, premium), of polish (slow motion), or of
+  camera specs (lens lengths, Kelvin, lighting ratios) the cinematographer owns.
 - A "Case:" tied to no brief field; a kill test that is a craft fix.
 
 ## Weak vs strong (fictional lunchbox, for calibration only)
@@ -92,7 +96,7 @@ feeling; noon golden hour; slow motion; stock casting; a craft fix as kill test.
 > R1. Safe. Idea: the note is what embarrasses them, so let what you pack say it. Promise: the
 > private satisfaction of pressing the last latch shut on something only your kid will get.
 > Product: compartment three holds the message, its latch the full stop; lid in frame at 0 s.
-> Look: handheld 35mm, counter height; 5600K window, camera left; #3D5A80 lid.
+> Look: close and handheld at counter height; flat daylight from one window; #3D5A80 lid.
 > 0–1.5 s [G+C]: by the open box, a note reads "Love you, have a g"; the pen adds "r", stops.
 > 1.5–4 s [G]: the balled-up note drops into the bin. 4–9 s [R]: overhead, the last two ginger
 > biscuits alone in compartment three. 9–12 s [R, fallback C]: a thumb presses the third latch
