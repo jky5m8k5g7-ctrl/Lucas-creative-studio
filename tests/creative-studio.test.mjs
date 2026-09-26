@@ -359,5 +359,56 @@ ok(sT.calls.some(c => c.label === 'cinematographer · resume revision' && c.prom
 ok(sT.calls.some(c => c.label.startsWith('storyboard_artist') && c.prompt.includes('BOARD-DIRECTION-MARKER')) && rT.project_state.artifacts.storyboard.status !== 'stale', 'T: the board is rebuilt with the new direction')
 ok(rT.pending_gate && rT.pending_gate.gate_id === 'production_plan' && rT.project_state.decision_log.some(d => d.stage === 'direction'), 'T: the project comes back to the gate with the direction logged')
 
+// U. A bar set on reviewed work never replaces it with a worse revision.
+const camReviews = calls => calls.filter(c => c.label.startsWith('cinematographer · review')).length
+const sU = makeStub({ scores: (dept, label, calls) => (dept === 'cinematographer' ? (camReviews(calls) <= 1 ? [9, 9, 9, 9] : [7, 7, 7, 7]) : null) })
+const rU0 = await run({ command: 'IDEA', idea: IDEA }, sU.agent, sU.parallel, noop, noop)
+const camU0 = rU0.project_state.artifacts.camera_plan, boardU0 = rU0.project_state.artifacts.storyboard
+const rU = await run({ command: 'APPROVE', priorState: J(rU0.project_state), targets: { cinematographer: { min: 10, rounds: 3 } } }, sU.agent, sU.parallel, noop, noop)
+const camU = rU.project_state.artifacts.camera_plan
+ok(camU.artifact_id === camU0.artifact_id && camU.quality.min === 9 && camU.quality.kept_round === 1 && camU.quality.grade === 'A' && camU.quality.met_target === false, 'U: worse revisions after a new bar keep the reviewed 9s version: ' + JSON.stringify({ id: camU.artifact_id, min: camU.quality.min, k: camU.quality.kept_round }))
+ok(rU.project_state.artifacts.storyboard.artifact_id === boardU0.artifact_id && !rU.project_state.artifacts.camera_plan.quality.incomplete, 'U: keeping the earlier version leaves the board built on it alone')
+// Z. The next review of a kept version is told that version's scores, not the discarded round's.
+const zStart = sU.calls.length
+await run({ command: 'APPROVE', priorState: J(rU.project_state), targets: { cinematographer: { min: 10, rounds: 1 } } }, sU.agent, sU.parallel, noop, noop)
+const zReview = sU.calls.slice(zStart).find(c => c.label.startsWith('cinematographer · review'))
+ok(zReview && zReview.prompt.includes('The previous review scored it specificity 9') && !zReview.prompt.includes('specificity 7,'), 'Z: a kept version is reviewed against its own scores')
+
+// V. A budget stop right after a worse round saves the better version to revise next.
+const vScores = (dept, label, calls) => (dept === 'cinematographer' ? (camReviews(calls) === 1 ? [9, 9, 9, 9] : camReviews(calls) === 2 ? [7, 7, 7, 7] : [8, 8, 8, 8]) : null)
+const sV1 = makeStub({ scores: vScores })
+await run({ command: 'IDEA', idea: IDEA, targets: { cinematographer: { min: 10, rounds: 5 } } }, sV1.agent, sV1.parallel, noop, noop)
+const stopAt = sV1.calls.findIndex(c => c.label === 'cinematographer · review 3')
+const sV = makeStub({ scores: vScores })
+const rV0 = await run({ command: 'IDEA', idea: IDEA, targets: { cinematographer: { min: 10, rounds: 5 } }, maxAgentCalls: stopAt }, sV.agent, sV.parallel, noop, noop)
+const qV0 = rV0.project_state.artifacts.camera_plan.quality
+ok(qV0.incomplete && qV0.pending === 'revise' && qV0.min === 9 && qV0.kept_round === 1, 'V: the paused camera plan is the 9s version, waiting to be revised: ' + JSON.stringify({ p: qV0.pending, m: qV0.min, k: qV0.kept_round }))
+const rV = await run({ command: 'APPROVE', priorState: J(rV0.project_state) }, sV.agent, sV.parallel, noop, noop)
+const qV = rV.project_state.artifacts.camera_plan.quality
+ok(qV.min === 9 && !qV.incomplete && qV.rounds === 5, 'V: after resuming, 8s never replace the 9s version: ' + JSON.stringify({ m: qV.min, r: qV.rounds, k: qV.kept_round }))
+
+// W. Direction after the package was approved reopens it and revises the work.
+const sW = makeStub()
+const rW0 = await run({ command: 'IDEA', idea: IDEA }, sW.agent, sW.parallel, noop, noop)
+const rW1 = await run({ command: 'APPROVE', priorState: J(rW0.project_state), approvals: { production_plan: approve({ decision_id: 'dec_W', selected_route_id: 'R2' }) } }, sW.agent, sW.parallel, noop, noop)
+const w0 = sW.calls.length
+const rW = await run({ command: 'APPROVE', priorState: J(rW1.project_state), direction: [{ id: 'LD-01', note: 'LATE-DIRECTION-MARKER', departments: ['cinematographer'] }] }, sW.agent, sW.parallel, noop, noop)
+ok(rW1.project_state.production_plan_applied && sW.calls.slice(w0).some(c => c.label === 'cinematographer · revise from notes' && c.prompt.includes('LATE-DIRECTION-MARKER')), 'W: direction after approval revises the camera plan')
+ok(!rW.project_state.production_plan_applied && rW.pending_gate && rW.pending_gate.gate_id === 'production_plan' && rW.project_state.approval_log.some(e => e.gate_id === 'production_plan' && e.decision === 'reopened'), 'W: the package is reopened and comes back to Lucas')
+
+// X. Gates mode: direction for the routes reopens the route approval instead of reusing it.
+const sX = makeStub()
+const rX0 = await run({ command: 'IDEA', idea: IDEA, review: 'gates' }, sX.agent, sX.parallel, noop, noop)
+const rX1 = await run({ command: 'APPROVE', priorState: J(rX0.project_state), approvals: { concept: approve({ decision_id: 'dec_X1', selected_route_id: 'R2' }) } }, sX.agent, sX.parallel, noop, noop)
+const rX = await run({ command: 'APPROVE', priorState: J(rX1.project_state), direction: [{ id: 'LD-01', note: 'ROUTES-DIRECTION-MARKER', departments: ['creative_director'] }] }, sX.agent, sX.parallel, noop, noop)
+ok(rX.pending_gate && rX.pending_gate.gate_id === 'concept' && rX.project_state.approval_log.some(e => e.gate_id === 'concept' && e.decision === 'reopened') && !rX.project_state.approval_log.filter(e => e.gate_id === 'concept' && e.decision === 'approved').some(e => e.decision_id !== 'dec_X1'), 'X: revised routes go back to Lucas; his earlier route approval is not reused')
+
+// Y. Direction for development on a saved project reaches the development producer.
+const sY = makeStub()
+const rY0 = await run({ command: 'IDEA', idea: IDEA }, sY.agent, sY.parallel, noop, noop)
+const y0 = sY.calls.length
+const rY = await run({ command: 'APPROVE', priorState: J(rY0.project_state), direction: [{ id: 'LD-01', note: 'DEV-DIRECTION-MARKER', departments: ['development_producer'] }] }, sY.agent, sY.parallel, noop, noop)
+ok(sY.calls.slice(y0).some(c => c.label === 'development_producer · revise from notes' && c.prompt.includes('DEV-DIRECTION-MARKER')) && !(rY.project_state.pending_notes || {}).development, 'Y: development is revised with the direction')
+
 console.log(fails ? `\n${fails} FAILED` : '\nALL PASS')
 if (fails) process.exit(1)

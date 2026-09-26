@@ -1738,7 +1738,8 @@ async function produce(state, key, opts) {
   const goal = target ? target.min : A_MIN
   // Work reviewed before the bar was set gets the bar's rounds on top of the ones it had.
   const base = (pq && pq.target_from_round) || 0
-  const maxRounds = target ? Math.max(LIMITS.maxQualityRounds, base + (target.rounds || LIMITS.maxQualityRounds)) : LIMITS.maxQualityRounds
+  // A paused review always gets at least its next round, even if the bar's rounds were lowered.
+  const maxRounds = Math.max(target ? Math.max(LIMITS.maxQualityRounds, base + (target.rounds || LIMITS.maxQualityRounds)) : LIMITS.maxQualityRounds, (pq && !byNotes ? pq.rounds : 0) + 1)
   // Blocked work (the agent couldn't do it, or failed) goes to Lucas as blocked, not to a reviewer.
   if (state.settings.quality && res.status !== 'blocked') {
     const history = quality ? quality.history.slice() : []
@@ -1747,8 +1748,18 @@ async function produce(state, key, opts) {
     let best = null
     const rank = b => [b.violations.length ? 0 : 1, b.quality.min, Object.values(b.quality.scores).reduce((a, x) => a + x, 0)]
     const better = (a, b) => { const x = rank(a); const y = rank(b); for (let i = 0; i < x.length; i++) if (x[i] !== y[i]) return x[i] > y[i]; return false }
+    // Resuming a revision (after a budget stop, or a bar set on reviewed work): the version
+    // already reviewed is a candidate too, so a worse revision can't replace it.
+    if (pq && !byNotes && pq.pending === 'revise' && pq.scores) {
+      const { incomplete: _i, pending: _p, ...q0 } = pq
+      const v0 = (prior.checks && prior.checks.failed) || []
+      const res0 = { status: prior.status === 'review_required' ? 'draft' : prior.status, based_on: prior.based_on, content: spec.unsplit ? spec.unsplit(state) : prior.content, asset_uri: prior.asset_uri, assumptions: prior.assumptions, sources: prior.sources, blockers: prior.blockers }
+      best = { res: res0, violations: v0, quality: { ...q0, ...(target ? { target: goal, met_target: pq.min >= goal && !v0.length } : {}) }, round: pq.kept_round || pq.rounds, prior: true }
+    }
+    let lastReviewed = best
     for (let round = (quality ? quality.rounds : 0) + 1; round <= maxRounds; round++) {
-      const last = history.length ? { scores: history[history.length - 1].scores, notes: quality && quality.notes } : null
+      // The previous review is the one of the version being revised (after a kept round, not the last round).
+      const last = history.length ? { scores: (quality && quality.scores) || history[history.length - 1].scores, notes: quality && quality.notes } : null
       const crit = await runAgent(state, 'quality_control', criticPrompt(state, spec, role, asWork(res), last), { schema: CRITIQUE_SCHEMA, phase: ph, label: `${spec.dept} · review ${round}` })
       if (crit && crit.not_run) { refused = true; break }
       if (!crit || !crit.specificity) { pending = null; break }
@@ -1763,6 +1774,7 @@ async function produce(state, key, opts) {
         ...(target ? { target: goal, met_target: min >= goal && !violations.length, ...(base ? { target_from_round: base } : {}) } : {}),
       }
       const reviewed = { res, violations: violations.slice(), quality: { ...quality }, round }
+      lastReviewed = reviewed
       if (!best || better(reviewed, best)) best = reviewed
       pending = null
       if ((min >= goal && !violations.length) || round === maxRounds) break
@@ -1776,15 +1788,21 @@ async function produce(state, key, opts) {
       if (refused) break
     }
     // Out of budget mid-review: record exactly what's left so the next run picks it up.
-    if (refused && pending) quality = { ...(quality || { grade: 'not_reviewed', scores: null, min: null, rounds: 0, history: [], notes: [], keep: [] }), history, incomplete: true, pending }
+    const restore = extra => {
+      res = best.res
+      violations = best.violations
+      if (best.prior) madeNew = false
+      quality = { ...best.quality, rounds: quality.rounds, history, kept_round: best.round, ...extra }
+    }
+    // Out of budget mid-review, after a revision scored below an earlier version: save the better
+    // version, so the next run revises that one.
+    if (refused && pending && best && lastReviewed && best !== lastReviewed && better(best, lastReviewed)) restore({ incomplete: true, pending: 'revise' })
+    else if (refused && pending) quality = { ...(quality || { grade: 'not_reviewed', scores: null, min: null, rounds: 0, history: [], notes: [], keep: [] }), history, incomplete: true, pending }
     else if (quality) {
       delete quality.incomplete
+      delete quality.pending
       // The last reviewed version scored below an earlier one: keep the earlier one.
-      if (best && best.round !== quality.rounds && better(best, { res, violations, quality })) {
-        res = best.res
-        violations = best.violations
-        quality = { ...best.quality, rounds: quality.rounds, history, kept_round: best.round }
-      }
+      if (best && lastReviewed && best !== lastReviewed && better(best, lastReviewed)) restore({})
     }
   }
 
@@ -2189,7 +2207,7 @@ async function runPipeline(state) {
 
   if (state.settings.idea_mode) {
     const dev = state.artifacts.development
-    if (!isPresent(state, 'development') || (dev && dev.status === 'blocked') || (state.settings.quality && unfinishedReview(state, 'development'))) {
+    if (!isPresent(state, 'development') || (dev && dev.status === 'blocked') || hasPendingNotes(state, 'development') || (state.settings.quality && unfinishedReview(state, 'development'))) {
       phase('Development')
       await produce(state, 'development')
     }
@@ -2449,6 +2467,7 @@ if (command === 'IDEA') {
 // department already built is revised against new direction (as pending notes), and work reviewed
 // below a new bar goes back into its review loop.
 const specKeyFor = dept => Object.keys(SPECS).find(k => SPECS[k].dept === dept)
+const directedKeys = []
 if (Array.isArray(input.direction) && input.direction.length) {
   const have = new Set((state.direction || []).map(d => d.id))
   const fresh = input.direction
@@ -2457,7 +2476,10 @@ if (Array.isArray(input.direction) && input.direction.length) {
   state.direction = [...(state.direction || []), ...fresh]
   fresh.forEach(d => d.departments.forEach(dept => {
     const key = specKeyFor(dept)
-    if (isPresent(state, key)) state.pending_notes = { ...(state.pending_notes || {}), [key]: [...((state.pending_notes || {})[key] || []), { target: 'Lucas', note: d.note, source: "Lucas's direction" }] }
+    if (isPresent(state, key)) {
+      state.pending_notes = { ...(state.pending_notes || {}), [key]: [...((state.pending_notes || {})[key] || []), { target: 'Lucas', note: d.note, source: "Lucas's direction" }] }
+      directedKeys.push(key)
+    }
   }))
   if (fresh.length) state.decision_log.push({ stage: 'direction', summary: `Lucas's direction added: ${fresh.map(d => `${d.id} for ${d.departments.join(', ')}`).join('; ')}` })
 }
@@ -2466,14 +2488,29 @@ if (input.targets && typeof input.targets === 'object') {
     const key = specKeyFor(dept)
     const min = Number(t && t.min)
     if (!key || !(min > A_MIN && min <= 10)) return
-    const rounds = Math.min(8, Math.max(1, Number(t.rounds) || LIMITS.maxQualityRounds))
+    const rounds = Math.min(8, Math.max(1, Math.round(Number(t.rounds)) || LIMITS.maxQualityRounds))
     state.settings.targets = { ...(state.settings.targets || {}), [dept]: { min, rounds } }
     const a = state.artifacts[key]
     const q = a && a.status !== 'stale' && a.quality
     const met = q && q.min >= min && !((a.checks && a.checks.failed) || []).length
-    if (q && q.scores && !q.incomplete && !met && !hasPendingNotes(state, key)) a.quality = { ...q, incomplete: true, pending: 'revise', target_from_round: q.rounds }
+    if (q && q.scores && !q.incomplete && !met && !hasPendingNotes(state, key)) {
+      a.quality = { ...q, incomplete: true, pending: 'revise', target_from_round: q.rounds }
+      directedKeys.push(key)
+    }
     state.decision_log.push({ stage: 'direction', summary: `Lucas set the ${dept} bar at ${min} on every criterion (up to ${rounds} review rounds)` })
   })
+}
+// Direction that sends built work back reopens what Lucas approved on top of it: the routes
+// (when it reaches development, strategy or the routes) and the package.
+if (directedKeys.some(k => ['development', 'strategy', 'concepts'].includes(k)) && state.approvals.concept && state.approvals.concept.approved) {
+  delete state.approvals.concept
+  state.selected_concept_id = null
+  state.approval_log.push({ gate_id: 'concept', decision: 'reopened', note: "Lucas's direction changes the development, strategy or routes" })
+}
+if (directedKeys.length && (state.production_plan_applied || (state.approvals.production_plan && state.approvals.production_plan.approved))) {
+  delete state.approvals.production_plan
+  state.production_plan_applied = false
+  state.approval_log.push({ gate_id: 'production_plan', decision: 'reopened', note: `Lucas's direction after the package was approved sends ${[...new Set(directedKeys)].join(', ')} back for revision` })
 }
 
 if (state.settings.quality) LIMITS.maxAgentCallsPerRun = input.maxAgentCalls || 220

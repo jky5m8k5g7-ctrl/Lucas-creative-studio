@@ -167,7 +167,10 @@ decisions still happen on the Approval Desk.
 
 - `node tests/creative-studio.test.mjs`: the workflow with stub agents (no model calls):
   gates, approvals, route changes, notes, budget stops and resumes, the schema split, and
-  every audit fix.
+  every audit fix, Lucas's direction and bars, and keeping the best-scoring version.
 - `node tests/studio-runner.test.mjs`: `tools/studio.mjs` end to end with stub agents: new →
-  run → save → `package.md` and `desk.json` → a version-checked approval.
+  run → save → `package.md` and `desk.json` → a version-checked approval; `direct`, and a
+  saved state split into part scripts.
+- `node tests/live-feed.test.mjs`: the live feed against synthetic journals (kept versions,
+  bars, resumed runs).
 - `tests/results/`: records of the real runs.

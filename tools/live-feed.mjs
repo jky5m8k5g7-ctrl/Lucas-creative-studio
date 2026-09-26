@@ -5,8 +5,10 @@
 //   node tools/live-feed.mjs <slug> --out <snapshot.json> [--wait <seconds>]
 //
 // The run to follow is named in projects/<slug>/.live-run (JSON: { journal, run, finished }, or
-// { journals: [{ dir, lines? }, ...] } for a build that continued in a new run: earlier runs are
-// read up to `lines`, then the current one; plus optional `targets` and `direction` to show).
+// { journals: [{ dir, from?, lines? }, ...] } for a build that continued in a new run, or resumed
+// in place (the same dir twice: [{ dir, lines: N }, { dir, from: N }]): earlier entries are read
+// from `from` up to `lines`, and their calls that never finished are left out. Lucas's bars and
+// direction come from `targets` and `direction` here, or else from the project's saved state).
 // With --wait, it waits (polling, up to the given seconds) for the journal to change since the
 // snapshot already in --out, then writes a fresh one either way. It prints one word: "changed",
 // "heartbeat" (nothing new; the snapshot only has a fresh written_at, so the page knows the
@@ -51,10 +53,10 @@ const journalBytes = p => journalsOf(p).reduce((n, j) => n + size(path.join(j.di
 const mtime = f => { try { return fs.statSync(f).mtime.toISOString() } catch { return null } }
 const clip = (s, n) => { s = String(s == null ? '' : s).replace(/\s+/g, ' ').trim(); return s.length > n ? s.slice(0, n - 1).trimEnd() + '…' : s }
 
-function readJournal(file, limit) {
+function readJournal(file, limit, from) {
   let text = ''
   try { text = fs.readFileSync(file, 'utf8') } catch { return [] }
-  const lines = text.split('\n').slice(0, limit || undefined)
+  const lines = text.split('\n').slice(from || 0, limit || undefined)
   // The last line may still be being written.
   return lines.map(l => { try { return JSON.parse(l) } catch { return null } }).filter(Boolean)
 }
@@ -95,7 +97,7 @@ function snapshot() {
   const results = new Map()
   let events = 0
   js.forEach((j, i) => {
-    const rows = readJournal(path.join(j.dir, 'journal.jsonl'), j.lines)
+    const rows = readJournal(path.join(j.dir, 'journal.jsonl'), j.lines, j.from)
     events += rows.length
     // An earlier run's calls that never finished were stopped with it: leave them out.
     const done = new Set(rows.filter(e => e.type === 'result').map(e => e.key))
@@ -104,13 +106,23 @@ function snapshot() {
       else if (e.type === 'result') results.set(e.key, e)
     }
   })
-  const targets = p.targets || {}
+  const saved = readJson(path.join(root, 'projects', slug, 'state.json')) || {}
+  const targets = p.targets || (saved.settings && saved.settings.targets) || {}
+  const directionList = p.direction || saved.direction || []
+  // Rounds a department had already been reviewed when a bar was set on it count toward its limit.
+  const fromRound = dept => {
+    const t = targets[dept] || {}
+    if (t.from_round != null) return t.from_round
+    const key = { cinematographer: 'camera_plan', storyboard_artist: 'storyboard', generation_supervisor: 'generation_plan' }[dept]
+    const q = key && saved.artifacts && saved.artifacts[key] && saved.artifacts[key].quality
+    return (q && q.target_from_round) || 0
+  }
   const times = s => ({
     at: s.agentId ? mtime(path.join(s.dir, `agent-${s.agentId}.meta.json`)) : null,
     end: s.agentId ? mtime(path.join(s.dir, `agent-${s.agentId}.jsonl`)) : null,
   })
 
-  const depts = Object.fromEntries(DEPTS.map(([d, n, what]) => [d, { dept: d, name: n, what, status: 'waiting', step: null, rounds: [], grade: null, headline: '', notes: [], keep: '', calls: 0, blocked: '', target: (targets[d] && targets[d].min) || null, met_target: null }]))
+  const depts = Object.fromEntries(DEPTS.map(([d, n, what]) => [d, { dept: d, name: n, what, status: 'waiting', step: null, rounds: [], grade: null, headline: '', notes: [], keep: '', calls: 0, blocked: '', target: (targets[d] && targets[d].min) || null, met_target: null, kept_round: null }]))
   const qc = []
   const panel = []
   let router = null
@@ -136,29 +148,45 @@ function snapshot() {
     if (info.group === 'dept') {
       const d = depts[info.dept]
       d.calls++
-      // A fresh draft starts the department's review cycle over.
-      if (info.step === 'draft' && !info.fix) { d.rounds = []; d.grade = null; d.met_target = null; d.notes = []; d.keep = '' }
+      // A fresh draft, or a revision from notes, starts the department's review cycle over.
+      if (info.step === 'draft' || info.step === 'notes') { d.rounds = []; d.grade = null; d.met_target = null; d.notes = []; d.keep = ''; d.blocked = ''; d.kept_round = null }
       if (!r) {
         d.status = { draft: 'drafting', review: 'reviewing', revise: 'revising', notes: 'revising', fix: 'fixing' }[info.step]
         d.step = info.step === 'review' ? `review ${info.round}` : info.step
-        feed.push({ running: true, at: t.at, dept: info.dept, text: `${d.name}: ${{ draft: 'drafting', review: `reviewer scoring round ${info.round}`, revise: `revising (round ${info.round || ''})`.replace(' ()', ''), notes: 'revising from notes', fix: 'fixing failed checks' }[info.step]}` })
+        feed.push({ running: true, at: t.at, dept: info.dept, text: `${d.name}: ${{ draft: 'drafting', review: `reviewer scoring round ${info.round}`, revise: info.round ? `revising (round ${info.round})` : 'resuming its revision', notes: 'revising from notes', fix: 'fixing failed checks' }[info.step]}` })
         continue
       }
       if (info.step === 'review') {
         if (res && res.specificity) {
           const sc = { s: res.specificity.score, d: res.distinctiveness.score, f: res.fit.score, c: res.craft.score }
           const min = Math.min(sc.s, sc.d, sc.f, sc.c)
-          d.rounds.push({ round: info.round, ...sc, min })
+          const notes = (res.notes || []).slice(0, 3).map(n => clip(n.note, 280))
+          const keep = clip((res.keep || [])[0], 220)
+          d.rounds.push({ round: info.round, ...sc, min, notes, keep })
           d.grade = min >= 8 ? 'A' : 'below_A'
-          d.notes = (res.notes || []).slice(0, 3).map(n => clip(n.note, 280))
-          d.keep = clip((res.keep || [])[0], 220)
+          d.notes = notes
+          d.keep = keep
+          d.kept_round = null
           const goal = d.target || 8
-          const maxRounds = d.target ? Math.max(3, targets[info.dept].rounds || 3) : 3
+          const maxRounds = d.target ? Math.max(3, fromRound(info.dept) + (targets[info.dept].rounds || 3)) : 3
           const last = info.round >= maxRounds
           if (d.target) d.met_target = min >= goal
           d.status = min >= goal || last ? 'done' : 'revising'
           d.step = null
-          const verdict = min >= goal ? (d.target ? ` (${goal}s: your bar met)` : ' (A)') : last ? (d.target ? ` (below your bar of ${goal} after ${maxRounds} rounds)` : ' (below A after 3 rounds)') : d.target && min >= 8 ? `, A but below your bar of ${goal}: revising` : ', sent back to revise'
+          let verdict = min >= goal ? (d.target ? ` (${goal}s: your bar met)` : ' (A)') : last ? (d.target ? ` (below your bar of ${goal} after ${maxRounds} rounds)` : ' (below A after 3 rounds)') : d.target && min >= 8 ? `, A but below your bar of ${goal}: revising` : ', sent back to revise'
+          // Finished: the studio keeps the best-scoring version of this cycle, as the workflow does.
+          if (d.status === 'done') {
+            const score = r => [r.min, r.s + r.d + r.f + r.c]
+            const best = d.rounds.reduce((b, r) => { const x = score(r), y = score(b); return x[0] > y[0] || (x[0] === y[0] && x[1] > y[1]) ? r : b })
+            if (best !== d.rounds[d.rounds.length - 1]) {
+              d.kept_round = best.round
+              d.grade = best.min >= 8 ? 'A' : 'below_A'
+              if (d.target) d.met_target = best.min >= goal
+              d.notes = best.notes
+              d.keep = best.keep
+              verdict += `; keeping round ${best.round}'s version (${best.s} · ${best.d} · ${best.f} · ${best.c})`
+            }
+          }
           feed.push({ at: doneAt, dept: info.dept, text: `${d.name} review ${info.round}: ${sc.s} · ${sc.d} · ${sc.f} · ${sc.c}${verdict}` })
         } else {
           feed.push({ at: doneAt, dept: info.dept, text: `${d.name} review ${info.round}: no result` })
@@ -168,6 +196,7 @@ function snapshot() {
           d.status = 'blocked'
           d.blocked = clip((res.blockers || [])[0], 220)
         } else {
+          d.blocked = ''
           d.status = 'reviewing'
           const h = headline(info.dept, res && res.content)
           if (h) d.headline = h
@@ -211,7 +240,7 @@ function snapshot() {
     calls: { started, done, running },
     budget: p.budget || null,
     started_at: starts.size ? times([...starts.values()][0]).at : null,
-    direction: (p.direction || []).map(d => ({ id: d.id, note: d.note, lucas_words: d.lucas_words || '', departments: (d.departments || []).map(x => NAME[x] || x) })),
+    direction: directionList.map(d => ({ id: d.id, note: d.note, lucas_words: d.lucas_words || '', departments: (d.departments || []).map(x => NAME[x] || x) })),
     last_event_at: lastAt,
     written_at: new Date().toISOString(),
     departments: DEPTS.map(([d]) => depts[d]),

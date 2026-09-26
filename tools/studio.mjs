@@ -91,6 +91,13 @@ function writeRun(slug, args) {
   const dir = projectDir(slug)
   const partsDir = path.join(dir, '.run-parts')
   fs.rmSync(partsDir, { recursive: true, force: true })
+  // A run on a saved state also gets whatever of Lucas's direction the state doesn't have yet.
+  if (args.priorState) {
+    const pend = pendingDirection(slug, args.priorState)
+    args = { ...args, direction: [...pend.direction, ...(args.direction || [])], targets: { ...pend.targets, ...(args.targets || {}) } }
+    if (!args.direction.length) delete args.direction
+    if (!Object.keys(args.targets).length) delete args.targets
+  }
   let embedded = { ...studioInputs(), projectId: slug.toUpperCase().replace(/-/g, '_'), ...args }
   // A replacer function, so "$&" or "$$" in Lucas's text or the state is inserted literally.
   const build = e => src.replace(marker, () => `// Inputs embedded by tools/studio.mjs for project "${slug}".\nconst EMBEDDED_ARGS = ${JSON.stringify(e)}\nconst input = { ...EMBEDDED_ARGS, ...(args || {}) }`)
@@ -136,8 +143,9 @@ function cmdNew(slug, idea, f) {
   if (f.format) hints.format = f.format
   if (f.seconds) hints.duration_seconds = Number(f.seconds)
   if (f.brand) hints.brand = f.brand
-  writeJSON(path.join(dir, 'idea.json'), { idea: idea.trim(), hints, idea_doc_id: f['idea-id'] || null })
-  writeRun(slug, { command: 'IDEA', idea: idea.trim(), ideaHints: hints, ...runOptions(f) })
+  writeJSON(path.join(dir, 'idea.json'), { idea: idea.trim(), hints, idea_doc_id: f['idea-id'] || null, run_options: runOptions(f) })
+  const d = readDirection(slug)
+  writeRun(slug, { command: 'IDEA', idea: idea.trim(), ideaHints: hints, ...(d.direction.length ? { direction: d.direction } : {}), ...(Object.keys(d.targets).length ? { targets: d.targets } : {}), ...runOptions(f) })
 }
 
 // Options any run takes: --review end|gates, --budget <agent calls per run>.
@@ -191,16 +199,31 @@ function cmdNotes(slug, notes, f) {
 }
 
 // Lucas's direction during a build: a note for the departments it names, and/or a bar above A
-// for one department (--target cinematographer=10 --rounds 5). A project with a saved state
-// resumes with it; one whose first run hasn't been saved yet is re-run from its idea with it
-// (a Workflow resume replays every call whose prompt is unchanged, so only the named
-// departments and the work after them run again).
+// for one department (--target cinematographer=10 --rounds 5). Everything he directs is kept in
+// direction.json, and every run on a saved state is sent whatever of it that state doesn't have
+// yet (see pendingDirection), so a direction is never lost to whichever run's output is saved.
+// With a saved state the next run revises the named departments' work against it. Without one
+// the project is re-run from its idea: a Workflow resume reuses cached calls only up to the first
+// call that changed or ran in a different order, so parallel departments may be redone.
 const DEPARTMENTS = ['development_producer', 'strategist', 'creative_director', 'copywriter', 'casting_director', 'production_designer', 'director', 'stylist', 'sound_designer', 'cinematographer', 'storyboard_artist', 'generation_supervisor']
+function readDirection(slug) {
+  const p = path.join(projectDir(slug), 'direction.json')
+  const d = fs.existsSync(p) ? readJSON(p) : {}
+  return { direction: d.direction || [], targets: d.targets || {} }
+}
+// What direction.json holds that the state doesn't yet: new notes, and bars that differ.
+function pendingDirection(slug, state) {
+  const saved = readDirection(slug)
+  const have = new Set((state.direction || []).map(d => d.id))
+  const direction = saved.direction.filter(d => !have.has(d.id))
+  const cur = (state.settings && state.settings.targets) || {}
+  const targets = Object.fromEntries(Object.entries(saved.targets).filter(([k, t]) => !cur[k] || cur[k].min !== t.min || cur[k].rounds !== t.rounds))
+  return { direction, targets }
+}
 function cmdDirect(slug, note, f) {
   const dir = projectDir(slug)
   const statePath = path.join(dir, 'state.json')
-  const dirPath = path.join(dir, 'direction.json')
-  const saved = fs.existsSync(dirPath) ? readJSON(dirPath) : { direction: [], targets: {} }
+  const saved = readDirection(slug)
   const state = fs.existsSync(statePath) ? readJSON(statePath) : null
   const known = [...new Map([...(state ? state.direction || [] : []), ...saved.direction].map(d => [d.id, d])).values()]
   const entries = []
@@ -222,20 +245,22 @@ function cmdDirect(slug, note, f) {
     const min = Number(m[2])
     if (!(min > 8 && min <= 10)) die('a target is above A (8) and at most 10')
     const rounds = f.rounds ? Number(f.rounds) : 5
-    if (!(rounds >= 1 && rounds <= 8)) die('--rounds is 1 to 8')
+    if (!(Number.isInteger(rounds) && rounds >= 1 && rounds <= 8)) die('--rounds is a whole number from 1 to 8')
     targets[m[1]] = { min, rounds }
   }
   if (!entries.length && !Object.keys(targets).length) die('give a note (with --for) and/or --target department=score')
+  const all = { direction: [...saved.direction, ...entries], targets: { ...saved.targets, ...targets } }
+  writeJSON(path.join(dir, 'direction.json'), all)
   if (state) {
-    writeRun(slug, { command: 'APPROVE', priorState: state, direction: entries, targets, ...runOptions(f) })
+    if (state.production_plan_applied) console.log(`${slug}'s package was approved; this direction reopens it, revises the work it names and brings the package back for review.`)
+    writeRun(slug, { command: 'APPROVE', priorState: state, ...runOptions(f) })
     return
   }
   const ideaPath = path.join(dir, 'idea.json')
   if (!fs.existsSync(ideaPath)) die(`${slug} has no idea.json or state.json`)
   const idea = readJSON(ideaPath)
-  const all = { direction: [...saved.direction, ...entries], targets: { ...saved.targets, ...targets } }
-  writeJSON(dirPath, all)
-  writeRun(slug, { command: 'IDEA', idea: idea.idea, ideaHints: idea.hints || {}, direction: all.direction, targets: all.targets, ...runOptions(f) })
+  console.log(`${slug} has no saved state yet, so this re-runs it from the idea with the direction. If a run is in flight, stop it and relaunch with its resumeFromRunId: cached calls are reused only up to the first call that changed or ran in a different order, so departments built in parallel may be redone. To keep finished work exactly, save a state first.`)
+  writeRun(slug, { command: 'IDEA', idea: idea.idea, ideaHints: idea.hints || {}, direction: all.direction, targets: all.targets, ...(idea.run_options || {}), ...runOptions(f) })
 }
 
 function cmdSave(slug, outFile) {
@@ -249,6 +274,8 @@ function cmdSave(slug, outFile) {
   fs.writeFileSync(path.join(dir, 'package.md'), renderPackage(slug, state, out))
   writeJSON(path.join(dir, 'desk.json'), deskDocs(slug, state, out))
   console.log(summary(slug, state, out))
+  const pend = pendingDirection(slug, state)
+  if (pend.direction.length || Object.keys(pend.targets).length) console.log(`Not in this saved state yet: ${[...pend.direction.map(d => d.id), ...Object.keys(pend.targets).map(k => `the ${k} bar`)].join(', ')}. The next run on it (resume, approve or notes) applies them.`)
 }
 
 function cmdStatus(slug) {

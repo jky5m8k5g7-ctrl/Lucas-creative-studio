@@ -75,6 +75,11 @@ const DSLUG = 'zz-direct-test'
 const DDIR = path.join(ROOT, 'projects', DSLUG)
 fs.rmSync(DDIR, { recursive: true, force: true })
 try {
+  studio('new', DSLUG, 'Emberline makes a cast-iron skillet, pre-seasoned with flaxseed oil. A dad teaching his kid breakfast.', '--review', 'gates', '--budget', '300')
+  studio('direct', DSLUG, 'GATES-KEPT-MARKER', '--for', 'cinematographer')
+  const gatesRun = fs.readFileSync(path.join(DDIR, '.run.js'), 'utf8')
+  ok(gatesRun.includes('"review":"gates"') && gatesRun.includes('"maxAgentCalls":300'), 'direct: the re-run from the idea keeps the options the project was started with')
+  fs.rmSync(DDIR, { recursive: true, force: true })
   studio('new', DSLUG, 'Emberline makes a cast-iron skillet, pre-seasoned with flaxseed oil. A dad teaching his kid breakfast.')
   ok((studioFails('direct', DSLUG, 'Shoot on film.') || '').includes('--for'), 'direct: a note needs the departments it is for')
   ok((studioFails('direct', DSLUG, 'Shoot on film.', '--for', 'camera_guy') || '').includes('unknown department'), 'direct: unknown departments are refused')
@@ -117,6 +122,21 @@ try {
   studio('direct', DSLUG, 'SECOND-NOTE-MARKER', '--for', 'storyboard_artist')
   const run2 = fs.readFileSync(path.join(DDIR, '.run.js'), 'utf8')
   ok(run2.includes('"command":"APPROVE"') && run2.includes('"id":"LD-02"') && run2.includes('SECOND-NOTE-MARKER'), 'direct: a saved project resumes with the next direction, numbered after the first')
+  ok(!/"targets":\{"cinematographer"/.test(run2.split('const EMBEDDED_ARGS')[1].split('"priorState"')[0]), 'direct: a bar the saved state already has is not sent again')
+  studio('direct', DSLUG, 'THIRD-NOTE-MARKER', '--for', 'storyboard_artist')
+  const run3 = fs.readFileSync(path.join(DDIR, '.run.js'), 'utf8')
+  ok(run3.includes('SECOND-NOTE-MARKER') && run3.includes('THIRD-NOTE-MARKER') && run3.includes('"id":"LD-03"'), 'direct: two notes before the next save both reach the run')
+  ok((studioFails('direct', DSLUG, '--target', 'cinematographer=10', '--rounds', '3.5') || '').includes('whole number'), 'direct: fractional rounds are refused')
+  // A run saved without the direction (e.g. one that started before it) doesn't lose it.
+  const bareRaw = JSON.parse(fs.readFileSync(out, 'utf8'))
+  bareRaw.result.project_state.direction = []
+  delete bareRaw.result.project_state.settings.targets
+  const bareOut = path.join(tmp, 'bare.json')
+  fs.writeFileSync(bareOut, JSON.stringify(bareRaw))
+  const saveMsg = studio('save', DSLUG, bareOut)
+  studio('resume', DSLUG)
+  const run4 = fs.readFileSync(path.join(DDIR, '.run.js'), 'utf8')
+  ok(saveMsg.includes('Not in this saved state yet: LD-01') && run4.includes('FILM-LOOK-MARKER') && run4.includes('THIRD-NOTE-MARKER') && /"targets":\{"cinematographer":\{"min":10,"rounds":4\}\}/.test(run4), 'direct: direction a saved state lacks is flagged on save and sent with the next run')
 } finally {
   fs.rmSync(DDIR, { recursive: true, force: true })
 }
