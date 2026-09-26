@@ -1750,7 +1750,7 @@ async function produce(state, key, opts) {
     const better = (a, b) => { const x = rank(a); const y = rank(b); for (let i = 0; i < x.length; i++) if (x[i] !== y[i]) return x[i] > y[i]; return false }
     // Resuming a revision (after a budget stop, or a bar set on reviewed work): the version
     // already reviewed is a candidate too, so a worse revision can't replace it.
-    if (pq && !byNotes && pq.pending === 'revise' && pq.scores) {
+    if (pq && !byNotes && pq.pending === 'revise' && pq.scores && prior.status !== 'blocked') {
       const { incomplete: _i, pending: _p, ...q0 } = pq
       const v0 = (prior.checks && prior.checks.failed) || []
       const res0 = { status: prior.status === 'review_required' ? 'draft' : prior.status, based_on: prior.based_on, content: spec.unsplit ? spec.unsplit(state) : prior.content, asset_uri: prior.asset_uri, assumptions: prior.assumptions, sources: prior.sources, blockers: prior.blockers }
@@ -1789,20 +1789,23 @@ async function produce(state, key, opts) {
     }
     // Out of budget mid-review: record exactly what's left so the next run picks it up.
     const restore = extra => {
+      const rounds = quality.rounds
       res = best.res
       violations = best.violations
       if (best.prior) madeNew = false
-      quality = { ...best.quality, rounds: quality.rounds, history, kept_round: best.round, ...extra }
+      quality = { ...best.quality, rounds, history, ...(best.round !== rounds ? { kept_round: best.round } : {}), ...extra }
+      if (best.round === rounds) delete quality.kept_round
     }
-    // Out of budget mid-review, after a revision scored below an earlier version: save the better
-    // version, so the next run revises that one.
-    if (refused && pending && best && lastReviewed && best !== lastReviewed && better(best, lastReviewed)) restore({ incomplete: true, pending: 'revise' })
+    const keepBest = !!(best && lastReviewed && best !== lastReviewed && better(best, lastReviewed))
+    // Out of budget mid-review: save the best reviewed version to revise next when a revision
+    // scored below it, or, under a bar, instead of a revision no reviewer has scored yet.
+    if (refused && pending && (keepBest || (target && best && pending === 'review'))) restore({ incomplete: true, pending: 'revise' })
     else if (refused && pending) quality = { ...(quality || { grade: 'not_reviewed', scores: null, min: null, rounds: 0, history: [], notes: [], keep: [] }), history, incomplete: true, pending }
     else if (quality) {
       delete quality.incomplete
       delete quality.pending
       // The last reviewed version scored below an earlier one: keep the earlier one.
-      if (best && lastReviewed && best !== lastReviewed && better(best, lastReviewed)) restore({})
+      if (keepBest) restore({})
     }
   }
 
@@ -2257,6 +2260,13 @@ async function runPipeline(state) {
       state.approval_log.push(approvedEntry(state, 'concept', conceptGate,
         [state.artifacts.brief, state.artifacts.strategy, state.artifacts.concepts].filter(Boolean).map(a => `${a.artifact_id}@r${a.revision}`),
         { selected_route_id: state.selected_concept_id }))
+      // Routes reopened by Lucas's direction, and he picked a different one: rebuild on it.
+      const was = state.reopened_route
+      delete state.reopened_route
+      if (was && was !== state.selected_concept_id) {
+        switchRoute(state, state.selected_concept_id, "Lucas picked a different route after his direction reopened the routes")
+        return runPipeline(state)
+      }
     }
   } else if (state.settings.review_at_end) {
     if (!routes.some(r => r.route_id === state.selected_concept_id)) {
@@ -2504,13 +2514,24 @@ if (input.targets && typeof input.targets === 'object') {
 // (when it reaches development, strategy or the routes) and the package.
 if (directedKeys.some(k => ['development', 'strategy', 'concepts'].includes(k)) && state.approvals.concept && state.approvals.concept.approved) {
   delete state.approvals.concept
-  state.selected_concept_id = null
+  // The route stays until Lucas picks again; in gates mode, picking a different one rebuilds on it.
+  if (state.artifacts.concepts && state.artifacts.concepts.status === 'approved') state.artifacts.concepts = { ...state.artifacts.concepts, status: 'draft' }
+  if (!state.settings.review_at_end) state.reopened_route = state.selected_concept_id
   state.approval_log.push({ gate_id: 'concept', decision: 'reopened', note: "Lucas's direction changes the development, strategy or routes" })
 }
+const freshPackageDecision = input.approvals && input.approvals.production_plan
 if (directedKeys.length && (state.production_plan_applied || (state.approvals.production_plan && state.approvals.production_plan.approved))) {
-  delete state.approvals.production_plan
-  state.production_plan_applied = false
-  state.approval_log.push({ gate_id: 'production_plan', decision: 'reopened', note: `Lucas's direction after the package was approved sends ${[...new Set(directedKeys)].join(', ')} back for revision` })
+  // A route change sent with the direction still rebuilds on its route (with the direction). An
+  // approval sent with it isn't applied: the package changes, so it comes back for review.
+  if (!(freshPackageDecision && freshPackageDecision.route_change)) {
+    if (freshPackageDecision && freshPackageDecision.approved) {
+      if (freshPackageDecision.comment) state.human_notes = (state.human_notes || []).concat([{ gate_id: 'package', note: freshPackageDecision.comment, decision_id: freshPackageDecision.decision_id || null }])
+      state.approval_log.push({ gate_id: 'production_plan', decision: 'not_applied', approver_id: freshPackageDecision.approver_id || null, decision_id: freshPackageDecision.decision_id || null, comment: freshPackageDecision.comment || '', reason: "Lucas's direction came in with this approval, so the package changes and comes back for review." })
+    }
+    delete state.approvals.production_plan
+    state.production_plan_applied = false
+    state.approval_log.push({ gate_id: 'production_plan', decision: 'reopened', note: `Lucas's direction sends ${[...new Set(directedKeys)].join(', ')} back for revision` })
+  }
 }
 
 if (state.settings.quality) LIMITS.maxAgentCallsPerRun = input.maxAgentCalls || 220

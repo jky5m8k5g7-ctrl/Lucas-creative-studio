@@ -410,5 +410,48 @@ const y0 = sY.calls.length
 const rY = await run({ command: 'APPROVE', priorState: J(rY0.project_state), direction: [{ id: 'LD-01', note: 'DEV-DIRECTION-MARKER', departments: ['development_producer'] }] }, sY.agent, sY.parallel, noop, noop)
 ok(sY.calls.slice(y0).some(c => c.label === 'development_producer · revise from notes' && c.prompt.includes('DEV-DIRECTION-MARKER')) && !(rY.project_state.pending_notes || {}).development, 'Y: development is revised with the direction')
 
+// V2. Under a bar, a budget stop before a revision is reviewed keeps the best reviewed version.
+const v2Scores = (dept, label, calls) => (dept === 'cinematographer' ? (camReviews(calls) === 1 ? [9, 9, 9, 9] : [7, 7, 7, 7]) : null)
+const sV2a = makeStub({ scores: v2Scores })
+await run({ command: 'IDEA', idea: IDEA, targets: { cinematographer: { min: 10, rounds: 5 } } }, sV2a.agent, sV2a.parallel, noop, noop)
+const stopV2 = sV2a.calls.findIndex(c => c.label === 'cinematographer · review 2')
+const sV2 = makeStub({ scores: v2Scores })
+const rV2a = await run({ command: 'IDEA', idea: IDEA, targets: { cinematographer: { min: 10, rounds: 5 } }, maxAgentCalls: stopV2 }, sV2.agent, sV2.parallel, noop, noop)
+const qV2a = rV2a.project_state.artifacts.camera_plan.quality
+const rV2 = await run({ command: 'APPROVE', priorState: J(rV2a.project_state) }, sV2.agent, sV2.parallel, noop, noop)
+const qV2 = rV2.project_state.artifacts.camera_plan.quality
+ok(qV2a.pending === 'revise' && qV2a.min === 9 && !qV2a.kept_round && qV2.min === 9 && !qV2.incomplete, 'V2: a stop before reviewing a revision keeps the 9s version through the resume: ' + JSON.stringify({ paused: qV2a.pending, m: qV2.min, k: qV2.kept_round }))
+
+// B4. Blocked work is never kept as the best version.
+let blockNext = false
+const sB4 = makeStub({ scores: (dept, label, calls) => (dept === 'cinematographer' ? (camReviews(calls) <= 1 ? [9, 9, 9, 9] : [8, 8, 8, 8]) : null) })
+const agentB4 = async (prompt, o) => { if (blockNext && o.label === 'cinematographer · resume revision') { blockNext = false; return { status: 'blocked', based_on: [], content: { shots: [] }, asset_uri: null, assumptions: [], sources: [], blockers: ['Need an answer'] } } return sB4.agent(prompt, o) }
+const rB40 = await run({ command: 'IDEA', idea: IDEA }, agentB4, sB4.parallel, noop, noop)
+blockNext = true
+const rB41 = await run({ command: 'APPROVE', priorState: J(rB40.project_state), targets: { cinematographer: { min: 10, rounds: 2 } } }, agentB4, sB4.parallel, noop, noop)
+const rB4 = await run({ command: 'APPROVE', priorState: J(rB41.project_state) }, agentB4, sB4.parallel, noop, noop)
+const camB4 = rB4.project_state.artifacts.camera_plan
+ok(camB4.status !== 'blocked' && camB4.content.shots.length > 0, 'B4: a blocked version is never kept over real work: ' + JSON.stringify({ st: camB4.status, shots: (camB4.content.shots || []).length }))
+
+// X2. Gates mode: after direction reopens the routes, picking a different route rebuilds on it.
+const sX2 = makeStub()
+const rX20 = await run({ command: 'IDEA', idea: IDEA, review: 'gates' }, sX2.agent, sX2.parallel, noop, noop)
+const rX21 = await run({ command: 'APPROVE', priorState: J(rX20.project_state), approvals: { concept: approve({ decision_id: 'dec_X21', selected_route_id: 'R2' }) } }, sX2.agent, sX2.parallel, noop, noop)
+const rX22 = await run({ command: 'APPROVE', priorState: J(rX21.project_state), direction: [{ id: 'LD-01', note: 'ROUTES-NOTE', departments: ['creative_director'] }] }, sX2.agent, sX2.parallel, noop, noop)
+ok(rX22.pending_gate.gate_id === 'concept' && rX22.project_state.selected_concept_id === 'R2', 'X2: reopened routes keep the route built until Lucas picks again')
+const x2 = sX2.calls.length
+const rX2 = await run({ command: 'APPROVE', priorState: J(rX22.project_state), approvals: { concept: approve({ decision_id: 'dec_X23', selected_route_id: 'R3' }) } }, sX2.agent, sX2.parallel, noop, noop)
+const cwX2 = sX2.calls.slice(x2).find(c => c.label === 'copywriter')
+ok(rX2.project_state.selected_concept_id === 'R3' && rX2.pending_gate.gate_id === 'production_plan' && rX2.project_state.approval_log.some(e => e.gate_id === 'concept' && e.decision === 'approved' && e.decision_id === 'dec_X23') && cwX2 && !cwX2.prompt.includes('Your last version'), 'X2: picking R3 rebuilds on R3 from scratch and records the approval')
+
+// W2. An approval sent with new direction isn't applied; its comment is kept. A route change is.
+const sW2 = makeStub()
+const rW20 = await run({ command: 'IDEA', idea: IDEA }, sW2.agent, sW2.parallel, noop, noop)
+const rW21 = await run({ command: 'APPROVE', priorState: J(rW20.project_state), approvals: { production_plan: approve({ decision_id: 'dec_W21', selected_route_id: 'R2' }) } }, sW2.agent, sW2.parallel, noop, noop)
+const rW2 = await run({ command: 'APPROVE', priorState: J(rW21.project_state), approvals: { production_plan: approve({ decision_id: 'dec_W22', selected_route_id: 'R2', comment: 'APPROVAL-COMMENT' }) }, direction: [{ id: 'LD-01', note: 'D', departments: ['cinematographer'] }] }, sW2.agent, sW2.parallel, noop, noop)
+ok(rW2.project_state.approval_log.some(e => e.decision === 'not_applied' && e.decision_id === 'dec_W22') && (rW2.project_state.human_notes || []).some(n => n.note === 'APPROVAL-COMMENT') && rW2.pending_gate.gate_id === 'production_plan', 'W2: an approval sent with direction is logged not applied, its comment kept, and the package returns')
+const rW3 = await run({ command: 'APPROVE', priorState: J(rW20.project_state), approvals: { production_plan: approve({ decision_id: 'dec_W23', selected_route_id: 'R3', route_change: true }) }, direction: [{ id: 'LD-01', note: 'D', departments: ['cinematographer'] }] }, sW2.agent, sW2.parallel, noop, noop)
+ok(rW3.project_state.selected_concept_id === 'R3' && rW3.pending_gate.gate_id === 'production_plan' && !rW3.project_state.approval_log.some(e => e.decision_id === 'dec_W23' && e.decision === 'approved' && e.gate_id === 'production_plan'), 'W2: a route change at the gate sent with direction still rebuilds on its route, unapproved')
+
 console.log(fails ? `\n${fails} FAILED` : '\nALL PASS')
 if (fails) process.exit(1)

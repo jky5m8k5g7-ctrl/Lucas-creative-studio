@@ -136,7 +136,23 @@ try {
   const saveMsg = studio('save', DSLUG, bareOut)
   studio('resume', DSLUG)
   const run4 = fs.readFileSync(path.join(DDIR, '.run.js'), 'utf8')
+  const decision = f => { const p = path.join(tmp, f.name); fs.writeFileSync(p, JSON.stringify(f)); return p }
+  ok((studioFails('approve', DSLUG, decision({ name: 'dz.json', id: 'dz', gate_id: 'production_plan', decision: 'approved', selected_route_id: 'R2', approver_id: 'u_L', decided_at: 'x', artifact_ids_and_revisions: [] })) || '').includes("isn't in the package he reviewed"), 'direct: approve refuses while direction is missing from the package Lucas reviewed')
   ok(saveMsg.includes('Not in this saved state yet: LD-01') && run4.includes('FILM-LOOK-MARKER') && run4.includes('THIRD-NOTE-MARKER') && /"targets":\{"cinematographer":\{"min":10,"rounds":4\}\}/.test(run4), 'direct: direction a saved state lacks is flagged on save and sent with the next run')
+  // Repeating an unmet bar is sent again, so the department gets more rounds.
+  const st2 = JSON.parse(fs.readFileSync(path.join(DDIR, 'state.json'), 'utf8'))
+  st2.direction = saved.direction.concat([{ id: 'LD-02', note: 'SECOND-NOTE-MARKER', departments: ['storyboard_artist'] }, { id: 'LD-03', note: 'THIRD-NOTE-MARKER', departments: ['storyboard_artist'] }])
+  st2.settings.targets = { cinematographer: { min: 10, rounds: 4 } }
+  fs.writeFileSync(path.join(DDIR, 'state.json'), JSON.stringify(st2))
+  studio('direct', DSLUG, '--target', 'cinematographer=10', '--rounds', '4')
+  ok(/"targets":\{"cinematographer":\{"min":10,"rounds":4\}\}/.test(fs.readFileSync(path.join(DDIR, '.run.js'), 'utf8')), 'direct: repeating an unmet bar sends it again')
+  st2.production_plan_applied = true
+  st2.artifacts.camera_plan.quality = { ...st2.artifacts.camera_plan.quality, min: 10, scores: { specificity: 10, distinctiveness: 10, fit: 10, craft: 10 } }
+  st2.artifacts.camera_plan.checks = { failed: [] }
+  fs.writeFileSync(path.join(DDIR, 'state.json'), JSON.stringify(st2))
+  ok(studio('direct', DSLUG, '--target', 'cinematographer=10').includes('already meets this bar'), 'direct: a met bar on an approved package reopens nothing and says so')
+  ok(studio('direct', DSLUG, 'LATE-NOTE', '--for', 'cinematographer').includes('reopens it'), 'direct: a note on an approved package says it reopens it')
+  ok((studioFails('direct', 'zz-no-such-project', 'Film', '--for', 'cinematographer') || '').includes('has no idea.json or state.json') && !fs.existsSync(path.join(ROOT, 'projects', 'zz-no-such-project')), 'direct: a mistyped project name is refused and creates nothing')
 } finally {
   fs.rmSync(DDIR, { recursive: true, force: true })
 }

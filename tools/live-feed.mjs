@@ -96,26 +96,29 @@ function snapshot() {
   const starts = new Map()
   const results = new Map()
   let events = 0
-  js.forEach((j, i) => {
-    const rows = readJournal(path.join(j.dir, 'journal.jsonl'), j.lines, j.from)
+  const all = js.map(j => readJournal(path.join(j.dir, 'journal.jsonl'), j.lines, j.from))
+  // An earlier run's calls that never finished were stopped with it: leave them out.
+  const finished = new Set(all.flat().filter(e => e.type === 'result').map(e => e.key))
+  all.forEach((rows, i) => {
     events += rows.length
-    // An earlier run's calls that never finished were stopped with it: leave them out.
-    const done = new Set(rows.filter(e => e.type === 'result').map(e => e.key))
     for (const e of rows) {
-      if (e.type === 'started' && (i === js.length - 1 || done.has(e.key))) starts.set(e.key, { ...e, dir: j.dir })
+      if (e.type === 'started' && (i === js.length - 1 || finished.has(e.key))) starts.set(e.key, { ...e, dir: js[i].dir, ji: i })
       else if (e.type === 'result') results.set(e.key, e)
     }
   })
   const saved = readJson(path.join(root, 'projects', slug, 'state.json')) || {}
   const targets = p.targets || (saved.settings && saved.settings.targets) || {}
   const directionList = p.direction || saved.direction || []
-  // Rounds a department had already been reviewed when a bar was set on it count toward its limit.
-  const fromRound = dept => {
+  // When a review cycle picks up where the saved state left it, the rounds it already had count
+  // toward a bar's limit, as in the workflow: a paused review keeps its base; reviewed work a new
+  // bar sends back starts from the rounds it had.
+  const KEY = { development_producer: 'development', strategist: 'strategy', creative_director: 'concepts', copywriter: 'script', casting_director: 'casting_bible', production_designer: 'world_bible', director: 'directors_treatment', stylist: 'style_bible', sound_designer: 'sound_plan', cinematographer: 'camera_plan', storyboard_artist: 'storyboard', generation_supervisor: 'generation_plan' }
+  const resumedBase = dept => {
     const t = targets[dept] || {}
     if (t.from_round != null) return t.from_round
-    const key = { cinematographer: 'camera_plan', storyboard_artist: 'storyboard', generation_supervisor: 'generation_plan' }[dept]
-    const q = key && saved.artifacts && saved.artifacts[key] && saved.artifacts[key].quality
-    return (q && q.target_from_round) || 0
+    const a = saved.artifacts && saved.artifacts[KEY[dept]]
+    const q = a && a.status !== 'stale' && a.quality
+    return !q ? 0 : q.incomplete ? q.target_from_round || 0 : q.rounds || 0
   }
   const times = s => ({
     at: s.agentId ? mtime(path.join(s.dir, `agent-${s.agentId}.meta.json`)) : null,
@@ -149,7 +152,19 @@ function snapshot() {
       const d = depts[info.dept]
       d.calls++
       // A fresh draft, or a revision from notes, starts the department's review cycle over.
-      if (info.step === 'draft' || info.step === 'notes') { d.rounds = []; d.grade = null; d.met_target = null; d.notes = []; d.keep = ''; d.blocked = ''; d.kept_round = null }
+      if (info.step === 'draft' || info.step === 'notes') { d.rounds = []; d.grade = null; d.met_target = null; d.notes = []; d.keep = ''; d.blocked = ''; d.kept_round = null; d.base = 0 }
+      // A run that continues a department's cycle (its first call in this run isn't a fresh draft or
+      // a revision from notes) takes the cycle's base from the state it resumed.
+      if (d.ji !== s.ji && info.step !== 'draft' && info.step !== 'notes') d.base = resumedBase(info.dept)
+      d.ji = s.ji
+      // A resumed run may redo rounds: drop what a later round number replaces.
+      if (info.round && (info.step === 'revise' || info.step === 'fix')) {
+        d.rounds = d.rounds.filter(x => x.round <= info.round)
+        // The workflow revises a round that reached its goal only when code checks failed.
+        const x = d.rounds.find(y => y.round === info.round)
+        if (x && x.min >= (d.target || 8)) x.failed = true
+      }
+      if (info.step === 'review' && info.round) d.rounds = d.rounds.filter(x => x.round < info.round)
       if (!r) {
         d.status = { draft: 'drafting', review: 'reviewing', revise: 'revising', notes: 'revising', fix: 'fixing' }[info.step]
         d.step = info.step === 'review' ? `review ${info.round}` : info.step
@@ -168,20 +183,22 @@ function snapshot() {
           d.keep = keep
           d.kept_round = null
           const goal = d.target || 8
-          const maxRounds = d.target ? Math.max(3, fromRound(info.dept) + (targets[info.dept].rounds || 3)) : 3
+          const maxRounds = d.target ? Math.max(3, (d.base || 0) + (targets[info.dept].rounds || 3)) : 3
           const last = info.round >= maxRounds
           if (d.target) d.met_target = min >= goal
           d.status = min >= goal || last ? 'done' : 'revising'
           d.step = null
           let verdict = min >= goal ? (d.target ? ` (${goal}s: your bar met)` : ' (A)') : last ? (d.target ? ` (below your bar of ${goal} after ${maxRounds} rounds)` : ' (below A after 3 rounds)') : d.target && min >= 8 ? `, A but below your bar of ${goal}: revising` : ', sent back to revise'
-          // Finished: the studio keeps the best-scoring version of this cycle, as the workflow does.
+          // Finished: the studio keeps the best-scoring version of this cycle, ranked as the workflow
+          // ranks it (checks passing, then the lowest score, then the total); a tie keeps the last.
           if (d.status === 'done') {
-            const score = r => [r.min, r.s + r.d + r.f + r.c]
-            const best = d.rounds.reduce((b, r) => { const x = score(r), y = score(b); return x[0] > y[0] || (x[0] === y[0] && x[1] > y[1]) ? r : b })
-            if (best !== d.rounds[d.rounds.length - 1]) {
+            const score = r => [r.failed ? 0 : 1, r.min, r.s + r.d + r.f + r.c]
+            const better = (a, b) => { const x = score(a), y = score(b); for (let i = 0; i < x.length; i++) if (x[i] !== y[i]) return x[i] > y[i]; return false }
+            const best = d.rounds.reduce((b, r) => (better(r, b) ? r : b))
+            if (better(best, d.rounds[d.rounds.length - 1])) {
               d.kept_round = best.round
-              d.grade = best.min >= 8 ? 'A' : 'below_A'
-              if (d.target) d.met_target = best.min >= goal
+              d.grade = best.min >= 8 && !best.failed ? 'A' : 'below_A'
+              if (d.target) d.met_target = best.min >= goal && !best.failed
               d.notes = best.notes
               d.keep = best.keep
               verdict += `; keeping round ${best.round}'s version (${best.s} · ${best.d} · ${best.f} · ${best.c})`

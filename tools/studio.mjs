@@ -177,6 +177,9 @@ function cmdApprove(slug, decisionFile, f) {
   if (d.decision === 'route_change' && !d.selected_route_id) die('a route change needs selected_route_id')
   if (!d.approver_id) die('the decision has no approver_id, so it did not come from the Approval Desk')
   const state = loadState(slug)
+  // A decision is on the package Lucas saw; direction he gave since isn't in it yet.
+  const pend = pendingDirection(slug, state)
+  if (pend.direction.length || Object.keys(pend.targets).length) die(`Lucas's direction (${[...pend.direction.map(x => x.id), ...Object.keys(pend.targets).map(k => `the ${k} bar`)].join(', ')}) isn't in the package he reviewed. Run resume and save first, then republish projects/${slug}/desk.json and ask Lucas to decide again.`)
   const g = state.pending_gate
   if (!g || g.gate_id !== d.gate_id) die(`${slug} is not waiting on the ${d.gate_id} gate (it is ${g ? `at ${g.gate_id}` : 'not at a gate'}); the desk card is out of date. Republish projects/${slug}/desk.json and ask Lucas to decide again.`)
   const did = d.decision_id || d.id
@@ -223,8 +226,10 @@ function pendingDirection(slug, state) {
 function cmdDirect(slug, note, f) {
   const dir = projectDir(slug)
   const statePath = path.join(dir, 'state.json')
-  const saved = readDirection(slug)
+  const ideaPath = path.join(dir, 'idea.json')
   const state = fs.existsSync(statePath) ? readJSON(statePath) : null
+  if (!state && !fs.existsSync(ideaPath)) die(`${slug} has no idea.json or state.json`)
+  const saved = readDirection(slug)
   const known = [...new Map([...(state ? state.direction || [] : []), ...saved.direction].map(d => [d.id, d])).values()]
   const entries = []
   if (note && String(note).trim()) {
@@ -252,12 +257,21 @@ function cmdDirect(slug, note, f) {
   const all = { direction: [...saved.direction, ...entries], targets: { ...saved.targets, ...targets } }
   writeJSON(path.join(dir, 'direction.json'), all)
   if (state) {
-    if (state.production_plan_applied) console.log(`${slug}'s package was approved; this direction reopens it, revises the work it names and brings the package back for review.`)
-    writeRun(slug, { command: 'APPROVE', priorState: state, ...runOptions(f) })
+    if (state.production_plan_applied) {
+      // A bar the current work already meets reopens nothing.
+      const unmet = Object.entries(targets).some(([dept, t]) => {
+        const a = (state.artifacts || {})[GRADED[DEPARTMENTS.indexOf(dept)]]
+        const q = a && a.status !== 'stale' && a.quality
+        return !!(q && q.scores && !(q.min >= t.min && !((a.checks && a.checks.failed) || []).length))
+      })
+      console.log(entries.length || unmet
+        ? `${slug}'s package was approved; this direction reopens it, revises the work it names and brings the package back for review.`
+        : `${slug}'s package was approved and already meets this bar; the bar is recorded and nothing is reopened.`)
+    }
+    // This call's bar is always sent, so repeating an unmet bar gives the department more rounds.
+    writeRun(slug, { command: 'APPROVE', priorState: state, ...(Object.keys(targets).length ? { targets } : {}), ...runOptions(f) })
     return
   }
-  const ideaPath = path.join(dir, 'idea.json')
-  if (!fs.existsSync(ideaPath)) die(`${slug} has no idea.json or state.json`)
   const idea = readJSON(ideaPath)
   console.log(`${slug} has no saved state yet, so this re-runs it from the idea with the direction. If a run is in flight, stop it and relaunch with its resumeFromRunId: cached calls are reused only up to the first call that changed or ran in a different order, so departments built in parallel may be redone. To keep finished work exactly, save a state first.`)
   writeRun(slug, { command: 'IDEA', idea: idea.idea, ideaHints: idea.hints || {}, direction: all.direction, targets: all.targets, ...(idea.run_options || {}), ...runOptions(f) })
@@ -275,7 +289,7 @@ function cmdSave(slug, outFile) {
   writeJSON(path.join(dir, 'desk.json'), deskDocs(slug, state, out))
   console.log(summary(slug, state, out))
   const pend = pendingDirection(slug, state)
-  if (pend.direction.length || Object.keys(pend.targets).length) console.log(`Not in this saved state yet: ${[...pend.direction.map(d => d.id), ...Object.keys(pend.targets).map(k => `the ${k} bar`)].join(', ')}. The next run on it (resume, approve or notes) applies them.`)
+  if (pend.direction.length || Object.keys(pend.targets).length) console.log(`Not in this saved state yet: ${[...pend.direction.map(d => d.id), ...Object.keys(pend.targets).map(k => `the ${k} bar`)].join(', ')}. The next resume or notes run applies them; approve refuses until then.`)
 }
 
 function cmdStatus(slug) {

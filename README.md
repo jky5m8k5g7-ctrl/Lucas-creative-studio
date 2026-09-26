@@ -102,8 +102,11 @@ makers, reviewers and revisers get it as binding direction, and so do integrity 
 package panel; other departments' prompts don't change. A project with a saved state resumes with
 it, and work those departments already built is revised against it. `--target dept=N` sets a bar
 above A for one department: it keeps revising until the reviewer scores N on all four criteria,
-for up to `--rounds` review rounds, keeping its best-scoring version. The reviewer is told the
-bar but asked to score as it otherwise would. The package reports whether each bar was met.
+for up to `--rounds` review rounds (repeat it to give an unmet bar more rounds). The reviewer is
+told the bar but asked to score as it otherwise would. The package reports whether each bar was
+met. Every department keeps its best-scoring reviewed version: a revision that scores lower never
+replaces it. Direction that sends approved work back reopens the approval, and `approve` refuses
+while Lucas's latest direction isn't in the package he reviewed.
 
 ### Calling the workflow directly
 

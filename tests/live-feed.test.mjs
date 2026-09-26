@@ -57,15 +57,21 @@ try {
   ok(c2.status === 'revising' && c2.met_target === false && c2.grade === 'A', 'A but below the bar reads as revising')
 
   // The bar comes from the saved state when the pointer has none; so do the rounds already reviewed.
-  fs.writeFileSync(path.join(PDIR, 'state.json'), JSON.stringify({ settings: { targets: { cinematographer: { min: 10, rounds: 2 } } }, direction: [{ id: 'LD-01', note: 'FILM', departments: ['cinematographer'] }], artifacts: { camera_plan: { quality: { target_from_round: 2 } } } }))
-  const from = journal('from', [
-    ['cinematographer', made()], ['cinematographer · review 1', review(7, 7, 7, 7)], ['cinematographer · revise 1', made()], ['cinematographer · review 2', review(8, 8, 8, 8)],
-    ['cinematographer · resume revision', made()], ['cinematographer · review 3', review(9, 9, 9, 9)],
-  ])
-  const s3 = snap({ journals: [from] })
+  fs.writeFileSync(path.join(PDIR, 'state.json'), JSON.stringify({ settings: { targets: { cinematographer: { min: 10, rounds: 2 } } }, direction: [{ id: 'LD-01', note: 'FILM', departments: ['cinematographer'] }], artifacts: { camera_plan: { status: 'draft', quality: { rounds: 2, min: 8, scores: {}, incomplete: true, pending: 'revise', target_from_round: 2 } } } }))
+  const run1 = journal('run1', [['cinematographer', made()], ['cinematographer · review 1', review(7, 7, 7, 7)], ['cinematographer · revise 1', made()], ['cinematographer · review 2', review(8, 8, 8, 8)]])
+  const run2 = journal('run2', [['cinematographer · resume revision', made()], ['cinematographer · review 3', review(9, 9, 9, 9)]])
+  const s3 = snap({ journals: [run1, run2] })
   const c3 = dept(s3, 'cinematographer')
   ok(c3.target === 10 && s3.direction.length === 1 && c3.status === 'revising', 'bar, direction and earlier rounds come from the saved state: ' + JSON.stringify({ t: c3.target, st: c3.status }))
   fs.rmSync(path.join(PDIR, 'state.json'))
+
+  // A tie keeps the last round, as the workflow does; a round revised despite meeting its goal failed its checks.
+  const tie = journal('tie', [['director', made()], ['director · review 1', review(7, 8, 8, 8)], ['director · revise 1', made()], ['director · review 2', review(6, 8, 8, 8)], ['director · revise 2', made()], ['director · review 3', review(8, 7, 8, 8)]])
+  const dt = dept(snap({ journals: [tie] }), 'director')
+  ok(dt.kept_round === null && dt.grade === 'below_A', 'a tie on the lowest score and total keeps the last round')
+  const chk = journal('chk', [['development_producer', made()], ['development_producer · review 1', review(7, 8, 8, 8)], ['development_producer · revise 1', made()], ['development_producer · review 2', review(9, 9, 9, 9)], ['development_producer · revise 2', made()], ['development_producer · review 3', review(8, 8, 8, 7)]])
+  const dc = dept(snap({ journals: [chk] }), 'development_producer')
+  ok(dc.kept_round === null && dc.grade === 'below_A', 'a round that failed its code checks is never the kept version')
 
   // 'resume revision' wording.
   const rr = journal('rr', [['cinematographer · resume revision', undefined]])
