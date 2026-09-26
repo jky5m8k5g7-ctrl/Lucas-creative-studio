@@ -141,6 +141,15 @@ After deciding, tell Claude **"pick up my approvals"** (or **"pick up my ideas"*
 Claude reads the desk, marks what it picked up, runs the studio, and puts the result back on the
 desk. A decision or idea can be undone on the desk until Claude picks it up.
 
+### Watching a build live
+
+While a build runs, the **Studio Floor** page (<https://claude.ai/artifact/VWMtWdSNWitVoFXigsGHg3>)
+shows each department's status, every review round's scores, the reviewer's latest notes and a
+log of recent events. `tools/live-feed.mjs` turns the running workflow's journal into a snapshot
+(`node tools/live-feed.mjs <slug> --out <file> [--wait <seconds>]`, reading the journal named in
+`projects/<slug>/.live-run`), and Claude writes each snapshot to the page. The page is read-only;
+decisions still happen on the Approval Desk.
+
 ### Tests
 
 - `node tests/creative-studio.test.mjs`: the workflow with stub agents (no model calls):
