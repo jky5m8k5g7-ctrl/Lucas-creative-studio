@@ -453,5 +453,31 @@ ok(rW2.project_state.approval_log.some(e => e.decision === 'not_applied' && e.de
 const rW3 = await run({ command: 'APPROVE', priorState: J(rW20.project_state), approvals: { production_plan: approve({ decision_id: 'dec_W23', selected_route_id: 'R3', route_change: true }) }, direction: [{ id: 'LD-01', note: 'D', departments: ['cinematographer'] }] }, sW2.agent, sW2.parallel, noop, noop)
 ok(rW3.project_state.selected_concept_id === 'R3' && rW3.pending_gate.gate_id === 'production_plan' && !rW3.project_state.approval_log.some(e => e.decision_id === 'dec_W23' && e.decision === 'approved' && e.gate_id === 'production_plan'), 'W2: a route change at the gate sent with direction still rebuilds on its route, unapproved')
 
+// J2. A revision from notes restarts the cycle with only the bar's rounds, even after a paused bar review.
+const sJn = makeStub({ scores: (dept) => (dept === 'cinematographer' ? [9, 9, 9, 9] : null) })
+const rJn0 = await run({ command: 'IDEA', idea: IDEA }, sJn.agent, sJn.parallel, noop, noop)
+const jn0 = sJn.calls.length
+const rJn1 = await run({ command: 'APPROVE', priorState: J(rJn0.project_state), targets: { cinematographer: { min: 10, rounds: 5 } }, maxAgentCalls: 3 }, sJn.agent, sJn.parallel, noop, noop)
+const qJn1 = rJn1.project_state.artifacts.camera_plan.quality
+const jn1 = sJn.calls.length
+await run({ command: 'APPROVE', priorState: J(rJn1.project_state), direction: [{ id: 'LD-01', note: 'NOTES-CYCLE', departments: ['cinematographer'] }] }, sJn.agent, sJn.parallel, noop, noop)
+const jnReviews = sJn.calls.slice(jn1).filter(c => /^cinematographer · review \d+$/.test(c.label)).map(c => +c.label.split(' ').pop())
+ok(qJn1.incomplete && sJn.calls.slice(jn1).some(c => c.label === 'cinematographer · revise from notes') && Math.max(...jnReviews) === 5, 'J2: a notes cycle after a paused bar review runs the bar\'s 5 rounds, not more: ' + JSON.stringify({ paused: !!qJn1.incomplete, reviews: jnReviews }))
+
+// K2. Decisions sent with direction: an approval naming another route is a route change; a
+// route approval sent with direction that changes the routes isn't applied, its comment kept.
+const sKd = makeStub()
+const rKd0 = await run({ command: 'IDEA', idea: IDEA }, sKd.agent, sKd.parallel, noop, noop)
+const rKd = await run({ command: 'APPROVE', priorState: J(rKd0.project_state), approvals: { production_plan: approve({ decision_id: 'dec_K', selected_route_id: 'R3' }) }, direction: [{ id: 'LD-01', note: 'K', departments: ['cinematographer'] }] }, sKd.agent, sKd.parallel, noop, noop)
+ok(rKd.project_state.selected_concept_id === 'R3' && rKd.pending_gate.gate_id === 'production_plan', 'K2: an approval naming another route, sent with direction, still rebuilds on that route')
+const sKd2 = makeStub()
+const rKd20 = await run({ command: 'IDEA', idea: IDEA, review: 'gates' }, sKd2.agent, sKd2.parallel, noop, noop)
+const rKd2 = await run({ command: 'APPROVE', priorState: J(rKd20.project_state), approvals: { concept: approve({ decision_id: 'dec_K2', selected_route_id: 'R3', comment: 'ROUTE-COMMENT' }) }, direction: [{ id: 'LD-01', note: 'K2', departments: ['creative_director'] }] }, sKd2.agent, sKd2.parallel, noop, noop)
+ok(rKd2.pending_gate.gate_id === 'concept' && rKd2.project_state.approval_log.some(e => e.gate_id === 'concept' && e.decision === 'not_applied' && e.decision_id === 'dec_K2') && (rKd2.project_state.human_notes || []).some(n => n.note === 'ROUTE-COMMENT'), 'K2: a route approval sent with direction for the routes is not applied, its comment kept')
+// A route change on an applied package, sent with direction, rebuilds on its route.
+const rKd3a = await run({ command: 'APPROVE', priorState: J(rKd0.project_state), approvals: { production_plan: approve({ decision_id: 'dec_K3a', selected_route_id: 'R2' }) } }, sKd.agent, sKd.parallel, noop, noop)
+const rKd3 = await run({ command: 'APPROVE', priorState: J(rKd3a.project_state), approvals: { production_plan: approve({ decision_id: 'dec_K3', selected_route_id: 'R3', route_change: true }) }, direction: [{ id: 'LD-01', note: 'K3', departments: ['cinematographer'] }] }, sKd.agent, sKd.parallel, noop, noop)
+ok(rKd3a.project_state.production_plan_applied && rKd3.project_state.selected_concept_id === 'R3' && !rKd3.project_state.production_plan_applied && rKd3.pending_gate.gate_id === 'production_plan', 'K2: a route change with direction on an approved package rebuilds and comes back')
+
 console.log(fails ? `\n${fails} FAILED` : '\nALL PASS')
 if (fails) process.exit(1)

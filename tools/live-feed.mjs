@@ -113,12 +113,19 @@ function snapshot() {
   // toward a bar's limit, as in the workflow: a paused review keeps its base; reviewed work a new
   // bar sends back starts from the rounds it had.
   const KEY = { development_producer: 'development', strategist: 'strategy', creative_director: 'concepts', copywriter: 'script', casting_director: 'casting_bible', production_designer: 'world_bible', director: 'directors_treatment', stylist: 'style_bible', sound_designer: 'sound_plan', cinematographer: 'camera_plan', storyboard_artist: 'storyboard', generation_supervisor: 'generation_plan' }
-  const resumedBase = dept => {
+  // The saved state may be the one the cycle resumed from, or (once that run was saved) the one it
+  // ended in; a state that already holds this round is the latter.
+  const savedQuality = dept => {
+    const a = saved.artifacts && saved.artifacts[KEY[dept]]
+    return a && a.status !== 'stale' && a.status !== 'blocked' && a.quality ? { a, q: a.quality } : null
+  }
+  const resumedBase = (dept, round) => {
     const t = targets[dept] || {}
     if (t.from_round != null) return t.from_round
-    const a = saved.artifacts && saved.artifacts[KEY[dept]]
-    const q = a && a.status !== 'stale' && a.quality
-    return !q ? 0 : q.incomplete ? q.target_from_round || 0 : q.rounds || 0
+    const sq = savedQuality(dept)
+    if (!sq) return 0
+    const q = sq.q
+    return q.incomplete || q.rounds >= round ? q.target_from_round || 0 : q.rounds || 0
   }
   const times = s => ({
     at: s.agentId ? mtime(path.join(s.dir, `agent-${s.agentId}.meta.json`)) : null,
@@ -154,8 +161,9 @@ function snapshot() {
       // A fresh draft, or a revision from notes, starts the department's review cycle over.
       if (info.step === 'draft' || info.step === 'notes') { d.rounds = []; d.grade = null; d.met_target = null; d.notes = []; d.keep = ''; d.blocked = ''; d.kept_round = null; d.base = 0 }
       // A run that continues a department's cycle (its first call in this run isn't a fresh draft or
-      // a revision from notes) takes the cycle's base from the state it resumed.
-      if (d.ji !== s.ji && info.step !== 'draft' && info.step !== 'notes') d.base = resumedBase(info.dept)
+      // a revision from notes) takes the cycle's base from the saved state, worked out at its first
+      // review. A resume in place (the same run) isn't a new run.
+      if (d.ji !== s.ji && (d.ji == null || js[d.ji].dir !== js[s.ji].dir) && info.step !== 'draft' && info.step !== 'notes') d.base = null
       d.ji = s.ji
       // A resumed run may redo rounds: drop what a later round number replaces.
       if (info.round && (info.step === 'revise' || info.step === 'fix')) {
@@ -177,6 +185,16 @@ function snapshot() {
           const min = Math.min(sc.s, sc.d, sc.f, sc.c)
           const notes = (res.notes || []).slice(0, 3).map(n => clip(n.note, 280))
           const keep = clip((res.keep || [])[0], 220)
+          if (d.base === null) {
+            d.base = resumedBase(info.dept, info.round)
+            // The reviewed version the resumed cycle started from is a candidate for the kept version.
+            const sq = savedQuality(info.dept)
+            const q = sq && sq.q
+            if (q && q.scores && q.rounds < info.round && (!q.incomplete || q.pending === 'revise')) {
+              const r0 = q.kept_round || q.rounds
+              if (!d.rounds.some(x => x.round === r0)) d.rounds.unshift({ round: r0, s: q.scores.specificity, d: q.scores.distinctiveness, f: q.scores.fit, c: q.scores.craft, min: q.min, notes: (q.notes || []).slice(0, 3).map(n => clip(n.note, 280)), keep: clip((q.keep || [])[0], 220), failed: !!((sq.a.checks && sq.a.checks.failed) || []).length })
+            }
+          }
           d.rounds.push({ round: info.round, ...sc, min, notes, keep })
           d.grade = min >= 8 ? 'A' : 'below_A'
           d.notes = notes

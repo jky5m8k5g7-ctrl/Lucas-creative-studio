@@ -258,13 +258,14 @@ function cmdDirect(slug, note, f) {
   writeJSON(path.join(dir, 'direction.json'), all)
   if (state) {
     if (state.production_plan_applied) {
-      // A bar the current work already meets reopens nothing.
-      const unmet = Object.entries(targets).some(([dept, t]) => {
+      // Direction not yet in the state reopens the package; a bar the work already meets doesn't.
+      const pend = pendingDirection(slug, state)
+      const unmet = Object.entries({ ...pend.targets, ...targets }).some(([dept, t]) => {
         const a = (state.artifacts || {})[GRADED[DEPARTMENTS.indexOf(dept)]]
         const q = a && a.status !== 'stale' && a.quality
         return !!(q && q.scores && !(q.min >= t.min && !((a.checks && a.checks.failed) || []).length))
       })
-      console.log(entries.length || unmet
+      console.log(pend.direction.length || unmet
         ? `${slug}'s package was approved; this direction reopens it, revises the work it names and brings the package back for review.`
         : `${slug}'s package was approved and already meets this bar; the bar is recorded and nothing is reopened.`)
     }

@@ -1737,7 +1737,7 @@ async function produce(state, key, opts) {
   const target = targetFor(state, spec.dept)
   const goal = target ? target.min : A_MIN
   // Work reviewed before the bar was set gets the bar's rounds on top of the ones it had.
-  const base = (pq && pq.target_from_round) || 0
+  const base = (pq && !byNotes && pq.target_from_round) || 0
   // A paused review always gets at least its next round, even if the bar's rounds were lowered.
   const maxRounds = Math.max(target ? Math.max(LIMITS.maxQualityRounds, base + (target.rounds || LIMITS.maxQualityRounds)) : LIMITS.maxQualityRounds, (pq && !byNotes ? pq.rounds : 0) + 1)
   // Blocked work (the agent couldn't do it, or failed) goes to Lucas as blocked, not to a reviewer.
@@ -2519,14 +2519,32 @@ if (directedKeys.some(k => ['development', 'strategy', 'concepts'].includes(k)) 
   if (!state.settings.review_at_end) state.reopened_route = state.selected_concept_id
   state.approval_log.push({ gate_id: 'concept', decision: 'reopened', note: "Lucas's direction changes the development, strategy or routes" })
 }
+// A route decision sent with direction that changes the routes isn't applied: Lucas picks the
+// route again from the revised routes. Its comment is kept as a note.
+if (directedKeys.some(k => ['development', 'strategy', 'concepts'].includes(k))) {
+  const notApplied = (gate, d, why) => {
+    if (d.comment) state.human_notes = (state.human_notes || []).concat([{ gate_id: gate === 'concept' ? 'concept' : 'package', note: d.comment, decision_id: d.decision_id || null }])
+    state.approval_log.push({ gate_id: gate, decision: 'not_applied', approver_id: d.approver_id || null, decision_id: d.decision_id || null, comment: d.comment || '', reason: why })
+    delete state.approvals[gate]
+  }
+  const fc = input.approvals && input.approvals.concept
+  if (fc && fc.approved) notApplied('concept', fc, "Lucas's direction changes the routes, so he picks the route again from the revised ones.")
+  const pp = state.approvals.production_plan
+  const ppRoute = pp && pp.approved && (pp.route_change || (pp.selected_route_id && pp.selected_route_id !== state.selected_concept_id))
+  if (ppRoute && input.approvals && input.approvals.production_plan) notApplied('production_plan', pp, "Lucas's direction reopens the routes; he picks the route again at the route gate.")
+}
 const freshPackageDecision = input.approvals && input.approvals.production_plan
 if (directedKeys.length && (state.production_plan_applied || (state.approvals.production_plan && state.approvals.production_plan.approved))) {
   // A route change sent with the direction still rebuilds on its route (with the direction). An
   // approval sent with it isn't applied: the package changes, so it comes back for review.
-  if (!(freshPackageDecision && freshPackageDecision.route_change)) {
-    if (freshPackageDecision && freshPackageDecision.approved) {
-      if (freshPackageDecision.comment) state.human_notes = (state.human_notes || []).concat([{ gate_id: 'package', note: freshPackageDecision.comment, decision_id: freshPackageDecision.decision_id || null }])
-      state.approval_log.push({ gate_id: 'production_plan', decision: 'not_applied', approver_id: freshPackageDecision.approver_id || null, decision_id: freshPackageDecision.decision_id || null, comment: freshPackageDecision.comment || '', reason: "Lucas's direction came in with this approval, so the package changes and comes back for review." })
+  const pp = state.approvals.production_plan
+  const fresh = !!(freshPackageDecision && pp === freshPackageDecision && pp.approved)
+  const freshRoute = fresh && !!(pp.route_change || (pp.selected_route_id && pp.selected_route_id !== state.selected_concept_id))
+  if (freshRoute) state.production_plan_applied = false
+  else {
+    if (fresh) {
+      if (pp.comment) state.human_notes = (state.human_notes || []).concat([{ gate_id: 'package', note: pp.comment, decision_id: pp.decision_id || null }])
+      state.approval_log.push({ gate_id: 'production_plan', decision: 'not_applied', approver_id: pp.approver_id || null, decision_id: pp.decision_id || null, comment: pp.comment || '', reason: "Lucas's direction came in with this approval, so the package changes and comes back for review." })
     }
     delete state.approvals.production_plan
     state.production_plan_applied = false

@@ -73,6 +73,29 @@ try {
   const dc = dept(snap({ journals: [chk] }), 'development_producer')
   ok(dc.kept_round === null && dc.grade === 'below_A', 'a round that failed its code checks is never the kept version')
 
+  // A cycle whose run was already saved: the state is the one it ended in, so it reads as finished.
+  const nines = { specificity: 9, distinctiveness: 9, fit: 9, craft: 9 }
+  fs.writeFileSync(path.join(PDIR, 'state.json'), JSON.stringify({ settings: { targets: { cinematographer: { min: 10, rounds: 3 } } }, artifacts: { camera_plan: { status: 'draft', quality: { rounds: 5, min: 9, scores: nines, target: 10, met_target: false, target_from_round: 2 } } } }))
+  const endedRun = journal('ended', [['cinematographer · resume revision', made()], ['cinematographer · review 3', review(9, 9, 9, 9)], ['cinematographer · revise 3', made()], ['cinematographer · review 4', review(9, 9, 9, 9)], ['cinematographer · revise 4', made()], ['cinematographer · review 5', review(9, 9, 9, 9)]])
+  const nextRun = journal('next', [['storyboard_artist', undefined]])
+  ok(dept(snap({ journals: [endedRun, nextRun] }), 'cinematographer').status === 'done', 'a finished cycle stays finished once its run is saved')
+
+  // The reviewed version a bar sent back is kept when every revision scores lower.
+  fs.writeFileSync(path.join(PDIR, 'state.json'), JSON.stringify({ settings: { targets: { cinematographer: { min: 10, rounds: 3 } } }, artifacts: { camera_plan: { status: 'draft', quality: { rounds: 2, min: 9, scores: nines, notes: [{ note: 'SAVED-NOTE' }], keep: [] } } } }))
+  const lower = journal('lower', [['cinematographer · resume revision', made()], ['cinematographer · review 3', review(8, 8, 8, 8)], ['cinematographer · revise 3', made()], ['cinematographer · review 4', review(8, 8, 8, 8)], ['cinematographer · revise 4', made()], ['cinematographer · review 5', review(8, 8, 8, 8)]])
+  const kept = dept(snap({ journals: [lower] }), 'cinematographer')
+  ok(kept.status === 'done' && kept.kept_round === 2 && kept.notes[0] === 'SAVED-NOTE', 'the version a resumed cycle started from can be the one kept: ' + JSON.stringify({ st: kept.status, k: kept.kept_round }))
+
+  // A resume in place of a notes cycle is not a new run: its rounds count from 1.
+  fs.writeFileSync(path.join(PDIR, 'state.json'), JSON.stringify({ settings: { targets: { cinematographer: { min: 10, rounds: 3 } } }, artifacts: { camera_plan: { status: 'draft', quality: { rounds: 2, min: 8, scores: nines } } } }))
+  const nc = journal('nc', [['cinematographer · revise from notes', made()], ['cinematographer · review 1', review(9, 9, 9, 9)], ['cinematographer · revise 1', made()], ['cinematographer · review 2', review(9, 9, 9, 9)], ['cinematographer · revise 2', undefined]])
+  fs.appendFileSync(path.join(nc.dir, 'journal.jsonl'), [
+    { type: 'started', key: 'nc-a', agentId: 'x1', label: 'cinematographer · revise 2', phase: 'T' }, { type: 'result', key: 'nc-a', agentId: 'x1', result: made() },
+    { type: 'started', key: 'nc-b', agentId: 'x2', label: 'cinematographer · review 3', phase: 'T' }, { type: 'result', key: 'nc-b', agentId: 'x2', result: review(9, 9, 9, 9) },
+  ].map(l => JSON.stringify(l)).join('\n') + '\n')
+  ok(dept(snap({ journals: [{ dir: nc.dir, lines: nc.lines }, { dir: nc.dir, from: nc.lines }] }), 'cinematographer').status === 'done', 'a notes cycle resumed in place finishes after the bar\'s rounds')
+  fs.rmSync(path.join(PDIR, 'state.json'))
+
   // 'resume revision' wording.
   const rr = journal('rr', [['cinematographer · resume revision', undefined]])
   ok(snap({ journals: [rr] }).active.some(a => a.text === 'Camera: resuming its revision'), "a resumed revision reads 'resuming its revision'")

@@ -104,8 +104,9 @@ it, and work those departments already built is revised against it. `--target de
 above A for one department: it keeps revising until the reviewer scores N on all four criteria,
 for up to `--rounds` review rounds (repeat it to give an unmet bar more rounds). The reviewer is
 told the bar but asked to score as it otherwise would. The package reports whether each bar was
-met. Every department keeps its best-scoring reviewed version: a revision that scores lower never
-replaces it. Direction that sends approved work back reopens the approval, and `approve` refuses
+met. Within a review cycle every department keeps its best-scoring reviewed version: a revision
+that scores lower never replaces it. Under a bar this also holds across a budget stop; without
+one, a revision the stop left unreviewed is reviewed on the next run and kept as usual. Direction that sends approved work back reopens the approval, and `approve` refuses
 while Lucas's latest direction isn't in the package he reviewed.
 
 ### Calling the workflow directly

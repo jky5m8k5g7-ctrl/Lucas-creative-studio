@@ -102,7 +102,9 @@ try {
   ok(pkg.includes('Your bar') && pkg.includes('10 (not met)') && pkg.includes('your bar: 10 on every score') && pkg.includes('Your direction during the build') && pkg.includes('FILM-LOOK-MARKER'), 'direct: package.md shows the bar, why it was not met, and the direction')
   ok(camRow.target === 10 && camRow.met_target === false && camRow.notes.length > 0 && gate.direction.length === 1, 'direct: the desk card carries the bar, the reviewer notes below it, and the direction')
   // A state too big for one script goes in part scripts the run loads first.
-  const small = { cwd: ROOT, encoding: 'utf8', env: { ...process.env, STUDIO_MAX_SCRIPT_BYTES: '250000', STUDIO_PART_BYTES: '30000' } }
+  // The limit is set just under this project's embedded script, so the state must be split.
+  studio('resume', DSLUG)
+  const small = { cwd: ROOT, encoding: 'utf8', env: { ...process.env, STUDIO_MAX_SCRIPT_BYTES: String(fs.statSync(path.join(DDIR, '.run.js')).size - 1), STUDIO_PART_BYTES: '30000' } }
   execFileSync('node', [path.join(ROOT, 'tools/studio.mjs'), 'resume', DSLUG], small)
   const partsDir = path.join(DDIR, '.run-parts')
   const partFiles = fs.existsSync(partsDir) ? fs.readdirSync(partsDir) : []
