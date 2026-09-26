@@ -1,6 +1,6 @@
 # Limerence: Lucas's visual references
 
-Nine images Lucas sent as mood references, described in words for the studio's agents (they
+Eleven images Lucas sent as mood references, described in words for the studio's agents (they
 work from text and can't see images). The descriptions are the reference; the files are kept
 for the later media phase.
 
@@ -58,3 +58,12 @@ long carport, palm trees and dry scrub in front, a pale washed-out sky, dusty fa
 shape, seen from behind on a winding mountain road at sunset above a sea of cloud; the low sun
 flares from the left, the light gold and warm; two people in the seats. The romantic, free
 version of the drive, which the cold open plays against.
+
+**10 · Two faces, sepia** (`10-two-faces-sepia.jpg`). A sepia portrait: a woman's composed face
+in front, three-quarter to camera, chin resting on her hand, calm and pleasant. Behind her, a
+second version of her face, half in shadow, stares straight into the lens with dark streaks
+running down from the eye like black tears. The monster behind the composure.
+
+**11 · The open road** (`11-open-road.jpg`). An aerial of a red vintage open-top sports car,
+alone on a straight two-lane road through golden grassland at sunset. Hazy, warm, low light;
+the grass moves in the wind; hills far off in the haze. Wide, lonely and golden.
