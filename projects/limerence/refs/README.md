@@ -1,0 +1,39 @@
+# Limerence: Lucas's visual references
+
+Five images Lucas sent as mood references, described in words for the studio's agents (they
+work from text and can't see images). The descriptions are the reference; the files are kept
+for the later media phase.
+
+Some of these are film stills or photos of real people. They set a look and a tone only: no
+character may be based on anyone's face, and none of these files may be used as a generation
+reference for a person.
+
+## The images
+
+**01 · Bar, close two-shot** (`01-bar-close-two-shot.jpg`). A dim, crowded dive bar at night.
+Two people pressed close in the foreground: she faces camera-left with a wary look; he stands
+right behind her, chin near her shoulder, looking past her. Their faces are lit low and warm
+from the side, skin with a soft sheen, and everything else sinks into brown-black. Behind them:
+amber wall sconces, a red neon strip, a cold green glow from a drinks fridge, small red points
+of light along the bar, all soft in shallow focus. Intimacy that reads as threat.
+
+**02 · Candlelit bar counter** (`02-candlelit-bar-counter.jpg`). A cramped bar lit by vintage
+lamps: a green glass lantern, a red fringed shade, candles in glasses on the counter among the
+bottles, a chalkboard menu behind. Heavy red and green colour, black corners, film grain and a
+vignette, like an old snapshot. A couple sits close at the end of the bar, her in a white top,
+him leaning in.
+
+**03 · Record bar** (`03-record-bar.jpg`). A listening bar: a floor-to-ceiling wall of vinyl
+records behind the bar, warm dome pendant lamps hung low, rows of bottles, backlit hi-fi
+units. Patrons in silhouette; a man and a woman seated side by side at the bar, seen from
+behind. Warm amber, mostly shadow.
+
+**04 · Doubled portrait** (`04-doubled-portrait.jpg`). A pale woman with long auburn hair
+stares into the lens, flat and cold, against black; a blurred second copy of her turns away
+beside her, like a double exposure. A self split in two.
+
+**05 · Bathtub, black and white** (`05-bathtub-bw.jpg`). A black-and-white photo in a tiled
+bathroom. A young woman in a polka-dot blouse, an apron and rubber gloves holds up the head of
+a charred, blood-slick body slumped in the tub, and smiles at the camera as if posing for a
+family snapshot. Domestic calm and neatness right next to horror: she is pleasant, the scene
+is monstrous.
