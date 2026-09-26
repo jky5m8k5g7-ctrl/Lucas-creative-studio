@@ -1,6 +1,6 @@
 # Limerence: Lucas's visual references
 
-Five images Lucas sent as mood references, described in words for the studio's agents (they
+Nine images Lucas sent as mood references, described in words for the studio's agents (they
 work from text and can't see images). The descriptions are the reference; the files are kept
 for the later media phase.
 
@@ -37,3 +37,24 @@ bathroom. A young woman in a polka-dot blouse, an apron and rubber gloves holds 
 a charred, blood-slick body slumped in the tub, and smiles at the camera as if posing for a
 family snapshot. Domestic calm and neatness right next to horror: she is pleasant, the scene
 is monstrous.
+
+**06 · The morning after** (`06-morning-after.jpg`). A warm, yellow-tinged snapshot taken from
+the pillows, like a phone photo with the flash on. A man with long locs and a tattooed arm sleeps
+face-down into the pillow, mouth open; the woman beside him is awake, a hand pressed to her
+forehead, staring off, bored and uneasy. Soft focus, crumpled patterned bedding. He is out cold;
+she is somewhere else in her head.
+
+**07 · The abandoned hotel inside** (`07-abandoned-hotel-interior.jpg`). Inside an old,
+abandoned hotel: a carved-leg pool table in the middle of a bare plank floor, a tall rack of
+cues, a wood stove, a long table with spindle chairs, pressed-tin walls, an open white door.
+Low sun slants through tall windows and throws lace-like patterns of light across the wall and
+floor; everything else is dust-brown shadow, sepia and still, untouched for decades.
+
+**08 · The desert motel** (`08-desert-motel.jpg`). An abandoned roadside motel in flat desert:
+a big peeling "MOTEL" sign on steel legs with a red "OFFICE" arrow, a gutted two-storey block, a
+long carport, palm trees and dry scrub in front, a pale washed-out sky, dusty faded-film colour.
+
+**09 · The joy ride** (`09-joy-ride.jpg`). A vintage silver open two-seater convertible, 1950s
+shape, seen from behind on a winding mountain road at sunset above a sea of cloud; the low sun
+flares from the left, the light gold and warm; two people in the seats. The romantic, free
+version of the drive, which the cold open plays against.
