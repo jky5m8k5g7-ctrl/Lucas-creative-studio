@@ -262,6 +262,21 @@ function snapshot() {
   }
 
   for (const e of feed) if (e.running) { active.push({ text: e.text, at: e.at, dept: e.dept }); delete e.running }
+  // Direction-level work a run doesn't redo (development, strategy, routes) shows as the saved
+  // project has it; a project started from a brief has no development step at all.
+  for (const dept of ['development_producer', 'strategist', 'creative_director']) {
+    const d = depts[dept]
+    if (d.calls) continue
+    const a = saved.artifacts && saved.artifacts[KEY[dept]]
+    if (a && a.status !== 'stale') {
+      d.status = 'done'
+      const q = a.quality
+      if (q && q.scores) {
+        d.grade = q.grade
+        d.rounds = (q.history || []).map(h => ({ round: h.round, s: h.scores.specificity, d: h.scores.distinctiveness, f: h.scores.fit, c: h.scores.craft, min: h.min }))
+      } else d.grade = 'not_graded'
+    } else if (!a && dept === 'development_producer' && saved.settings && saved.settings.idea_mode === false) d.status = 'skipped'
+  }
   feed.sort((a, b) => String(a.at).localeCompare(String(b.at)))
   const started = starts.size
   const done = [...starts.keys()].filter(k => results.has(k)).length

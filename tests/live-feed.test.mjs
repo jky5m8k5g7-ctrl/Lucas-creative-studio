@@ -112,6 +112,12 @@ try {
   const s5 = snap({ journals: [{ dir: ip.dir, lines: ip.lines }, { dir: ip.dir, from: ip.lines }] })
   ok(s5.calls.running === 1 && s5.active.length === 1 && dept(s5, 'director').status === 'done', 'an in-place resume shows only the live attempt as running: ' + JSON.stringify(s5.calls))
 
+  // A rebuild that starts at the script: earlier departments come from the saved state.
+  fs.writeFileSync(path.join(PDIR, 'state.json'), JSON.stringify({ settings: { idea_mode: false }, artifacts: { strategy: { status: 'approved' }, concepts: { status: 'approved', quality: { grade: 'A', scores: nines, history: [{ round: 1, min: 9, scores: nines }] } } } }))
+  const s6 = snap({ journals: [journal('rebuild', [['copywriter', undefined]])] })
+  ok(dept(s6, 'development_producer').status === 'skipped' && dept(s6, 'strategist').grade === 'not_graded' && dept(s6, 'creative_director').grade === 'A' && dept(s6, 'creative_director').rounds.length === 1 && dept(s6, 'copywriter').status !== 'done', 'departments a rebuild does not redo read from the saved state')
+  fs.rmSync(path.join(PDIR, 'state.json'))
+
   // Revise from notes starts a new review cycle.
   const rn = journal('rn', [['copywriter', made()], ['copywriter · review 1', review(9, 9, 9, 9)], ['copywriter · revise from notes', made()], ['copywriter · review 1', review(8, 9, 9, 9)]])
   const cw = dept(snap({ journals: [rn] }), 'copywriter')
