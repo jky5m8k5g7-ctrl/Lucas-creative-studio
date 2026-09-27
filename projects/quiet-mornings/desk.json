@@ -1,1 +1,666 @@
-[]
+[
+ {
+  "collection": "gates",
+  "id": "quiet-mornings--production_plan",
+  "data": {
+   "project_id": "PROJECT_001",
+   "project_slug": "quiet-mornings",
+   "project_name": "Quiet Mornings",
+   "project_sub": "Solace Home Goods (fictional test brand, not a real company) · 15s 9:16, 2 stills",
+   "gate_id": "production_plan",
+   "gate_label": "Package",
+   "order": 2,
+   "status": "pending",
+   "decision_id": null,
+   "title": "Approve the full production package",
+   "ask": "Approve the exact script, cast, looks, world, storyboard, sound plan and generation plan. Paid media still needs a separate budget.",
+   "from_run": "APPROVE · 2026-09-27",
+   "review_mode": "package",
+   "idea": null,
+   "development": null,
+   "strategy": {
+    "proposition": "The Solace pour-over is the five hands-on minutes you take back for yourself before the day takes the rest of your time — a small, repeatable act of choosing slow on purpose. (This operationalizes the brief's own key message, 'A five-minute ritual that slows your morning down, on purpose,' as a proposition the creative director can build routes against.)",
+    "tension": "The target audience — urban professionals aged 25-40 who make coffee at home and say they value ritual over convenience — live inside schedules built for speed. For most of that group, coffee on a weekday is something you get (a pod, a drip machine on autopilot, a coffee-shop stop) rather than something you make. The tension is between wanting mornings to feel intentional and self-directed, and defaulting to whatever costs the least time, because deliberately slowing down can feel indulgent or impractical on a Tuesday. The brief names this tension directly by setting 'ritual' against 'convenience' as competing values, by pricing the product at $38 (a considered purchase, not an impulse one), and by warning against generic luxury imagery — the tension is not 'I want to look rich,' it's 'I want five minutes that are mine before the day takes them.'"
+   },
+   "routes": [
+    {
+     "route_id": "R1",
+     "central_idea": "Before the phone, the inbox, or anyone else gets a piece of you, there are five minutes that are only yours — marked by the pour.",
+     "emotional_promise": "Quiet self-possession: the felt relief of claiming a few minutes before the day starts claiming them for you.",
+     "product_role": "The Solace dripper is the literal boundary object. The film's one deliberate action — setting the phone face-down and reaching for the dripper instead — makes the product the mechanism of the choice, not a backdrop to it. It stays in frame through the pour, the bloom, and the final held mug, closing on an unhurried, fully lit shot of the dripper itself on the counter.",
+     "execution_example": "15s / 9:16 (D01): Open tight on a phone screen lighting up on a counter; a hand turns it face-down without looking. Cut to the same hand lifting the Solace dripper, setting it on a mug, spooning grounds. Slow spiral pour, water blooming the grounds in close-up (2-3s held). Cut to the person at a window, mug in both hands, steam rising, a single distant notification sound goes unanswered. Final beat (2s): dripper alone on the counter in soft full light, product fully legible, with an illustrative closing line such as 'Made in small batches' (exact copy owned by copywriter). The two 4:5 stills (D02) pull directly from this beat structure: still 1 = the pour/bloom close-up with the dripper as clear hero object; still 2 = the closing counter shot, product fully visible and legible, doubling as a clean DTC-linkable product image."
+    },
+    {
+     "route_id": "R2",
+     "central_idea": "The bloom itself — the moment water first meets the grounds — is the ritual's whole point, and the hand-glazed ceramic is filmed as the singular object that stages it.",
+     "emotional_promise": "Presence: the satisfaction of doing one small thing slowly enough to actually notice it happening.",
+     "product_role": "The dripper's surface and form are the visual subject, not just present in the shot. Macro texture on the hand-glazed stoneware (visible glaze variation, no two pieces identical) is used to make the tactile, handmade proof point legible on screen, then the frame pulls back to show the object in full use — giving the product both an intimate role and a clear closing moment.",
+     "execution_example": "15s / 9:16 (D01): Near-entirely macro — dry grounds catching light, first pour, the bloom rising and settling, steam curling off the surface, a fingertip resting briefly on the glaze's texture. In the last 3 seconds, camera pulls back for the first time to a clean, fully lit shot of the dripper and finished mug on the counter, with a hand entering frame to lift the mug — the human presence and the product both land together as the closing moment. Illustrative closing line: 'Hand-glazed. Small batch. Yours.' The two 4:5 stills (D02) isolate: still 1 = the bloom macro shot; still 2 = the pulled-back closing counter shot, framed as a clean product/DTC image."
+    },
+    {
+     "route_id": "R3",
+     "central_idea": "An ordinary Tuesday, not a weekend — the deliberate choice to reach for the slow thing instead of the fast thing, on a day that gave no permission to slow down.",
+     "emotional_promise": "Quiet agency: permission to choose slowness even when nothing about the day is asking for it.",
+     "product_role": "The dripper is staged as the chosen alternative in an explicit two-beat decision (reach for the fast option, then don't — reach for this instead), which makes its role in the story unmissable. It remains the visual anchor through the pour and into a final in-focus product shot.",
+     "execution_example": "15s / 9:16 (D01): Opens on an out-of-focus stack of notifications/alarm on a phone, a hand starting to reach for it — then redirects to the Solace dripper sitting on the counter instead. One continuous, steady pour; the frame holds on the bloom. Final beat: person seated, mug in both hands, dripper still visible in soft foreground focus. On-screen line (illustrative, copywriter to finalize): 'A five-minute ritual, on purpose.' The two 4:5 stills (D02): still 1 = the redirected-hand moment (phone out of focus behind, dripper sharp in the foreground) carrying the tension itself; still 2 = the seated closing shot with the product legible in frame."
+    }
+   ],
+   "recommended_route_id": "R1",
+   "built_route_id": "R1",
+   "recommendation": "R1 (\"the line before the day\") most directly dramatizes the strategy's own audience tension — ritual vs. the pull of convenience — through one specific, small, believable action (turning the phone face-down) rather than a generic mood board or an explicit before/after contrast edit. That keeps it furthest from the brief's 'generic luxury imagery without a story' risk while still giving the product an unambiguous role and a clean, legible closing shot that doubles easily as a DTC-linkable image. Its single continuous pace (no hard tonal cut) also fits the brief's 'quiet, warm, tactile' tone more precisely than R3's two-beat contrast, and it extends more naturally to both required still crops than R2's mostly-macro treatment, which risks losing legible product context if used as a static image on its own. R2 and R3 remain strong alternates: R2 is the more sensory, tactile-proof-point-forward option if the brand wants to foreground the hand-glazed/small-batch facts even more literally; R3 is the more literal, message-forward option if the producer wants the 'on purpose' contrast made explicit rather than implied.",
+   "package_grade": "below_A",
+   "panel": {
+    "round": 3,
+    "approvals": 0,
+    "of": 3,
+    "averages": {
+     "specificity": 9,
+     "distinctiveness": 7.7,
+     "fit": 8,
+     "craft": 7
+    },
+    "ended": "below A after 3 rounds; the open notes are listed for Lucas",
+    "revised_after_review": [],
+    "grade_note": "",
+    "lenses": [
+     {
+      "lens": "creative_director",
+      "would_approve": false,
+      "verdict": "Not today, but close. The idea works. A phone flipped face-down at 7:00, a second buzz that shows up as rings in her coffee and gets nothing from her hand, and 'Everyone else gets you at 7:05.' That is dry, ownable execution. Every department serves R1, the product is a tool before it is the hero, and the taste notes are followed or broken on purpose with reasons. What stops approval is that the package doesn't agree with itself. Sound is timed to a superseded camera plan: six hits are off, and the turn's buzz trails its own picture. The treatment still carries the 18f/54f SH02A/SH02B split and wall-D card placements the camera plan can't honour. The camera plan contradicts the script's 7:05 card frame. The world bible drains away the drop the B4a beat needs. Two route departures (locked camera, neutral DTC still) wait on Lucas. I'd also cut the B2 card, so the thumb pass and the product's first look play without text and 7:05 lands as the only line. Make these fixes, get the real sample and Lucas's calls, and this goes to the client as an A.",
+      "scores": {
+       "specificity": 9,
+       "distinctiveness": 8,
+       "fit": 8,
+       "craft": 7
+      },
+      "notes": [
+       {
+        "dept": "sound_designer",
+        "target": "sound_plan SND-D01-002 to SND-D01-007 timings, plus the SND-D01-001 tone-alone windows",
+        "note": "Re-sync every hit to the current camera plan: SH02A is 24f (f36-f60), SH02B is 48f (f60-f108), SH03 starts at f108, SH04 at f168 and SH05 at f204. Changes: (1) rack knock on the take's contact frame, within f50-f58, where the lift starts and the foot clears the wires; (2) seat click at f74, ring gone by f79; (3) kettle tip at f118, stream landing at about f119; (4) last drip at f172, adjusted to the take within f172-f178; (5) set-down on oak at about f188; (6) the SND-D01-006 pulse at f209-f228, stopping on the frame the rattle stops. Delete the 003 alternate filter crinkle (f99-f105), because no filter action appears in picture. Then re-derive 001's tone-alone windows (the quietest stretch becomes f228-f283) and its loudest-moment line. Re-check 007's card-in clearances against whatever card frames the copywriter locks."
+       },
+       {
+        "dept": "director",
+        "target": "directors_treatment S1 action_progression, transition_out and assumptions (shot IDs); ruling 6",
+        "note": "Accept the camera plan's 24f for SH02A. At the 0.6 m/s cap, 18f leaves 4 frames for a 14 cm lift. Rewrite S1 to: SH02A 1.50-2.50 s (24f), with the hook at 0-6f, the thumb sweep at 6-14f and the lift at 14-24f; SH02B 2.50-4.50 s (48f), opening 12 cm short of the mug, with the click on SH02B f14 (3.08 s, absolute f74). Move the SH02A/SH02B transition to 2.50 s, update the shot-ID line in assumptions, and close camera plan blocker 6."
+       },
+       {
+        "dept": "director",
+        "target": "directors_treatment card placement in S1 blocking, S3 blocking and S4 blocking ('the card area the world bible keeps bare on the wall-D paint')",
+        "note": "Replace the wall-D card-area placement with the camera plan's on-screen zones, which are the only ones inside the platform safe band: B4b on bare oak at 54-64% h below the dripper foot; B5-B6 on bare oak at 50-64% h, 8-84% w; the SH05 fallback on wall-D paint at 15-21% h. B2's zone only applies if the copywriter keeps the B2 card. Close camera plan blocker 3."
+       },
+       {
+        "dept": "copywriter",
+        "target": "D01-B2 on_screen_text 'Nobody gets you before the pour.'",
+        "note": "Cut this card from D01 and keep the line as the D02-1 headline. It lands on the same frame as the product's first look and the SH02A thumb pass, the only in-use demonstration of 'hand-glazed', and the treatment already flags that it pulls the eye. It also says in words what the B1 flip has just shown, and it takes the construction the 7:05 card pays off. Cutting it brings on-screen text from 8.5 s to 5.5 s of the 15, and 7:05 becomes the spot's only story line. If the sound-off phone test shows the read fails without it, the only allowed fallback is in at the SH02B cut (2.50 s) and out at 4.50 s (32 characters in 2.0 s, 16 cps). It never runs over SH02A."
+       },
+       {
+        "dept": "copywriter",
+        "target": "D01-B6 organic alternate card 'Shop the Solace dripper. Link in bio.'",
+        "note": "Trim it to 'Shop the dripper. Link in bio.' That is 30 characters in 2.0 s (15 cps), down from 37 (18.5 cps), and it would otherwise be the fastest card in the spot on the loop frame. The 'Solace' sign-off beneath it already names the brand. The paid card stays as written."
+       },
+       {
+        "dept": "cinematographer",
+        "target": "camera_plan SH05 action: 'By about 30f (9.75 s) the rings are flat as the card comes up'",
+        "note": "Conform the action to the script. The 7:05 card comes up at SH05 24f (9.50 s), on the frame the rattle stops and the rings begin to flatten, and the rings are flat by about 30f with the card already up. Put the card-in frame in the action line so the editor and the sound designer work from one frame."
+       },
+       {
+        "dept": "cinematographer",
+        "target": "camera_plan SH01 framing marks list ('ring 232.7/280'), SH04 ('Dripper on the ring'), SH07 ('the ring is clean oak'), SH08 ('the foot is on the ring mark')",
+        "note": "Rename every instance to 'set-down mark 232.7/280 (clean oak)'. 'Ring' is left over from the cut Mark 1 stain. A dressing or generation pass that reads it could add a coffee ring under the foot on the DTC image."
+       },
+       {
+        "dept": "production_designer",
+        "target": "world_bible PROP-01 persistent_state_notes ST4: 'Props drain the cone before the take, so nothing else drips.'",
+        "note": "Amend ST4 to match the treatment. Props let the cone drain until drips slow to about one a second, then roll so the lift comes 0.5-0.8 s after the last drip, so one drop hangs at the exit hole when SH04 rolls. Pass: that drop falls into the coffee within 7.17-7.42 s in at least one take in three, and nothing drips during the 15 cm carry. State the fallback too: if it fails, the drop falls during the 3 cm lift."
+       },
+       {
+        "dept": "production_designer",
+        "target": "world_bible PROP-01 description and product_placement 'Swap test ... It is the only swap test.'",
+        "note": "Write the script's hero-unit fallback into the bible now, with position and bearing: if the real unit has no foot pool, the swap-test detail is the iron speck and the thin glaze break at the rim. Give the arc of rim the D01-B2 thumb crosses, its bearing (235°, facing the lens in D01-B5/B6 and D02-2), and its tone against the body. The generation plan's checks then cite a named detail rather than 'the production designer's replacement'."
+       },
+       {
+        "dept": "production_designer",
+        "target": "world_bible LOC-01 spatial_layout: 'Coffee mirror line' paragraph, the FAUCET-01 rule 'Any frame that shows y < 185 needs FAUCET-01 built', and product_placement 'Mirror path, in section and plan'",
+        "note": "(1) Cut the lens-dependent maths (the coffee mirror-line formula in h and d, and the pool mirror path by lens elevation θ) and keep only set facts: coffee surface at 98.5 cm, TILE-01 edges at 112.0 and 119.5 cm, which flats are built for reflections, and the gloss finishes. The camera plan already carries its own mirror points. (2) Restate the faucet rule as 'any frame that shows FAUCET-01 at 254/155 needs it built'. Record that SH02A's corner, about 7 cm into the dry, empty sink at y≈178 with the faucet out of frame, meets the rule, which closes camera plan blocker 7."
+       },
+       {
+        "dept": "casting_director",
+        "target": "casting_bible visual_identity_anchors skin line ('These words go with the hex codes into the hand-double call and every prompt'), blocker 1 (generated NORA) and blocker 3 (grip)",
+        "note": "(1) Change the skin line to: words go in prompts; hex codes go only in the hand-double call and the acceptance checks. (2) Mark blocker 1 moot, because the generation plan has zero generated jobs, and reopen it only if a generated fallback is ever planned. (3) Record the director's named grips in blocker 3. In B2 the index and middle fingers hook over the rim with the thumb outside; in B4a it is a claw over the rim. So the threshold is set on rim diameter: 10.5 cm or more, or casting reopens the hand breadth."
+       },
+       {
+        "dept": "stylist",
+        "target": "style_bible hair_makeup 'CHECK AND REAPPLY at the start of each hand setup (D01-B1, B2, B4a, B4b, D02-1)' and the assumption 'I don't know which hand appears in D01-B1, B2, B4a and B4b'",
+        "note": "Key the checks to the camera plan's shot IDs. The right hand (mole) is in SH01, SH02A, SH02B and SH04-SH05 (one take, one check before it). The left hand (scar) is in SH07. SH03 is the left-hand pour off frame, so re-check the scar after SH03 and before SH07, because water and steam contact trigger a reapply. Delete the 'don't know which hand' assumption."
+       },
+       {
+        "dept": "storyboard_artist",
+        "target": "storyboard sound_cues in SH02A, SH02B, SH03, SH04 and SH05; on_screen_text in SH02A/SH02B and SH05",
+        "note": "Once the sound plan is re-synced, re-board every cue line at the corrected in-shot frames. Drop the '(see SYNC)' tags and move SYNC to CLOSED THIS ROUND. If the copywriter cuts the B2 card, clear the SH02A and SH02B on_screen_text and the 'card lands in the top band' language from both board notes. Set the SH05 card-in to the frame the cinematographer conforms to."
+       },
+       {
+        "dept": "generation_supervisor",
+        "target": "generation_plan SH02A-PLT, SH06-PLT and SH08-STL acceptance checks: 'the production designer's replacement swap-test detail'",
+        "note": "Once the world bible names the fallback, cite it by name in all three jobs: iron speck and rim glaze break at 235°. Set a measurable read for it, at least 40 px at 100% on a 6-inch phone, the same bar as the pool. In SH02A-PLT, state that the thumb crosses the rim break on the lens side without stopping."
+       }
+      ]
+     },
+     {
+      "lens": "film_director",
+      "would_approve": false,
+      "verdict": "This is a strong, unusually specific package built on an idea the brand can own. The day's second buzz reaches her coffee as rings and gets nothing back, and the 7:00 to 7:05 window turns the key message into picture and cards without a spoken word. The claims discipline is clean, with only the three verified facts on screen. I would not shoot it next week as it stands. The sound plan is synced to a superseded camera plan, with six hits off by 5-17 frames. The treatment still carries old timings and a card area the camera can't see. The SH01 grip can't physically land the phone against the mug the way QC requires. SH07's locks already fail on paper. The turn depends on rings in a 1.2 cm patch of coffee. A person also has to decide several things before anything is locked: the real product sample, the two route departures, the hand-double release and whether we build or go to a location. With the 17 notes above made and those calls in, this is an A.",
+      "scores": {
+       "specificity": 9,
+       "distinctiveness": 8,
+       "fit": 8,
+       "craft": 7
+      },
+      "notes": [
+       {
+        "dept": "sound_designer",
+        "target": "SND-D01-003, -004, -005, -006 hit timings; SND-D01-001 tone-alone windows and the assumptions FLAG about the 7:05 card",
+        "note": "Re-sync every picture-led hit to the current shot starts (SH02A f36, SH02B f60, SH03 f108, SH04 f168, SH05 f204):\n- Rack knock: on SH02A's tray-contact frame, inside f50-f58. The lift starts at SH02A 14f and the foot clears at about 22f.\n- Seat click: f74, ring gone by f79 (SH02B 14f).\n- Kettle tip: f118. Stream landing: about f119 (SH03 10-11f). Fizz rises about 12f later (about f131).\n- Last drip: f172, slid to the selected take inside f172-f178 (SH04 4-10f).\n- Set-down: on the take's landing frame, about f188 (SH04 about 20f).\n- B4b pulse: f209-f228 (SH05 5f-24f).\nDelete the 003 filter-crinkle alternate, because SH02B has no filter action. Re-derive 001's tone-alone windows; the quietest stretch becomes f228-f283. Delete the FLAG saying the 7:05 card lands mid-buzz: on current frames the rattle ends on the f228 card-in."
+       },
+       {
+        "dept": "storyboard_artist",
+        "target": "sound_cues lines in SH02A, SH02B, SH03, SH04, SH05; the SYNC flag",
+        "note": "When the re-synced sound plan arrives, rewrite each cue line in in-shot frames against the picture and confirm each is within ±2f:\n- SH02A knock inside 14-22f\n- SH02B click at 14f\n- SH03 tip at 10f\n- SH04 drip at 4f and set-down at about 20f\n- SH05 pulse at 5-24f, with the tone-alone quietest stretch from 24f\nRemove the '(see SYNC)' tags and close SYNC."
+       },
+       {
+        "dept": "storyboard_artist",
+        "target": "on_screen_text in SH02A, SH02B, SH05, SH06, SH07, SH08",
+        "note": "Add a super spec for every card, because nothing in the package sets type size or colour. For each card give the typeface class, the minimum cap height in px on the 1080-wide frame (sized to read at 100% on a 6-inch phone within its hold), the colour, and the measured contrast against the surface it sits on:\n- B2: on TILE-01 #D5D8D2, with grout lines. Dark type.\n- B4b, B5 and B6: on oak #533C2B. Light type.\n- D02-1: on oak.\n- D02-2: on paint #6B6E67.\nThe cards carry the whole story for muted viewers."
+       },
+       {
+        "dept": "production_designer",
+        "target": "TILE-01 extent on wall D",
+        "note": "Extend the tile course from y 250 toward wall A, keeping the same 112.0-119.5 cm heights, until the bullnose end sits outside SH02A's right frame edge (plan estimate y≈215; confirm at prelight). The B2 card then sits on one continuous pale band in both angles. At the moment it crosses the bullnose onto dark paint in SH02A. The heights do not change, so SH05's coffee mirror line (y 318-327) is untouched."
+       },
+       {
+        "dept": "production_designer",
+        "target": "PROP-01 ST4 persistent_state_notes",
+        "note": "Replace 'Props drain the cone before the take, so nothing else drips' with the treatment's procedure: let the cone drain until drips slow to about one a second, then roll so the lift comes 0.5-0.8 s after the last drip. Wipe any drop that falls inside the foot ring at the SH06 reset. Pass: in at least one take in three, a single drop falls into the coffee within SH04 4-10f, and no second drop falls during the carry. As written, the bible removes the drop the script's B4a depends on."
+       },
+       {
+        "dept": "production_designer",
+        "target": "PROP-03 ST4 (SH04-SH05 hand takes)",
+        "note": "Set a working temperature for the mug in the hand takes. Fill so the mug's outer wall, where the fingertips rest (225-315° below the rim), reads at most 50°C on an IR thermometer at roll, while the coffee still shows thin steam in the raking key. Re-fill between takes to that number and log it. As written, the double rests dead-still fingertips on a freshly brewed diner mug for up to 4.5 s per take across many takes. That is a flinch and burn risk aimed straight at the beat's 'no flinch, no squeeze'."
+       },
+       {
+        "dept": "production_designer",
+        "target": "LOC-01 FAUCET-01 build rule; camera plan blocker 7",
+        "note": "Restate the rule by what a frame actually sees: FAUCET-01 is built only if a frame sees the faucet's footprint (about 254/155), not whenever y<185 shows. Confirm that SH02A's bottom-right corner shows about 7 cm of dry, empty sink with the faucet out of frame, and close camera plan blocker 7."
+       },
+       {
+        "dept": "director",
+        "target": "Treatment S1 and S3: action_progression timings and card placement in blocking",
+        "note": "Rule on the camera plan's open items and conform the treatment:\n- SH02A/SH02B: accept 24f / 48f with the seat on SH02B 14f (3.08 s). Replace '18 f', 'f1-6/f7-14/f15-18' and 'SH02B 54 f, seat on f15'.\n- SH04: accept the 4/2/14/5/11 split and replace '4/4/10/6/12'. A 21 cm arc in 10f peaks near 0.8 m/s.\n- Cards: in S1 and S3 blocking, strike 'the world bible's bare card area (wall-D paint, 125 cm up)'. Adopt the camera plan's on-screen zones: B2 at 16-26% h; B4b and B5-B6 on bare oak."
+       },
+       {
+        "dept": "director",
+        "target": "SH01 grip (ruling 9) in treatment S1 action_progression",
+        "note": "The written grip cannot finish the way the acceptance check requires. The thumb starts on the wall-C long edge and the fingertips on the mug-side edge. A 180° roll about the long axis swaps the edges, so the thumb ends up between the phone and the mug, and the phone cannot then land touching the mug 'with no finger between'. Re-block it:\n- During the roll, the thumb slides onto the back plate, so the hand finishes palm-down with the fingers on the wall-C edge.\n- The hand lowers the free mug-side edge against the mug and opens.\n- Rehearse this at the fitting.\nIf it won't play at habit speed, accept a landing gap of up to 1 cm in SH01, and have props close the phone to contact across the SH01/SH02A walk ellipsis. B4b is a separate setup."
+       },
+       {
+        "dept": "director",
+        "target": "Ruling 4 / SH05 plan of record",
+        "note": "Make C4' the plan of record for SH05: the tighter frame, with the coffee at about 2.0 × 0.9 cm on a 6-inch screen and the dripper whole, cut from SH04 at the settle (8.5 s). Keep the 42 cm single take only as an upgrade if the ring test passes at phone size. At 42 cm the coffee is 1.2 × 0.7 cm, and the whole sound-off turn depends on it."
+       },
+       {
+        "dept": "director",
+        "target": "Treatment S2 blocking for D02-1 (SH07)",
+        "note": "Drop 'cropped to include the index finger's middle joint so the scar reads'. L's fingertips on the beech handle stay in frame only as far as the lock keeping the sill out and the scorch band allow. Every plate uses the same practical double and nothing is generated, so the scar does no continuity work on screen. Run the mirror check from a wider safety frame at the same setup. This removes a conflict the plan's first estimate already fails (scar joint at 2-4% w against the 6% lock)."
+       },
+       {
+        "dept": "cinematographer",
+        "target": "SH01, SH04, SH05 lighting",
+        "note": "Say how the hand separates from the counter. Skin #6F4A34 (L* 35) sits only about 8 L* above the #533C2B oak, and nothing in the plan lifts it. Specify a named edge, for example the WIN-01 key's back-edge rim along the knuckles and the top of the forearm, at least +1 stop over the adjacent oak. Add a monitor check that the hand's outline reads at 100% on a 6-inch phone, especially in SH05, where the heel rests on the oak."
+       },
+       {
+        "dept": "cinematographer",
+        "target": "SH05 action line; 'ring' wording in the SH01 plan, SH04, SH05, SH07, SH08",
+        "note": "Two edits:\n- SH05: change 'By about 30f (9.75 s) the rings are flat as the card comes up' to 'At 24f (9.5 s) the card comes up as the rattle stops and the rings start to flatten.'\n- Rename 'the ring' at 232.7/280 to 'set-down mark' throughout, so no dressing or QC pass adds a coffee ring under the foot of the DTC image."
+       },
+       {
+        "dept": "copywriter",
+        "target": "D01 organic alternate B6 card",
+        "note": "Cut 'Shop the Solace dripper. Link in bio.' (37 characters in 2.0 s, 18.5 cps) to 31 characters or fewer so it reads at the spot's own ceiling, for example 'Shop the dripper. Link in bio.' (30 characters). The 'Solace' sign-off beneath already names the brand, and the verb stays."
+       },
+       {
+        "dept": "copywriter",
+        "target": "D01-B1 and D01-B4b picture/sound lines",
+        "note": "Conform two timings to the camera and sound plans:\n- B1: 'At about 0.8s NORA's hand comes in' becomes 'enters at about 0.6 s and lands at 0.8 s'.\n- B4b: 'about 1.0s long' and 'About 1.0s in, the rattle stops' become about 0.8 s (8.7-9.5 s).\nThe script's figures are what the other departments read first."
+       },
+       {
+        "dept": "casting_director",
+        "target": "casting_bible blockers and the left-hand-pour rationale in assumptions",
+        "note": "Four updates:\n- Close 'Rights for a generated NORA'. Every plate is practical and nothing is generated, so what remains folds into the hand-double release.\n- Update the dimensions/grip blocker. The director has named both grips (rim hook in B2, claw over the rim in B4a). Both cross the rim, so the threshold is the rim diameter: 11.5 cm assumed against the 10.5 cm minimum, pending the real unit.\n- Strike 'because of where the kettle lives'. RANGE-01's burner at 212/97 is on her right (she faces 90° at y 308), so she fetches the kettle with R and switches it to L across the S1/S2 ellipsis. Say that instead.\n- Align the skin-anchor line ('with the hex codes into every prompt') with the style bible's words-only rule."
+       },
+       {
+        "dept": "generation_supervisor",
+        "target": "SH03-PLT acceptance_checks (continuity line)",
+        "note": "Replace 'At exit the grounds are a wet dome about 1 cm high' with the treatment's pass mark: by 2.2 s in-shot (6.7 s) the whole visible bed has darkened and the centre has visibly risen by at least 5 mm, judged at 100% on a 6-inch phone. 1 cm is the target, not the pass. As written, a take the director would pass fails QC."
+       }
+      ]
+     },
+     {
+      "lens": "client",
+      "would_approve": false,
+      "verdict": "The idea sells. Refusing the phone before the pour, the day's buzz reaching the coffee and nothing further, and the lines 'Everyone else gets you at 7:05' and 'Out from 7:00. Back at 7:05' are specific and relatable to our audience. The spot stays strictly inside our three facts and ends on a readable 3.5 s product hold with a clear CTA. I can't approve it for production today, for four reasons. The product's look, including the glaze pool the whole swap test rests on, is invented until we supply a real unit. The sound plan is synced to a camera plan that has been replaced. Three timing and placement rulings are still open. And the route departures and releases need decisions only people can make. Fix the notes above and answer the questions, and this is an 8 heading to a 9.",
+      "scores": {
+       "specificity": 9,
+       "distinctiveness": 7,
+       "fit": 8,
+       "craft": 7
+      },
+      "notes": [
+       {
+        "dept": "sound_designer",
+        "target": "SND-D01-001, 003, 004, 005, 006 cue timings",
+        "note": "Re-sync to the current shot starts (SH02A f36, SH02B f60, SH03 f108, SH04 f168, SH05 f204). 003: put the rack knock on the selected take's contact frame within f50-f58, and move the seat click from f67 to f74 (ring gone by f79; use f68 if the director keeps 18f). 004: move the kettle tip from f113 to f118 and the stream landing to about f119. 005: move the last drip from f189 to f172 (slide it to the take within f172-f178) and the set-down from f203 to about f188. 006: move the pulse from f221-f240 to f209-f228, so it starts with the rings and stops as the 9.5 s card comes up. Delete the 003 alternate filter crinkle at f99-f105, because SH02B has no filter action. Then re-derive 001's tone-alone windows (the quietest stretch becomes f228-f283) and the time of the loudest moment. Delete the stale assumption that the card 'wants to sit at or after f240'."
+       },
+       {
+        "dept": "cinematographer",
+        "target": "SH05 action line (card-in timing)",
+        "note": "Replace 'By about 30f (9.75 s) the rings are flat as the card comes up' with '24f (9.5 s): the rattle stops, the rings begin to flatten and the 7:05 card comes up'. Keep the hand hold from 24f to 72f. The card has to arrive as the rings settle, not after they have settled."
+       },
+       {
+        "dept": "cinematographer",
+        "target": "SH01 marks list; SH04, SH05, SH07 and SH08 framing text",
+        "note": "Replace every 'ring' / 'ring mark' / 'Dripper on the ring' / 'the ring is clean oak' with 'set-down mark 232.7/280 (clean oak)'. A dressing or generation pass must never read it as a coffee ring, and that matters most on SH08, the DTC image."
+       },
+       {
+        "dept": "director",
+        "target": "Treatment S1 action_progression, assumptions ruling 6, and blocker 1",
+        "note": "Rule SH02A at 24f and SH02B at 48f, with the click on SH02B f14 (absolute f74). At your own 0.6 m/s cap, 18f leaves only 4f for a 14 cm lift. Rewrite S1's action_progression, which still says 18f + 54f with the seat on f15, and update ruling 6 to match. Close blocker 1, because the camera plan has now been retimed to 4.5/7.0/8.5/11.5 s."
+       },
+       {
+        "dept": "director",
+        "target": "Treatment card placement in S1, S3 and S4 blocking",
+        "note": "Approve the camera plan's screen zones and replace the treatment's 'wall-D card area (125 cm and up)' with them. The zones are: B2 at 16-26% h; B4b on bare oak at 54-64% h; B5-B6 on bare oak at 50-64% h; the SH05 fallback on wall-D paint at 15-21% h. Ask the storyboard for a phone-size legibility check of the B2 card over TILE-01's bullnose end."
+       },
+       {
+        "dept": "copywriter",
+        "target": "D01-B6 organic alternate card",
+        "note": "Change 'Shop the Solace dripper. Link in bio.' (37 characters in 2.0 s = 18.5 cps) to 'Shop the dripper. Link in bio.' (30 characters, 15 cps). It keeps the verb and the destination, the 'Solace' sign-off beneath still names the brand, and the frame drops to 7 words including the sign-off, so the organic B6 stays inside your own ceiling."
+       },
+       {
+        "dept": "copywriter",
+        "target": "D01-B2 card timing fallback",
+        "note": "Restate the fallback in treatment blocker 5 against the current cut. It still quotes 2.25 s. With a 24f SH02A the card would come in at 2.50 s on the SH02B cut and hold to 4.50 s: 2.0 s on screen, 32 characters, 16 cps. Approve or refuse that fallback in writing before the phone test, so the editor isn't left holding a stale number."
+       },
+       {
+        "dept": "production_designer",
+        "target": "World bible PROP-01 ST4 and the assumption 'Props drain the cone before the D01-B4a take'",
+        "note": "Replace 'Props drain the cone before the take, so nothing else drips' with the treatment's spec. Props drain until drips slow to about one a second, and the take rolls so the lift comes 0.5-0.8 s after the last drip. At prelight, test that the drop falls in 7.17-7.42 s in at least one take in three, with no second drop during the carry. As written, the bible contradicts the script's last drip."
+       },
+       {
+        "dept": "production_designer",
+        "target": "LOC-01 spatial_layout rule 'Any frame that shows y < 185 needs FAUCET-01 built'",
+        "note": "SH02A's bottom-right corner now reaches about 7 cm into the dry sink, while FAUCET-01 stays out of frame. Either rewrite the rule as 'any frame that shows FAUCET-01's position at 254/155 needs it built' and confirm SH02A passes, or build FAUCET-01. Decide before the SH02A plate is locked."
+       },
+       {
+        "dept": "casting_director",
+        "target": "NORA visual_identity_anchors (skin line) and the blocker 'Rights for a generated NORA'",
+        "note": "Change 'These words go with the hex codes into the hand-double call and every prompt' to 'The words go into prompts; the hex codes go only into the hand-double call and the acceptance checks.' Every NORA frame is now a practical plate (0 generation units), so rewrite the generated-NORA blocker to apply only if a generated fallback is ever planned. As it stands it names a rights path the package no longer uses."
+       },
+       {
+        "dept": "stylist",
+        "target": "NORA_L01 continuity_locks and the assumption that the hand per beat is unknown",
+        "note": "Replace 'I don't know which hand appears in D01-B1, B2, B4a and B4b' with the treatment's hand map: R in SH01, SH02A, SH02B, SH04 and SH05; L on the kettle in SH07. Order check-and-reapply to match: the mole check before each R setup, and the scar check before SH07."
+       },
+       {
+        "dept": "storyboard_artist",
+        "target": "SH02A-SH05 sound_cues; contradictions_flagged",
+        "note": "Once the sound, cinematographer and director changes above are in, rewrite each sound_cues line with in-shot frames that match the picture and drop the '(see SYNC)' tags. Close SYNC, CARD 7:05, RING NAME and B6 ALT RATE. If the director keeps 18f, re-board SH02A and SH02B to 18f and 54f with the click at f68."
+       },
+       {
+        "dept": "generation_supervisor",
+        "target": "SH05-PLT prompt and acceptance checks",
+        "note": "Replace 'The coffee is flat again by about 1.25 seconds' and 'flat by about 1.25 s' with the conformed timing: the rattle stops at 1.0 s and the rings are flattening as the card comes up at 1.0 s. Add a check that nothing in the card zone competes with the rings at 1.0 s. Retime SH02A-PLT and SH02B-PLT if the director keeps 18f."
+       }
+      ]
+     }
+    ]
+   },
+   "departments": [
+    {
+     "key": "strategy",
+     "label": "Strategy",
+     "grade": "not graded",
+     "lowest": null,
+     "rounds": 0,
+     "failed_checks": [],
+     "notes": []
+    },
+    {
+     "key": "concepts",
+     "label": "Routes",
+     "grade": "not graded",
+     "lowest": null,
+     "rounds": 0,
+     "failed_checks": [],
+     "notes": []
+    },
+    {
+     "key": "script",
+     "label": "Script",
+     "grade": "A",
+     "lowest": 8,
+     "rounds": 2,
+     "failed_checks": [],
+     "notes": []
+    },
+    {
+     "key": "casting_bible",
+     "label": "Cast",
+     "grade": "A",
+     "lowest": 8,
+     "rounds": 2,
+     "failed_checks": [],
+     "notes": []
+    },
+    {
+     "key": "world_bible",
+     "label": "World",
+     "grade": "A",
+     "lowest": 8,
+     "rounds": 2,
+     "failed_checks": [],
+     "notes": []
+    },
+    {
+     "key": "directors_treatment",
+     "label": "Director's treatment",
+     "grade": "A",
+     "lowest": 8,
+     "rounds": 2,
+     "failed_checks": [],
+     "notes": []
+    },
+    {
+     "key": "style_bible",
+     "label": "Looks",
+     "grade": "A",
+     "lowest": 8,
+     "rounds": 1,
+     "failed_checks": [],
+     "notes": []
+    },
+    {
+     "key": "sound_plan",
+     "label": "Sound",
+     "grade": "A",
+     "lowest": 8,
+     "rounds": 1,
+     "failed_checks": [],
+     "notes": []
+    },
+    {
+     "key": "camera_plan",
+     "label": "Shot plan",
+     "grade": "A",
+     "lowest": 8,
+     "rounds": 2,
+     "failed_checks": [],
+     "notes": []
+    },
+    {
+     "key": "storyboard",
+     "label": "Storyboard",
+     "grade": "A",
+     "lowest": 8,
+     "rounds": 1,
+     "failed_checks": [],
+     "notes": []
+    },
+    {
+     "key": "generation_plan",
+     "label": "Generation plan",
+     "grade": "A",
+     "lowest": 8,
+     "rounds": 1,
+     "failed_checks": [],
+     "notes": []
+    }
+   ],
+   "direction": [],
+   "script": [
+    {
+     "deliverable_id": "D01",
+     "duration_s": 15,
+     "idea_in_one_line": "At 7:00 the phone goes face-down and the dripper comes up. The next buzz reaches her coffee but not her, and nobody gets her until 7:05.",
+     "cta": "Shop the Solace dripper. (Paid, primary: the platform's Shop Now button carries the DTC product-page link. Organic alternate card: 'Shop the Solace dripper. Link in bio.')",
+     "beats": [
+      {
+       "t": "0–1.5s",
+       "picture": "HOOK. A phone lies face-up on an oak counter with a chipped white mug right beside it. The lock screen lights: 7:00 in large readable digits, with one generic notification banner beneath it, its text too small to read. It buzzes. At about 0.8s NORA's hand comes in. The hand doesn't slow: it flips the phone in passing, the phone's edge lands against the mug, and the hand carries straight on right, toward the rack.",
+       "sound": "One phone buzz rattling on the counter, then the soft knock of the case landing on wood. Then silence.",
+       "vo": "",
+       "text": ""
+      },
+      {
+       "t": "1.5–4.5s",
+       "picture": "Two angles. First angle: the same hand lifts the Solace dripper out of the dish rack. As the hand closes on it, the thumb passes over the glaze pooled unevenly at its foot without stopping, the mark B5 later turns to the lens. The hand sets off low and level. Cut mid-carry: the dripper comes in right to left and seats with a click on the chipped white mug, which still touches the face-down phone's edge. The hand lets go and stays clear of the phone. B2 ends on the empty dripper sitting on the mug. The card sits clear of the dripper in both angles.",
+       "sound": "A faint knock as the dripper leaves the dish rack; room tone across the cut; stoneware clicking onto the mug rim.",
+       "vo": "",
+       "text": "Nobody gets you before the pour."
+      },
+      {
+       "t": "4.5–7s",
+       "picture": "Cut to grounds already heaped in a pressed paper filter inside the Solace dripper. A gooseneck spout comes in from frame left and pours a slow spiral onto them. The grounds swell, bubble and dome up against the paper. Hold on the bloom to the end of the beat.",
+       "sound": "A thin stream of water on wet grounds; the soft fizz of the bloom. No music.",
+       "vo": "",
+       "text": ""
+      },
+      {
+       "t": "7–8.5s",
+       "picture": "NORA's hand lifts the Solace dripper off the chipped mug, and a last drip falls from its tip into the coffee. The hand sets the dripper down on the oak counter just past the mug, on the side away from the phone, so the three sit in a line: phone, mug, dripper. The coffee's surface is now open to the lens.",
+       "sound": "A last drip plinking into the coffee; stoneware set down on wood.",
+       "vo": "",
+       "text": ""
+      },
+      {
+       "t": "8.5–11.5s",
+       "picture": "Phone, mug and dripper in a line on the oak counter. NORA's fingertips rest along the chipped mug's side below the rim, palm clear, the heel of her hand on the counter. The mug touches the face-down phone's edge. The Solace dripper stands just past the mug, on the side away from the phone, in frame for the whole beat. The phone rattles against the wood and the coffee shivers into fine rings. About 1.0s in, the rattle stops, the rings flatten, and her hand stays where it is. The card comes up at 9.5s as the rings flatten, holds to 11.5s, and sits clear of the dripper.",
+       "sound": "One phone buzz, about 1.0s long, rattling against the wood and ticking against the mug, left unanswered. It stops. Room tone.",
+       "vo": "",
+       "text": "Everyone else gets you at 7:05."
+      },
+      {
+       "t": "11.5–13s",
+       "picture": "Moments later the mug and hand are gone. The Solace dripper stands empty on the oak counter with its filter out. The glaze pooled unevenly at its foot, the mark her thumb crossed in B2, faces the lens. At the frame edge, clear of the dripper, the phone lies face-down and dark. The whole product is in frame and legible.",
+       "sound": "Room tone; off screen, the kettle ticking as it cools.",
+       "vo": "",
+       "text": "Hand-glazed stoneware. [sign-off] Solace"
+      },
+      {
+       "t": "13–15s",
+       "picture": "The B5 frame, held. The empty Solace dripper stands on the oak counter with the glaze pooled at its foot facing the lens, and the phone lies face-down and dark at the frame edge. The whole product is legible. Nothing in frame moves.",
+       "sound": "Room tone and the kettle ticking as it cools, to the last frame. No music, no sting.",
+       "vo": "",
+       "text": "Shop the Solace dripper. [sign-off] Solace"
+      }
+     ]
+    }
+   ],
+   "cast": [
+    {
+     "id": "NORA",
+     "role": "Principal and the only person on screen. She appears as hands and forearms only, seen in D01-B1, B2, B4a, B4b and D02-1. B3 shows only the spout. The script sets her name and gender. Habit: every weekday at 7:00 she makes the pour before anyone else gets any of her. Backstory, not a lock: she keeps her lists on paper rather than in the phone, which gives her a writer's callus on the right middle finger. It adds no prop, scene or copy. Playable objective: get the coffee poured and her fingertips on the mug while the phone gets nothing back from her. Age: playing 33-39, target 36. This is a choice, not a story need. It sits inside the 25-40 audience, it is old enough for the habit to look long-standing, and it reads in the creased knuckles. Heritage: not specified. The skin value is the casting choice, and a hand double is matched on the anchors, not on heritage. Defaults broken: the category's default hand is late-20s, pale and slim, with a gloss manicure and stacked gold rings on a linen cuff. The generator's stock hand is long, tapered, poreless and light-skinned. I break both because 'Hands before faces' only works if the hand isn't stock. A stock hand also drifts toward the generic luxury imagery the brief rules out.",
+     "presence": "One-frame read: a broad, square hand in its mid-thirties, with medium-deep skin, a warm undertone (#6F4A34), creased knuckles and short bare nails. Two raised veins run from the wrist across the back of each hand. They are age texture and are not locked, because heat and hand height change them. The hand flips the buzzing phone face-down in passing, without looking, and is already moving on toward the rack. The hand never searches or hovers: it lands on an object, takes it and lets go. It lifts the dripper out of the rack the way it would lift a mug it uses every day, and the thumb crosses the pooled glaze at the foot without stopping. During the pour the forearm stays still and only the wrist circles. Between actions the hand stops completely: it lies flat and doesn't tap. On the mug, the fingertips touch it without gripping it, and they stay there. Conclusion earned: this hand has done this every morning for years."
+    }
+   ],
+   "open_questions": [
+    "Rights or production decision needed: The product's whole appearance is invented. World bible PROP-01: 'Shape and size ASSUMED from ceramic size-02 cones (no verified dimensions, colour or finish)'. The handle-less cone, cream glaze, speck, rim band, raw foot and foot glaze pool are all ASSUMED. B5/B6 and D02-2 use the pool as visual proof of 'Hand-glazed stoneware', and the PROP-07 ring is cut to the assumed 10.0 cm foot. Casting's grip constraint needs a rim of at least 10.5 cm, and the rim size is unverified. KIT-PROP01-SAMPLE: 'This reference does not exist yet.' No product frame can be shot or generated, and the DTC still cannot be checked. Question for Lucas: when can Solace supply one or two production units (two if hand plates are practical), with dimensions, sizes sold, glaze colourway and foot finish?",
+    "Rights or production decision needed: A real person's hands play NORA on paid social and the DTC page, and there is no signed release. Director blocker: 'Hand-talent release... Status: pending, not cleared. No hand plate is shot until it is signed.' Camera plan blocker 6 and generation plan blocker 2 say the same. The scope must also cover using the plates as a generation reference (SH02 fallback). Question for Lucas: approve the release scope (media, term, territory, reference use) and book the double?",
+    "Rights or production decision needed: world_bible PROP-01 says 'Shape and size are ASSUMED ... no dimensions, colour or finish were supplied'. The cream glaze, speck, rim band, the uneven foot pool and the raw foot band are all invented. The script uses the thumb crossing that pool as the in-use proof of the verified fact (B2 decision). SH06 and SH08 are lit around the pool's upper fillet, and the textless D02-2 doubles as the DTC product image. Generation plan: 'REF-PROP01-SAMPLE@v1 does not exist.' If the real unit differs, the spot and the DTC image show a feature or colour the product does not have, which is a visual claim outside the verified facts. Fix: get a brand-confirmed production sample and views V1-V8 before any product plate. Then re-pick the B2/B5/B6/D02-2 mark if needed, re-run the contrast checks, and re-plan the SH02B seat and the casting rim-diameter check.",
+    "creative_director: Route departure: R1 asks for a 'handheld-but-steady camera', and the camera plan locks off every shot (its blocker 7), with reasons that hold up: the '7:00' composite, a stable 100mm pour, and the S3-S4 registration. Do you approve the locked grammar, or do you want handheld at least in S1, at the cost of a tracked '7:00' composite?",
+    "creative_director: Distinctiveness at the idea level: a phone turned face-down for a quiet morning sits close to digital-wellbeing category work. What sets it apart is the '7:00 / 7:05' bookend and the phone left behind in the packshot. The only product-specific detail, the uneven glaze pool, is unverified and small on screen. Is '7:05' enough of an edge, or do you want the route to include one beat only this dripper could own?",
+    "creative_director: Legal read: are '7:00', '7:05' and 'Five minutes, on purpose.' acceptable as framing of the key message rather than a brew-time claim? If not, should the script's fallbacks be used ('Everyone else can have you later.' and 'On purpose.')?",
+    "creative_director: Should the $38 price go on the D01 end card or the D02-2 subline? It is a brief fact, not a verified product fact, so the client decides.",
+    "creative_director: Is the media plan paid, organic or both? That decides whether the CTA stays 'Link in bio' or uses the platform's 'Shop now' button pointing to the DTC product page.",
+    "creative_director: Producer: a production unit and the brand's confirmation of its shape, size, rim diameter, glaze colour and foot finish are needed before any product plate is shot. If the real unit shows no uneven glaze pool, which detail do you approve as the visual proof of 'Hand-glazed stoneware' and the swap-test detail?",
+    "creative_director: Producer: rights and consents still to clear, all currently pending. The hand-double release, including any use of the plates as generator references. The location release and the recordist's and foley artist's assignments for the recorded sound. The commissioned lock-screen art. A spend ceiling for the SH02 generated fallback, if it is ever triggered.",
+    "film_director: Lucas: do you approve the all-locked-off camera grammar as a departure from R1's 'handheld-but-steady camera'? The SH01 composite and the SH05-SH06 registration depend on it.",
+    "film_director: Lucas: do you approve cutting the route's window-and-mug beat and replacing it with the B4b face-down edge glow and the 7:05 card?",
+    "film_director: Producer/client: when will two brand-confirmed production units arrive, with rim diameter, height, glaze colourway, foot finish and any maker's mark? No product plate or packshot can be shot next week without them.",
+    "film_director: Producer: the hand-double release (including use as a generator reference), the location release, the foley and recordist assignments and the lock-screen art are all still pending. Is the shoot date contingent on clearing them first?",
+    "film_director: Client/legal: do 'Everyone else gets you at 7:05.' and 'Five minutes, on purpose.' read as brew-time claims, or should we use the script's fallback lines?",
+    "film_director: Client: can you confirm the product name 'the Solace dripper' for the cards and CTA, and whether the $38 price goes on the end card or on still 2?",
+    "film_director: Producer/media: is D01 running organic ('Link in bio') or paid (a platform Shop button to the product page)? The end card is locked to one or the other.",
+    "film_director: Lucas: what is the spend ceiling, if any, for the SH02 generated fallback, given that no unit price has been supplied?",
+    "client: Route R1 asks for a 'handheld-but-steady camera', and every shot is locked off (camera plan blocker 7). Do you approve the locked grammar?",
+    "client: The generation plan now puts every shot on practical plates, with a hand double, a real kitchen location and a foley session, at 0 generation units. Is a fully practical shoot the intended way to make this, what is the budget, and what spend ceiling do you approve for the SH02 generated fallback?",
+    "client: When can Solace supply a production unit and brand-confirmed reference (name 'the Solace dripper', rim diameter, glaze colour, foot finish, any stamp)? Every product frame, the hand-scale spec and the 'hand-glazed' proof shot depend on it.",
+    "client: Should the $38 price (a brief fact, not a verified product fact) appear on the D01 end card or the D02-2 subline to support add-to-carts?",
+    "client: Is placement organic ('Link in bio') or paid (platform 'Shop now' button)? Please confirm the CTA copy to lock.",
+    "client: Does legal accept '7:00', '7:05' and 'Five minutes, on purpose.' as ritual framing rather than a brew-time claim, or do we use the copywriter's fallbacks?",
+    "client: The brand is first named at 12.5 s and no mark appears anywhere. Do you accept that, or do you want 'Solace' or a wordmark earlier in the spot?",
+    "client: The phone-face-down hook is a familiar category device. Are you comfortable that the 7:00/7:05 bookend and the dripper-as-boundary execution make it ours, or do you want the route pushed further?",
+    "client: What numeric baseline and targets (CTR, add-to-cart rate) should gate success? The strategy left them unset.",
+    "client: Rights to clear: the hand-double release (scope, term, territory, use as a generator reference), the location release, foley and recordist assignments, and any AI-content labelling. The producer needs to clear these before the fitting.",
+    "creative_director: Route camera: every shot is locked off, against R1's 'handheld-but-steady camera'. The '7:00' composite, the SH04-SH05 single take and both same-axis cut-ins depend on the lock. Do you approve the locked grammar, or should S1 go handheld at the cost of a tracked composite?",
+    "creative_director: Route light: SH08 (the D02-2 DTC image) is lit neutral so the glaze reads true, against R1's 'warm low window light', and it sits beside a warm SH07. Do you approve a neutral DTC still, or should it be shot both ways so you can choose on the plates?",
+    "creative_director: Production mode and budget: the package now commits every shot to practical plates, with a studio-built kitchen, a hand double, a foley session and pre-shoot ring, glow and read tests. Generation is only a conditional SH02A fallback. Is that the scope and budget you want for one 15 s spot and two stills, or should parts be re-scoped for generation?",
+    "creative_director: The script drops the route's window-and-mug shot on purpose, citing the taste notes, and replaces it with the second buzz and the coffee rings. Do you confirm that departure from R1's execution example?",
+    "creative_director: The face-down phone is a familiar gesture in digital-wellbeing work. Do the coffee rings and the 7:00-to-7:05 cards give you enough ownership, or should the product's role be pushed further so a generic ceramic cone couldn't stand in for it?",
+    "creative_director: Product: the name 'Solace dripper' and its whole look (shape, glaze, foot pool, raw foot, rim size) are assumed. When will the client supply a production sample and confirm the name? And do you want a wordmark in the B6 frame, given the brand only appears as text from 12.5 s?",
+    "creative_director: Price: $38 is a brief fact, but it is kept off screen. Should it go on the B6 CTA card or the D02-2 subline to support add-to-carts?",
+    "creative_director: D02 placement: will the two stills run as a paired carousel (D02-1 first) or as standalone units? If standalone, does 'Everyone else gets you at 7:05.' over a lone dripper hold up without the phone?",
+    "creative_director: Legal and claims: should '7:00' and '7:05' be cleared as dramatising the brief's key message rather than as a brew-time claim, with the fallback 'Everyone else can have you later.' held in reserve?",
+    "creative_director: Rights and budget for the producer and you: scope of the hand-double release (including use as a generation reference), foley and recordist assignments in perpetuity, the location release for room tone, the generic lock-screen art, and a dollar ceiling plus a 720p-versus-upscale decision for the SH02A fallback. None of these is cleared yet.",
+    "film_director: Route camera: every shot is locked off, but R1 asks for a 'handheld-but-steady camera'. The SH01 composite, the SH04-SH05 single take and both cut-ins depend on the lock. Do you approve the locked grammar?",
+    "film_director: Route light: SH08, the DTC still, is lit neutral so the glaze reads true, and it sits next to a warm SH07. Do you approve the neutral still, or should the cinematographer shoot SH08 both neutral and warm so you can choose on the plates?",
+    "film_director: The script deliberately cuts R1's execution-example beat (window, mug in both hands) and replaces it with the rings under a still hand. Do you approve that change to your route?",
+    "film_director: Product: every product frame, hex value, contrast figure and swap-test detail rests on an ASSUMED unit. Can Solace deliver a production dripper (two if the hand plates are shot practical) with its rim diameter, height and glaze, before next week's prelight? And is 'the Solace dripper' the confirmed product name for the CTA and the still sublines?",
+    "film_director: Rights for the producer to clear, none of which are cleared yet: the hand-double release (paid social, DTC page, stills, reference use); recording assignments for the foley and room tone, plus a location release; commissioning of the generic '7:00' lock-screen art. Can all of these be signed before the shoot?",
+    "film_director: Legal: will '7:00' and '7:05' be read as a brew-time claim? If yes, 'Everyone else can have you later.' replaces both the B4b card and the D02-2 headline.",
+    "film_director: Schedule and build: the style bible needs a 7-day no-manicure window and a 48 h patch test, and the prelight must run the '7:00' read, ring, glow, pool-read and bloom tests on the real unit. Given that, is a shoot next week holdable? Do you approve a counter-run-only studio build, or do you prefer a real kitchen location?",
+    "film_director: Budget: I've replaced the generated SH02A fallback with a pickup. Will you hold a pickup slot for SH02A in the schedule?",
+    "film_director: Commercial: should the $38 price go on the end card or the still 2 subline? Is placement organic ('Link in bio') or paid (the platform's 'Shop now' button)?",
+    "client: When will Solace supply a production sample and its specs (height, rim diameter, sizes sold, glaze colourway, foot finish, any stamp)? Every product frame, the DTC still and the 'hand-glazed' pool demonstration rest on an invented PROP-01, and nothing can be shot until it arrives.",
+    "client: Is 'the Solace dripper' the approved product name for the CTA and the still sublines?",
+    "client: Should the $38 price go on the B6 card or the D02-2 subline to support add-to-cart, or stay off screen as the script defaults?",
+    "client: Do you approve the locked-off camera throughout, against R1's 'handheld-but-steady camera'? And the neutral-balanced SH08 DTC still, against R1's warm window light? Or should the cinematographer shoot a warm SH08 alternate so you can choose on the plates?",
+    "client: What is the media plan: organic, paid or both? Do the two 4:5 stills run as a carousel pair or as separate placements? Run alone, D02-2's 'Everyone else gets you at 7:05.' has no 7:00 setup.",
+    "client: Will legal read '7:00'/'7:05' as a brew-time claim, or the uneven glaze pool as a demonstration of 'hand-glazed'? Do you pre-approve the fallback line 'Everyone else can have you later.'?",
+    "client: The strategy states 'manual pour-over brewing requires the user's continuous attention for several minutes' as a 'category fact'. It also says 'each piece carries visible handmade variation... one-of-a-kind quality' and 'made with care in limited runs'. All three go beyond the verified facts. Should they be relabelled as hypotheses or cut before the strategy is shared?",
+    "client: Is the production scale approved for a 15 s spot plus two stills for a $38 product: a full studio kitchen build, a hand double with prosthetic mole and callus, a foley session and a translight? Or should the producer price a real-apartment location as an alternative?",
+    "client: Who clears, and by when: the hand-double release (including any generation-reference use), the WIN-01 translight, the '7:00' lock-screen art, prop clearances and the foley/room-tone assignments? And what dollar ceiling, and is 720p acceptable, for the conditional SH02A generation fallback?",
+    "creative_director: Camera grammar: the camera plan locks every shot, against R1's 'handheld-but-steady camera'. The '7:00' composite, the SH04-SH05 single take and both same-axis cut-ins depend on the lock. Do you approve the locked grammar, or want handheld for S1 only at the cost of a tracked lock-screen composite?",
+    "creative_director: SH08 / D02-2: it is balanced neutral (5000K key on 5000K WB) so the DTC image shows the glaze true, against R1's 'warm low window light' and next to a warm D02-1. Approve the neutral plate, or shoot it both ways and choose on the plates?",
+    "creative_director: Price: the objective is add-to-carts, and $38 is a brief fact, not a performance claim, but the script keeps it off screen pending client approval. Should $38 go on the B6 end card and/or the D02-2 subline?",
+    "creative_director: Product: every product frame, the swap-test detail and the DTC image rest on an assumed look (handle-less cone, cream glaze, foot pool, raw foot, no exterior mark, 11.5 cm rim). When can the producer get a brand-confirmed production sample, plus confirmation of the name 'the Solace dripper' and a logo lockup (the sign-off is type only for now)?",
+    "creative_director: Claims: will legal read '7:00' to '7:05' as a dramatisation of the brief's own 'five-minute ritual', not a brew-time claim? The script already has fallbacks ('Everyone else can have you later.' / 'Out for the pour. Back after.').",
+    "creative_director: Production model: the generation plan is fully practical (0 generation units): a built studio kitchen, a hand double with a left-handed pour, foley and room-tone sessions, and prelight ring, bloom, drip and glow tests. Is that the budget and model you want for this job, or do you want a generated path planned and priced for comparison?",
+    "creative_director: Rights for the producer to clear (all named and pending, none cleared): the hand-double release (scope, term, territory), foley artist and recordist assignments, the location release for the room-tone kitchen, the lock-screen art (ART-LOCK-0700), and prop clearance for the kettle and mug. Who owns the timeline so no plate is shot before signature?",
+    "creative_director: Strategy: proof point 4 ('manual pour-over brewing requires the user's continuous attention for several minutes') is framed as a 'category fact' but isn't sourced or verified. Should it be relabelled a hypothesis, as the brief's rules require? It never reaches copy.",
+    "film_director: Route camera: do you approve locking off every shot, against R1's 'handheld-but-steady'? The SH01 composite, the SH04-SH05 take and both same-axis cut-ins depend on it (camera plan blocker 5).",
+    "film_director: Route light: do you approve the neutral-balanced SH08 DTC still, against R1's warm window light, or should it be shot both ways so you can choose on the plates?",
+    "film_director: Product: when will the client deliver a production unit (dimensions, glaze, foot, handle, and confirmation of the name 'Solace dripper')? SH02A-SH08 cannot be locked without it. If the real unit has no uneven glaze pool at the foot, do you accept losing the thumb pass that demonstrates 'hand-glazed', and what should replace it?",
+    "film_director: Build vs location: for a small crew shooting next week, can the budget and schedule carry the studio build (counter run, backsplash, three full-height flats and a ceiling), or should we shoot a real apartment kitchen? Sound already wants a real kitchen for room tone.",
+    "film_director: Rights to clear before the fitting (producer): the hand-double release (scope, term, territory, and whether it covers reference use), the foley artist and recordist assignments, the location release for the room-tone recording, and the ART-LOCK-0700 lock-screen art. Which term and territory does the media plan set?",
+    "film_director: Price: should the $38 appear on the stills or the end card? It is a brief fact, not a verified product claim, and the objective is add-to-cart.",
+    "film_director: Legal: are '7:00' and '7:05' cleared as dramatisation, or do we run the no-clock alternates ('Everyone else can have you later.' / 'Out for the pour. Back after.')?",
+    "film_director: No music on a paid social spot: do you accept that for performance, given muted autoplay, or do you want a music-under version as an alternate for testing?",
+    "film_director: Do you accept the script's declared cut of the route's window-and-mug shot, replaced by the second buzz and the coffee rings?",
+    "film_director: Strategy: one proof point says 'each piece carries visible handmade variation ... one-of-a-kind', which goes beyond the verified 'hand-glazed stoneware'. Should it be struck so it can't carry into copy or the swap-test logic?",
+    "client: Product sample: will Solace supply a production unit, and confirm its glaze, foot finish, rim diameter and any underside stamp, before any product plate is shot? If the real unit has no uneven glaze pool, do we accept rebuilding the B2 thumb beat, the B5-B6 hero and the DTC still around a different mark?",
+    "client: Route departures: do you approve locked camera throughout instead of R1's 'handheld-but-steady'? Do you approve a neutral-balanced SH08 DTC still instead of warm window light, or should it be shot both ways so you can choose on the plates? The script has already cut the route's window-and-mug shot.",
+    "client: Price: should the $38 (a brief fact, not a verified product claim) appear anywhere: on D02-2, the organic sublines, or only on the product page? The objective is add-to-carts.",
+    "client: Product name: is 'the Solace dripper' the actual product name for the end card, the sublines and the CTA, or does the SKU have its own name?",
+    "client: Legal read: are '7:00', 'Everyone else gets you at 7:05.' and 'Out from 7:00. Back at 7:05.' cleared as dramatising the brief's 'five-minute ritual' and not a brew-time claim? And is 'Hand-glazed, and it still goes in the dishwasher.' cleared as a restatement of 'dishwasher safe'?",
+    "client: Brand attribution: do you accept 'Solace' appearing only as a small type sign-off from 11.5 s, relying on the paid unit's page handle for recognition? Or will the brand supply a logo lockup and want the brand present earlier?",
+    "client: Rights and scope: who signs the hand-double release, the location release for room tone, and the foley and recordist assignments, and for what term and territory? The package assumes a US market and leaves term to 'match the media plan'.",
+    "client: Strategy: proof point 4 ('manual pour-over brewing requires the user's continuous attention for several minutes') and proof point 1's comparison ('that a mass-produced plastic or metal drip gadget cannot claim') go beyond the three verified facts. Should they be relabelled as hypotheses or removed from the strategy?",
+    "client: Success targets: what baseline CTR and add-to-cart numbers, and what targets, should this campaign be judged against? The strategy leaves them unset.",
+    "client: Budget: the world bible specifies a full studio build (counter run, backsplash, full-height flats on three walls, a ceiling) plus prelight tests. Is that the approved spend for one 15 s spot and two stills, or should production price a real kitchen location against it?",
+    "Storyboard: Route camera: every shot is locked off (camera plan blocker 5), against route R1's 'handheld-but-steady camera'. The departure is not approved. (Lucas approves the locked grammar before the shoot, or the camera plan is redone handheld-but-steady and the board with it.)",
+    "Storyboard: Route light: SH08 (D02-2) is balanced neutral (a 5000K key on a 5000K WB), against route R1's 'warm low window light', and it pairs with a warm SH07. The departure is not approved. (Lucas approves the neutral DTC still, or the cinematographer also shoots SH08 warm and Lucas chooses on the plates.)",
+    "Generation plan: ROUTE CAMERA: every shot is locked, against R1's handheld-but-steady camera. The SH01 composite, the SH04-SH05 single take and both cut-ins depend on the lock. (Approve the locked grammar before the shoot, or have the cinematographer re-plan handheld, after which the board and these jobs are redone.)",
+    "Generation plan: ROUTE LIGHT: SH08 is lit neutral, against R1's warm window light. This holds SH08-STL. (Approve the neutral DTC still, or have the cinematographer also shoot SH08 warm so you can choose on the plates.)"
+   ],
+   "blocked_reason": null,
+   "stale": [],
+   "open_issues": [],
+   "next": null,
+   "caveat": null,
+   "earlier_questions": [],
+   "review_items": [
+    {
+     "artifact_id": "brief-001",
+     "revision": 1,
+     "kind": "brief"
+    },
+    {
+     "artifact_id": "strategy-002",
+     "revision": 1,
+     "kind": "strategy"
+    },
+    {
+     "artifact_id": "concept_options-003",
+     "revision": 1,
+     "kind": "concept_options"
+    },
+    {
+     "artifact_id": "script-025",
+     "revision": 3,
+     "kind": "script"
+    },
+    {
+     "artifact_id": "casting_bible-026",
+     "revision": 3,
+     "kind": "casting_bible"
+    },
+    {
+     "artifact_id": "world_bible-027",
+     "revision": 3,
+     "kind": "world_bible"
+    },
+    {
+     "artifact_id": "directors_treatment-030",
+     "revision": 3,
+     "kind": "directors_treatment"
+    },
+    {
+     "artifact_id": "style_bible-028",
+     "revision": 3,
+     "kind": "style_bible"
+    },
+    {
+     "artifact_id": "sound_plan-029",
+     "revision": 3,
+     "kind": "sound_plan"
+    },
+    {
+     "artifact_id": "camera_plan-032",
+     "revision": 4,
+     "kind": "camera_plan"
+    },
+    {
+     "artifact_id": "storyboard-033",
+     "revision": 3,
+     "kind": "storyboard"
+    },
+    {
+     "artifact_id": "continuity_bible-034",
+     "revision": 3,
+     "kind": "continuity_bible"
+    },
+    {
+     "artifact_id": "generation_plan-035",
+     "revision": 3,
+     "kind": "generation_plan"
+    },
+    {
+     "artifact_id": "quality_reports-036",
+     "revision": 1,
+     "kind": "quality_reports"
+    }
+   ],
+   "package_file": "projects/quiet-mornings/package.md"
+  }
+ }
+]
