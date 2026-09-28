@@ -173,8 +173,15 @@ every project, the stage it has reached, what is waiting on Lucas and since when
 grades and his bars, the package panel, and how many agents are working now.
 `tools/studio-feed.mjs` writes it (`node tools/studio-feed.mjs --out <file> [--projects <dir>]
 [--run <run snapshot>]`), reading each project's `state.json` and `.live-run`; `test-` and `zz-`
-projects are never listed. A project reads as building while its run's journal has changed in the
-last 45 minutes, and paused when a run stopped without finishing.
+projects are never listed. A project reads as building while anything in its run's journal folder
+(the journal, or an agent's transcript, which is written during a long call) has changed in the
+last 45 minutes, and paused when a run stopped without finishing. With two builds at once, the one
+on the floor is the one building. Agents working are counted from the floor's run snapshot, so they
+are `null` (unknown) for a build the floor isn't following. Each department row has a state (done,
+blocked on Lucas's answers, review unfinished, out of date, or not built). A gate's waiting time
+comes from when its state was saved; after a fresh checkout, a state file git reports unchanged
+is dated by its last commit, not the checkout. When the two documents disagree, the page believes
+the newer one, and it draws a build as working only while the document showing it is fresh.
 
 Below it is the floor, one room per department that lights up while its agent works.
 `tools/live-feed.mjs` turns the running workflow's journal into a snapshot of each department's
@@ -193,6 +200,8 @@ decisions still happen on the Approval Desk.
   saved state split into part scripts.
 - `node tests/live-feed.test.mjs`: the live feed against synthetic journals (kept versions,
   bars, resumed runs).
-- `node tests/studio-feed.test.mjs`: the studio overview against a scratch projects folder
-  (each status, grades and bars, hidden test projects, a corrupt state, the agents working).
+- `node tests/studio-feed.test.mjs`: the studio overview against scratch projects folders
+  (each status, grades, department states and bars, hidden test projects, a corrupt state, the
+  agents working, long calls, two builds at once, a build that just finished, questions as the
+  desk counts them, paid media unlocking, times after a git checkout, the atomic write).
 - `tests/results/`: records of the real runs.

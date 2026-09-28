@@ -10,19 +10,33 @@
 // one with only an idea.json is listed too, so its first build shows while it runs); folders whose
 // names start with "test-", "zz-" or "." are never listed or opened. --run is the run snapshot
 // tools/live-feed.mjs wrote for the live floor: its project is the floor's project, and when that
-// project is building, its running calls are the agents working now.
+// project is building, its running calls are the agents working now. When a build is running but
+// the run snapshot isn't for it, the tool can't count its agents: agents_working is then null.
 //
 // A project's status, first match wins:
-//   building     its .live-run is unfinished and its newest journal changed in the last 45 minutes
-//   paused       its .live-run is unfinished but the journal has been quiet longer than that
+//   building     its .live-run is unfinished and something in its run's journal folders changed in
+//                the last 45 minutes (the journal is written when a call starts or returns; the
+//                agents' transcripts beside it are written while a call runs, so a long call counts)
+//   paused       its .live-run is unfinished but those folders have been quiet longer than that
 //   blocked      it stopped on something only Lucas can unblock (questions it can't build past,
 //                a package gate with stale work, an idea that couldn't be developed)
 //   waiting      a gate is waiting for Lucas's decision on the Approval Desk
 //   approved     Lucas's package approval was applied
 //   in_progress  anything else (between runs)
+// When two builds run at once, `building` is the floor's project (the run snapshot's) while it is
+// building, so the overview and the floor follow the same build; otherwise the most recently
+// active one.
+//
+// Each department row has a state: done (with its grade), blocked (it needs Lucas's answers),
+// unfinished (its review was paused), stale (out of date, to be rebuilt) or not_built.
+//
+// Times: a gate's `since` and a project's `updated_at` come from when its state was saved. A git
+// checkout (a new session, or a restore after a restart) stamps every file with the checkout time,
+// so a saved file that git reports unchanged is dated no later than the last commit of it.
 // Writes are atomic (a temp file, then a rename). Prints one summary line.
 import fs from 'node:fs'
 import path from 'node:path'
+import { execFileSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { DEPTS, KEY } from './studio-depts.mjs'
 
@@ -66,13 +80,40 @@ if (runFile) {
   if (!isObj(run)) { warn(`couldn't read the run snapshot ${runFile}; going on without it`); run = null }
 }
 
-// The run a project's .live-run points to: whether it finished, and when its journal last changed.
+// When a saved file was written. A file git reports unchanged may have been stamped by a checkout,
+// so it is dated no later than the commit that last changed it. Outside a git repo, or for a file
+// saved here since (modified or untracked), its own time is right. --no-optional-locks keeps git
+// from writing the repo's index while Claude may be using it.
+const git = (cwd, ...a) => { try { return execFileSync('git', ['-C', cwd, '--no-optional-locks', ...a], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }) } catch { return null } }
+function savedAt(file) {
+  const m = mtimeMs(file)
+  if (m == null) return null
+  const dir = path.dirname(file)
+  const name = path.basename(file)
+  const status = git(dir, 'status', '--porcelain', '--', name)
+  if (status === null || status.trim()) return m
+  const committed = Number((git(dir, 'log', '-1', '--format=%ct', '--', name) || '').trim()) * 1000
+  return committed > 0 ? Math.min(m, committed) : m
+}
+
+// The newest file in a run's journal folder: the journal itself, or an agent's transcript, which
+// changes while its call runs.
+function newestIn(dir) {
+  let names
+  try { names = fs.readdirSync(dir) } catch { return null }
+  let t = null
+  for (const n of names) { const m = mtimeMs(path.join(dir, n)); if (m != null && (t == null || m > t)) t = m }
+  return t
+}
+
+// The run a project's .live-run points to: whether it finished, and when its journal folders last
+// changed.
 function liveRun(dir) {
   const f = path.join(dir, '.live-run')
   const p = readJson(f)
   if (!isObj(p)) return null
   const js = Array.isArray(p.journals) ? p.journals : p.journal ? [{ dir: p.journal }] : []
-  const times = js.map(j => (j && j.dir ? mtimeMs(path.join(j.dir, 'journal.jsonl')) : null)).filter(t => t != null)
+  const times = js.map(j => (j && j.dir ? newestIn(j.dir) : null)).filter(t => t != null)
   // A run whose journal can't be found yet counts from when it was pointed to.
   const activeAt = times.length ? Math.max(...times) : mtimeMs(f)
   return { finished: p.finished || null, activeAt }
@@ -94,31 +135,34 @@ function openQuestions(s) {
   return new Set([...(s.needs_human_input || []), ...asked, ...blockers]).size
 }
 
-// Each department's grade from the saved state, with Lucas's bar where he set one. The bar is the
-// latest he gave (direction.json, then the state's settings); whether the work met it is the
-// workflow's own verdict when it reviewed against that bar.
+// Each department's state and grade from the saved state, with Lucas's bar where he set one. The
+// bar is the latest he gave (direction.json, then the state's settings); whether the work met it is
+// the workflow's own verdict when it reviewed against that bar.
 function departments(s, targets) {
   return DEPTS.map(([dept, name]) => {
     const a = s && s.artifacts && s.artifacts[KEY[dept]]
     const q = a && isObj(a.quality) ? a.quality : null
     const target = Number(targets[dept] && targets[dept].min) || (q && q.target) || null
+    let state = 'done'
     let grade = null
     let min = null
     let met = null
-    // Missing, stale (being replaced), blocked or never run: no grade to show.
-    if (a && a.status !== 'stale' && a.status !== 'blocked' && !a.not_run) {
-      if (!q) grade = 'not_graded'
-      else {
-        min = q.min != null ? q.min : null
-        // An unfinished review has no grade yet.
-        if (!q.incomplete && q.grade) grade = q.grade === 'A' ? 'A' : 'below_A'
-        if (target && grade && min != null) {
-          const failed = ((a.checks && a.checks.failed) || []).length > 0
-          met = q.target === target ? !!q.met_target : min >= target && !failed
-        }
+    // Only finished work has a grade. Blocked work waits on Lucas's answers; stale work is out of
+    // date and is rebuilt; an unfinished review keeps the lowest score it had so far.
+    if (!a || a.not_run) state = 'not_built'
+    else if (a.status === 'stale') state = 'stale'
+    else if (a.status === 'blocked') state = 'blocked'
+    else if (q && q.incomplete) { state = 'unfinished'; min = q.min != null ? q.min : null }
+    else if (!q) grade = 'not_graded'
+    else {
+      min = q.min != null ? q.min : null
+      if (q.grade) grade = q.grade === 'A' ? 'A' : 'below_A'
+      if (target && grade && min != null) {
+        const failed = ((a.checks && a.checks.failed) || []).length > 0
+        met = q.target === target ? !!q.met_target : min >= target && !failed
       }
     }
-    return { dept, name, grade, min, target, met_target: met }
+    return { dept, name, state, grade, min, target, met_target: met }
   })
 }
 
@@ -149,7 +193,7 @@ function project(slug) {
   const settings = (s && s.settings) || {}
   const targets = { ...(settings.targets || {}), ...(isObj(saved.targets) ? saved.targets : {}) }
   const directionIds = new Set([...((s && s.direction) || []), ...(Array.isArray(saved.direction) ? saved.direction : [])].map(d => d && d.id).filter(Boolean))
-  const stateAt = s ? mtimeMs(statePath) : mtimeMs(ideaPath)
+  const stateAt = savedAt(s ? statePath : ideaPath)
   const onFloor = run && run.project === slug ? run : null
 
   const artifacts = (s && s.artifacts) || {}
@@ -280,8 +324,15 @@ for (const slug of names) {
 const ORDER = { waiting: 0, blocked: 1, building: 2, paused: 3, in_progress: 4, approved: 5 }
 found.sort((a, b) => ORDER[a.row.status] - ORDER[b.row.status] || String(b.row.updated_at).localeCompare(String(a.row.updated_at)) || a.slug.localeCompare(b.slug))
 const newest = list => list.filter(p => p.activeAt != null).sort((a, b) => b.activeAt - a.activeAt)[0] || null
-const building = newest(found.filter(p => p.row.status === 'building')) || found.find(p => p.row.status === 'building') || null
+const builds = found.filter(p => p.row.status === 'building')
+// The floor's project while it builds, so the overview and the floor follow the same build even
+// when another one runs at the same time (whose journal may have changed a moment later).
+const floorBuild = run && !run.finished ? builds.find(p => p.slug === run.project) : null
+const building = floorBuild || newest(builds) || builds[0] || null
 const floor = run && run.project ? run.project : (newest(found) || {}).slug || null
+// The agents working are the running calls in the floor's run snapshot, so they are only known
+// for the build the floor follows.
+const agents = !building ? 0 : run && run.project === building.slug ? (run.finished ? 0 : Number(run.calls && run.calls.running) || 0) : null
 const rows = found.map(p => p.row)
 const count = st => rows.filter(r => st.includes(r.status)).length
 // Paid media runs only once a generation tool is connected and Lucas sets a spend cap; until a
@@ -292,7 +343,7 @@ const snap = {
   written_at: new Date().toISOString(),
   floor_project: floor,
   building: building ? building.slug : null,
-  agents_working: building && run && run.project === building.slug && !run.finished ? Number(run.calls && run.calls.running) || 0 : 0,
+  agents_working: agents,
   totals: { projects: rows.length, building: count(['building']), waiting_on_you: count(['waiting', 'blocked']), approved: count(['approved']) },
   projects: rows,
   production: {
@@ -310,4 +361,5 @@ const tmp = `${dest}.${process.pid}.tmp`
 fs.writeFileSync(tmp, JSON.stringify(snap))
 fs.renameSync(tmp, dest)
 const t = snap.totals
-console.log(`studio: ${t.projects} project${t.projects === 1 ? '' : 's'}, ${t.building} building, ${t.waiting_on_you} waiting on you, ${t.approved} approved; floor: ${snap.floor_project || 'none'}${snap.building ? `; ${snap.agents_working} agent${snap.agents_working === 1 ? '' : 's'} working on ${snap.building}` : ''}`)
+const working = snap.agents_working == null ? `${snap.building} building (agents unknown: the run snapshot is for another project)` : `${snap.agents_working} agent${snap.agents_working === 1 ? '' : 's'} working on ${snap.building}`
+console.log(`studio: ${t.projects} project${t.projects === 1 ? '' : 's'}, ${t.building} building, ${t.waiting_on_you} waiting on you, ${t.approved} approved; floor: ${snap.floor_project || 'none'}${snap.building ? `; ${working}` : ''}`)
