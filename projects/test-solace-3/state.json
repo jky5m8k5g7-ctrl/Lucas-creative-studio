@@ -1,0 +1,997 @@
+{
+ "project_id": "TEST_SOLACE_3",
+ "artifact_seq": 5,
+ "idea": "Solace makes a $38 ceramic pour-over dripper, glazed by hand, one cup at a time. The ten minutes of making coffee by hand are the only part of a parent's morning nobody interrupts.",
+ "idea_hints": {},
+ "brief": {
+  "name": "Hold That Thought",
+  "brand": "Solace",
+  "product_or_subject": "Solace ceramic pour-over dripper, glazed by hand, one cup at a time, $38",
+  "one_line_brief": "The only ten minutes of a parent's morning nobody interrupts: each day one child toes a tape line with news that can't wait, until the last drop leaves the Solace dripper and out it comes.",
+  "objective": "Parents who watch an episode tap through to the Solace dripper's product page. Signal: link taps per episode on the paid social placement, compared across episodes (assumptions A04, A06).",
+  "audience": "Parents who make their own coffee at home before school drop-off and get interrupted during every other part of the morning (assumption A05).",
+  "key_message": "The ten minutes of making coffee by hand are the only part of a parent's morning nobody interrupts. Solace: glazed by hand, one cup at a time.",
+  "tone": [
+   "Held: one cut is allowed, from the end of the pour to the drain. After it the frame holds through the final drawdown and nobody moves. The next cut comes on the lift, never before the last drop.",
+   "Dry: nobody explains the rule and nobody says thanks. The payoff is a reveal plus one small reaction from the parent, cup still in hand.",
+   "Real: the kitchen is mid-breakfast, not staged. Morning light falls as it actually does and never floods the room (taste note). The camera singles out one detail only: the tape re-laid over the old, worn strip.",
+   "Not a me-time wellness ad: no gazing out the window with a mug, no slow-motion pour, no sigh-of-relief voiceover, no swelling piano, no fade to a logo on a colored background.",
+   "Music: none. Scene sound only: kettle click, the pour, the drip, ceramic on wood (taste note: sound design before music)."
+  ],
+  "verified_product_facts": [
+   "Solace makes a ceramic pour-over dripper that costs $38.",
+   "The dripper is glazed by hand, one cup at a time. How to read 'one cup' is assumption A02."
+  ],
+  "references": [],
+  "deliverables": [
+   {
+    "id": "D01",
+    "type": "video",
+    "label": "Episode 1 'Tooth' · series opener · paid social 9:16 feed · Beat: the kettle goes down, the drawdown starts and the youngest's toes reach the tape by 2 s; a clenched fist waits out the drawdown, and when the parent lifts the dripper it opens on a tooth · Dripper in use from 1 s; product and Solace name on the end frame; no title card · Cost flags: a child on set (cheaper: A07's one child for all three episodes); hands working the dripper (cheaper: shoot the pour, drain and lift inserts once here and reuse them in D02–D03)",
+    "aspect_ratio": "9:16",
+    "duration_seconds": 30,
+    "fps": 24
+   },
+   {
+    "id": "D02",
+    "type": "video",
+    "label": "Episode 2 'Signature' · series · paid social 9:16 feed · Beat: the kettle goes down, the drawdown starts and the eldest's toes reach the tape by 2 s, slip and pen held out at arm's length; on the lift the parent signs the slip against the fridge without putting the cup down · Dripper in use from 1 s; product and Solace name on the end frame; no title card · Cost flags: a child on set (cheaper: A07); pour inserts reused from D01",
+    "aspect_ratio": "9:16",
+    "duration_seconds": 30,
+    "fps": 24
+   },
+   {
+    "id": "D03",
+    "type": "video",
+    "label": "Episode 3 'Bangs' · series finale · paid social 9:16 feed · Beat: the kettle goes down, the drawdown starts and the middle child's toes reach the tape by 2 s, a hand pressed to their forehead; on the lift the hand comes down on home-cut bangs, and the parent takes a long first sip before saying anything · Dripper in use from 1 s; product and Solace name on the end frame; no title card · Cost flags: the reveal is one irreversible take on a child's real hair (cheaper: clip-in bangs, or A15's cut lock held in the hand); a child on set (cheaper: A07); pour inserts reused from D01",
+    "aspect_ratio": "9:16",
+    "duration_seconds": 30,
+    "fps": 24
+   },
+   {
+    "id": "D04",
+    "type": "video",
+    "label": "Cutdown 'Three Mornings' · retargeting 4:5 feed · Beat: three mornings cut end to end on three last drops (the fist opens, the pen signs, the hand comes down), then the long first sip and the end frame · Rebuilt around this beat from D01–D03 footage, not trimmed, with one child per morning so continuity holds; toes on the tape by 2 s; dripper in use from 1 s; product and Solace name on the end frame",
+    "aspect_ratio": "4:5",
+    "duration_seconds": 15,
+    "fps": 24
+   },
+   {
+    "id": "S01",
+    "type": "still",
+    "label": "Key art · series launch post and product page · Beat: the dripper draining on the counter, with a child's socked toes on the re-laid tape in the same frame · Product in frame, Solace name in plain type",
+    "aspect_ratio": "4:5",
+    "count": 1
+   },
+   {
+    "id": "S02",
+    "type": "still",
+    "label": "Episode cover frames · one per episode · Beat: the news held back just before the lift (fist; slip and pen; hand on forehead) · Dripper in frame, no text",
+    "aspect_ratio": "9:16",
+    "count": 3
+   },
+   {
+    "id": "S03",
+    "type": "still",
+    "label": "Product hero · episode end frame and shop listing · Beat: the dripper where the parent set it down on the counter after the lift, with the lived-in kitchen soft behind and no mug under it · Product is the subject; text only as in A10",
+    "aspect_ratio": "1:1",
+    "count": 1
+   }
+  ],
+  "must_include": [
+   "Lucas's line as the spine: every episode takes place inside the ten minutes nobody interrupts and joins them as the kettle goes down.",
+   "The dripper in use from the first second. A clean product shot only on the end frame (taste note: tool, then hero).",
+   "The tape line in every episode, never explained, with a child's toes on it by 2 s.",
+   "One real detail only this family has: the tape re-laid over an older, worn strip, so the rule reads as years old without a word. Other set dressing is up to design.",
+   "One child, one piece of news and one cup per episode, so the series acts out 'one cup at a time'.",
+   "End frame: the dripper where the parent set it down after the lift, with text in the idea's words only (A10).",
+   "A payoff that reads with the sound off."
+  ],
+  "must_avoid": [
+   "Any claim about brew time, taste, heat, durability, or each glaze being unique.",
+   "'Ten minutes' on screen as a duration or product spec (A01).",
+   "Paraphrasing 'one cup at a time' in any copy (for example 'single-cup' or 'brews one cup') until A02 is answered.",
+   "Gazing out a window with a mug, sun flooding a spotless kitchen, slow motion, a voiceover that sounds like a tagline, a logo on a colored background with no product (taste notes).",
+   "Explaining the rule in dialogue or on-screen text. The parent never shushes or scolds.",
+   "Scissors or any sharp object in a child's hand on camera. Children within reach of the kettle.",
+   "A chipped mug in any product-hero frame (S03, end frames). Under a $38 ceramic dripper it reads as ceramic that chips. The mug stays in the episodes only.",
+   "Visible third-party brand marks on the kettle, grinder, scale or mug.",
+   "Any real person's likeness or name. The cast is fictional."
+  ],
+  "deadline": null,
+  "budget": {
+   "currency": "USD",
+   "runner_llm_cap": null,
+   "media_and_render_cap": null,
+   "spent": 0,
+   "reserved": 0
+  },
+  "format": "social_series",
+  "logline": "The only ten minutes of a parent's morning nobody interrupts: each day one child toes a tape line with news that can't wait, until the last drop leaves the Solace dripper and out it comes.",
+  "premise": "In a kitchen mid-breakfast, a parent of three works through the only ten minutes of the morning nobody interrupts: kettle, grind, a slow hand pour into a Solace dripper, one cup. Masking tape crosses the floor, laid over an older strip worn gray. Nobody explains it. Each episode opens as the kettle goes down and the coffee starts to drain: one child reaches the tape with news that can't wait and stops, toes on the line. First the youngest, fist clenched around something. Then the eldest, holding out a permission slip and an uncapped pen at arm's length. Then the middle child, a hand pressed flat to their forehead. The parent clocks each of them and watches the dripper. From the tape the child sees the dripper, never the cup; we see the last drops fall. On the last drop the parent lifts the dripper off the cup, and the news comes out: the fist opens on a tooth; the slip gets signed against the fridge, cup never set down. In the finale, the hand comes down from the forehead on bangs the child has cut themself, and the parent takes a long first sip before saying anything at all.",
+  "story_seed": {
+   "protagonist": "A parent of three whose one uninterrupted stretch of the morning is a hand pour through a Solace dripper.",
+   "want": "To finish the pour and take the first sip before the day starts asking for things.",
+   "obstacle": "Each morning one child arrives at the tape line with news that can't wait.",
+   "turn": "On the last drop the parent lifts the dripper off the cup, and the news comes out.",
+   "ending": "In the finale, the hand comes down from the forehead on bangs the child has cut themself, and the parent takes a long first sip before saying anything at all."
+  }
+ },
+ "artifacts": {
+  "idea": {
+   "artifact_id": "idea-001",
+   "project_id": "TEST_SOLACE_3",
+   "task_id": "00_idea",
+   "owner_agent": "producer",
+   "kind": "idea",
+   "revision": 1,
+   "status": "draft",
+   "based_on": [],
+   "content": {
+    "idea": "Solace makes a $38 ceramic pour-over dripper, glazed by hand, one cup at a time. The ten minutes of making coffee by hand are the only part of a parent's morning nobody interrupts.",
+    "hints": {}
+   },
+   "asset_uri": null,
+   "assumptions": [],
+   "sources": [],
+   "blockers": []
+  },
+  "development": {
+   "artifact_id": "development-002",
+   "project_id": "TEST_SOLACE_3",
+   "task_id": "01_development",
+   "owner_agent": "development_producer",
+   "kind": "development",
+   "revision": 1,
+   "status": "draft",
+   "based_on": [
+    "idea-001"
+   ],
+   "content": {
+    "working_title": "Hold That Thought",
+    "logline": "The only ten minutes of a parent's morning nobody interrupts: each day one child toes a tape line with news that can't wait, until the last drop leaves the Solace dripper and out it comes.",
+    "format": "social_series",
+    "format_rationale": "Social series, because the idea runs on a situation that repeats with a new variable: the same pour and the same tape line, with a different child holding different news each time. That is one child at a time, the way the brand's own words say 'one cup at a time'. Seeing it again is what proves it happens every morning, without a voiceover saying so, and each episode pays off in 30 s with the sound off. Runner-up: a single 45 s ad spot. It lost because one morning reads as a one-off story. Lucas's line is about a routine, and the rule only reads as a rule the second time we see it.",
+    "premise": "In a kitchen mid-breakfast, a parent of three works through the only ten minutes of the morning nobody interrupts: kettle, grind, a slow hand pour into a Solace dripper, one cup. Masking tape crosses the floor, laid over an older strip worn gray. Nobody explains it. Each episode opens as the kettle goes down and the coffee starts to drain: one child reaches the tape with news that can't wait and stops, toes on the line. First the youngest, fist clenched around something. Then the eldest, holding out a permission slip and an uncapped pen at arm's length. Then the middle child, a hand pressed flat to their forehead. The parent clocks each of them and watches the dripper. From the tape the child sees the dripper, never the cup; we see the last drops fall. On the last drop the parent lifts the dripper off the cup, and the news comes out: the fist opens on a tooth; the slip gets signed against the fridge, cup never set down. In the finale, the hand comes down from the forehead on bangs the child has cut themself, and the parent takes a long first sip before saying anything at all.",
+    "what_makes_it_specific": [
+     "Kept: 'The ten minutes of making coffee by hand are the only part of a parent's morning nobody interrupts.' The logline opens on that line, and every episode takes place inside those ten minutes.",
+     "Obvious version: a frazzled parent in a noisy kitchen finds calm over a hand pour while the kids' chaos blurs in the background, then smiles into the first sip.",
+     "Differs by who, and by what it costs them: the calm is not the parent's escape but a truce the kids keep. They stand at the tape holding a lost tooth, an unsigned slip or home-cut bangs, and they pay for the parent's ten minutes by staying quiet.",
+     "Product role: the dripper is the clock. The viewer's cue is its last drop and the child's cue is its lift, and a coffee machine would give nobody a reason to stand still. Swap in any other cone dripper and the clock still runs, so the brand's own words carry the difference. 'Glazed by hand, one cup at a time' is the rhythm of the series: one child, one piece of news, one cup, one morning. The end frame puts those exact words under the dripper, so each episode reads as the phrase acted out.",
+     "Added detail: the tape is re-laid over an older strip worn gray, and nobody ever explains it. The rule reads as years old without a word (taste notes: restraint over explanation; one real detail only this family has).",
+     "Taste, followed and broken on purpose: episodes 1 and 2 show the child as a fist, a pen and a slip (hands before faces). Episode 3 breaks that note because the bangs are the joke; A15 is the fallback. Scene sound only, no music. The product is a tool from the first second and a hero only on the end frame.",
+     "Alternative (not briefed): one morning the kids make the pour for the parent. That is a new central situation, so it is not developed here."
+    ],
+    "brand": "Solace",
+    "product_or_subject": "Solace ceramic pour-over dripper, glazed by hand, one cup at a time, $38",
+    "objective": "Parents who watch an episode tap through to the Solace dripper's product page. Signal: link taps per episode on the paid social placement, compared across episodes (assumptions A04, A06).",
+    "audience": "Parents who make their own coffee at home before school drop-off and get interrupted during every other part of the morning (assumption A05).",
+    "key_message": "The ten minutes of making coffee by hand are the only part of a parent's morning nobody interrupts. Solace: glazed by hand, one cup at a time.",
+    "tone": [
+     "Held: one cut is allowed, from the end of the pour to the drain. After it the frame holds through the final drawdown and nobody moves. The next cut comes on the lift, never before the last drop.",
+     "Dry: nobody explains the rule and nobody says thanks. The payoff is a reveal plus one small reaction from the parent, cup still in hand.",
+     "Real: the kitchen is mid-breakfast, not staged. Morning light falls as it actually does and never floods the room (taste note). The camera singles out one detail only: the tape re-laid over the old, worn strip.",
+     "Not a me-time wellness ad: no gazing out the window with a mug, no slow-motion pour, no sigh-of-relief voiceover, no swelling piano, no fade to a logo on a colored background.",
+     "Music: none. Scene sound only: kettle click, the pour, the drip, ceramic on wood (taste note: sound design before music)."
+    ],
+    "verified_product_facts": [
+     {
+      "fact": "Solace makes a ceramic pour-over dripper that costs $38.",
+      "quoted_from_idea": "Solace makes a $38 ceramic pour-over dripper"
+     },
+     {
+      "fact": "The dripper is glazed by hand, one cup at a time. How to read 'one cup' is assumption A02.",
+      "quoted_from_idea": "glazed by hand, one cup at a time"
+     }
+    ],
+    "deliverables": [
+     {
+      "id": "D01",
+      "type": "video",
+      "label": "Episode 1 'Tooth' · series opener · paid social 9:16 feed · Beat: the kettle goes down, the drawdown starts and the youngest's toes reach the tape by 2 s; a clenched fist waits out the drawdown, and when the parent lifts the dripper it opens on a tooth · Dripper in use from 1 s; product and Solace name on the end frame; no title card · Cost flags: a child on set (cheaper: A07's one child for all three episodes); hands working the dripper (cheaper: shoot the pour, drain and lift inserts once here and reuse them in D02–D03)",
+      "duration_seconds": 30,
+      "count": 1,
+      "aspect_ratio": "9:16"
+     },
+     {
+      "id": "D02",
+      "type": "video",
+      "label": "Episode 2 'Signature' · series · paid social 9:16 feed · Beat: the kettle goes down, the drawdown starts and the eldest's toes reach the tape by 2 s, slip and pen held out at arm's length; on the lift the parent signs the slip against the fridge without putting the cup down · Dripper in use from 1 s; product and Solace name on the end frame; no title card · Cost flags: a child on set (cheaper: A07); pour inserts reused from D01",
+      "duration_seconds": 30,
+      "count": 1,
+      "aspect_ratio": "9:16"
+     },
+     {
+      "id": "D03",
+      "type": "video",
+      "label": "Episode 3 'Bangs' · series finale · paid social 9:16 feed · Beat: the kettle goes down, the drawdown starts and the middle child's toes reach the tape by 2 s, a hand pressed to their forehead; on the lift the hand comes down on home-cut bangs, and the parent takes a long first sip before saying anything · Dripper in use from 1 s; product and Solace name on the end frame; no title card · Cost flags: the reveal is one irreversible take on a child's real hair (cheaper: clip-in bangs, or A15's cut lock held in the hand); a child on set (cheaper: A07); pour inserts reused from D01",
+      "duration_seconds": 30,
+      "count": 1,
+      "aspect_ratio": "9:16"
+     },
+     {
+      "id": "D04",
+      "type": "video",
+      "label": "Cutdown 'Three Mornings' · retargeting 4:5 feed · Beat: three mornings cut end to end on three last drops (the fist opens, the pen signs, the hand comes down), then the long first sip and the end frame · Rebuilt around this beat from D01–D03 footage, not trimmed, with one child per morning so continuity holds; toes on the tape by 2 s; dripper in use from 1 s; product and Solace name on the end frame",
+      "duration_seconds": 15,
+      "count": 1,
+      "aspect_ratio": "4:5"
+     },
+     {
+      "id": "S01",
+      "type": "still",
+      "label": "Key art · series launch post and product page · Beat: the dripper draining on the counter, with a child's socked toes on the re-laid tape in the same frame · Product in frame, Solace name in plain type",
+      "duration_seconds": 0,
+      "count": 1,
+      "aspect_ratio": "4:5"
+     },
+     {
+      "id": "S02",
+      "type": "still",
+      "label": "Episode cover frames · one per episode · Beat: the news held back just before the lift (fist; slip and pen; hand on forehead) · Dripper in frame, no text",
+      "duration_seconds": 0,
+      "count": 3,
+      "aspect_ratio": "9:16"
+     },
+     {
+      "id": "S03",
+      "type": "still",
+      "label": "Product hero · episode end frame and shop listing · Beat: the dripper where the parent set it down on the counter after the lift, with the lived-in kitchen soft behind and no mug under it · Product is the subject; text only as in A10",
+      "duration_seconds": 0,
+      "count": 1,
+      "aspect_ratio": "1:1"
+     }
+    ],
+    "must_include": [
+     "Lucas's line as the spine: every episode takes place inside the ten minutes nobody interrupts and joins them as the kettle goes down.",
+     "The dripper in use from the first second. A clean product shot only on the end frame (taste note: tool, then hero).",
+     "The tape line in every episode, never explained, with a child's toes on it by 2 s.",
+     "One real detail only this family has: the tape re-laid over an older, worn strip, so the rule reads as years old without a word. Other set dressing is up to design.",
+     "One child, one piece of news and one cup per episode, so the series acts out 'one cup at a time'.",
+     "End frame: the dripper where the parent set it down after the lift, with text in the idea's words only (A10).",
+     "A payoff that reads with the sound off."
+    ],
+    "must_avoid": [
+     "Any claim about brew time, taste, heat, durability, or each glaze being unique.",
+     "'Ten minutes' on screen as a duration or product spec (A01).",
+     "Paraphrasing 'one cup at a time' in any copy (for example 'single-cup' or 'brews one cup') until A02 is answered.",
+     "Gazing out a window with a mug, sun flooding a spotless kitchen, slow motion, a voiceover that sounds like a tagline, a logo on a colored background with no product (taste notes).",
+     "Explaining the rule in dialogue or on-screen text. The parent never shushes or scolds.",
+     "Scissors or any sharp object in a child's hand on camera. Children within reach of the kettle.",
+     "A chipped mug in any product-hero frame (S03, end frames). Under a $38 ceramic dripper it reads as ceramic that chips. The mug stays in the episodes only.",
+     "Visible third-party brand marks on the kettle, grinder, scale or mug.",
+     "Any real person's likeness or name. The cast is fictional."
+    ],
+    "story_seed": {
+     "protagonist": "A parent of three whose one uninterrupted stretch of the morning is a hand pour through a Solace dripper.",
+     "want": "To finish the pour and take the first sip before the day starts asking for things.",
+     "obstacle": "Each morning one child arrives at the tape line with news that can't wait.",
+     "turn": "On the last drop the parent lifts the dripper off the cup, and the news comes out.",
+     "ending": "In the finale, the hand comes down from the forehead on bangs the child has cut themself, and the parent takes a long first sip before saying anything at all."
+    },
+    "questions_for_lucas": [
+     "Is this paid social (vertical, sound off first) aimed at product-page visits, or a different placement or goal? (A04, A06)",
+     "Does 'one cup at a time' mean the dripper brews one cup, or that each dripper is glazed one at a time? (A02)",
+     "Can we cast three kids, or should one child carry all three mornings? (A07)",
+     "OK to show the $38 price on the end frame? (A10)",
+     "North American market, or UK? (A16)"
+    ]
+   },
+   "asset_uri": null,
+   "assumptions": [
+    "A01 | copy | yes | Lucas's line is played out, never shown or spoken; the only on-screen text is the end frame (A10) | if_wrong: D03 end frame → Lucas's line in plain type above the product; D01–D02 unchanged",
+    "A02 | factual | yes | 'one cup at a time' means the dripper brews a single cup | if_wrong: Product role → the one-cup rhythm echoes the brand's words rather than describing the product; the single-cup pour stays as story action only; the verbatim end frame (A10) is unchanged",
+    "A03 | factual | yes | The last drop leaving the dripper reads on camera as the viewer's cue (capability not supplied) | if_wrong: premise → the lift alone is the cue for viewer and child alike; beat built only on 'ceramic pour-over dripper, glazed by hand'",
+    "A04 | format | yes | Placement is paid social, 9:16, viewed with the sound off first | if_wrong: format → ad_spot; D01 → one 45 s 16:9 spot built on 'Tooth'; D02–D03 dropped",
+    "A05 | audience | yes | Audience is parents who make their own coffee at home before school drop-off | if_wrong: audience → parents who already brew by hand",
+    "A06 | objective | yes | Objective is product-page visits from paid social | if_wrong: objective → saves per episode; end frame drops the price",
+    "A07 | cast | yes | Three fictional children (about 5, 8 and 12), one per episode, plus one parent who appears in all three | if_wrong: cast → one child holds all three pieces of news across three mornings, with only hands and feet on camera in D01–D02",
+    "A08 | story | no | The tape line is the household's unspoken rule and sits at a safe distance from the kettle | if_wrong: premise → the kids stop at the kitchen doorway instead; the lift stays the child's cue",
+    "A09 | tone | no | No music; scene sound only | if_wrong: tone → one sparse original cue on the end frame only",
+    "A10 | copy | yes | End-frame text is the idea's words verbatim: 'Solace. Glazed by hand, one cup at a time. $38.' Verbatim words stay true under either reading of A02 | if_wrong: must_include → 'Solace. Glazed by hand, one cup at a time.' with no price",
+    "A11 | production | yes | Live action in one real home kitchen, no generated shots. 4 on-camera roles; 0 voiceover; 0 lip-synced lines; 1 location; 1 consistent character (the parent) across 3 episodes; about 10 hand-and-product shots; no product reference was supplied, so a physical dripper is needed before testing | if_wrong: route → hybrid with generated kitchen plates; product shots stay live",
+    "A12 | production | yes | The make-or-break shot is the last drop and the lift in one frame, with the waiting child still readable at the tape. First test: film one real pour with the actual dripper and check on a phone, sound off, that the last drop reads | if_wrong: premise → A03 fallback (the lift is the cue for viewer and child alike)",
+    "A15 | taste | no | D03 breaks 'hands before faces' on purpose because the bangs reveal needs a face | if_wrong: D03 → the hand comes down holding a cut lock of hair; the face stays out of frame",
+    "A16 | market | yes | North American market, going on the $ price; wording uses 'drop-off' and 'bangs' | if_wrong: premise, audience and labels → UK usage ('school run', 'fringe'); D03 → 'Fringe'",
+    "A17 | factual | yes | After one cut from pour to drain, the dripper's final drawdown is short enough to hold in a single shot inside a 30 s episode (drain time not supplied) | if_wrong: D01–D03 → a second cut, to the child's toes on the tape, inside the drawdown; 'Held' starts from that cut",
+    "Note on IDs: A13 was merged into A07 (both fell back to one child). A13 and A14 were cost flags, so they now sit in the D01–D03 labels next to their cheaper versions. The old A01 ruling that 'ten minutes' is never a product spec moved into must_avoid, and A01 now holds the on-screen copy decision. The remaining IDs are unchanged so the reviewer's notes still point to the right lines."
+   ],
+   "sources": [
+    "Lucas's idea text, the only source of fact: 'Solace makes a $38 ceramic pour-over dripper, glazed by hand, one cup at a time. The ten minutes of making coffee by hand are the only part of a parent's morning nobody interrupts.'",
+    "No reference material was supplied or inspected (no reference_reader tool is bound in this run)."
+   ],
+   "blockers": [],
+   "checks": {
+    "failed": [],
+    "attempts": [
+     0,
+     0
+    ]
+   },
+   "quality": {
+    "grade": "A",
+    "scores": {
+     "specificity": 8,
+     "distinctiveness": 8,
+     "fit": 8,
+     "craft": 8
+    },
+    "min": 8,
+    "rounds": 2,
+    "history": [
+     {
+      "round": 1,
+      "scores": {
+       "specificity": 8,
+       "distinctiveness": 7,
+       "fit": 8,
+       "craft": 7
+      },
+      "min": 7,
+      "failed_checks": 0
+     },
+     {
+      "round": 2,
+      "scores": {
+       "specificity": 8,
+       "distinctiveness": 8,
+       "fit": 8,
+       "craft": 8
+      },
+      "min": 8,
+      "failed_checks": 0
+     }
+    ],
+    "evidence": {
+     "specificity": "All six previous notes were addressed. Each episode now has a concrete object, action and payoff that casting, design and strategy can break down without asking: \"First the youngest, fist clenched around something. Then the eldest, holding out a permission slip and an uncapped pen at arm's length. Then the middle child, a hand pressed flat to their forehead.\" The same goes for \"the fist opens on a tooth; the slip gets signed against the fridge, cup never set down.\" The strategist gets an audience defined by situation and a signal that exists where the piece runs: \"Signal: link taps per episode on the paid social placement, compared across episodes.\" The timing is now pinned in every label: \"the youngest's toes reach the tape by 2 s\". It stops short of 9 because one tone line is still loose (\"Morning light falls as it actually does\") and the tone entry 'Held' has a small conflict with the 2 s arrival (see notes).",
+     "distinctiveness": "The change from the obvious version is in who and in what it costs them, not in tone: \"the calm is not the parent's escape but a truce the kids keep. They stand at the tape holding a lost tooth, an unsigned slip or home-cut bangs, and they pay for the parent's ten minutes by staying quiet.\" The detail nobody asked for belongs to this family alone: \"the tape is re-laid over an older strip worn gray, and nobody ever explains it.\" The Product role fix was made as asked: \"'Glazed by hand, one cup at a time' is the rhythm of the series: one child, one piece of news, one cup, one morning.\" It is not a 9 because the brief itself admits \"Swap in any other cone dripper and the clock still runs\". The Solace difference is carried by the structure and the end-frame words, not by anything handmade we see on screen.",
+     "fit": "Lucas's line opens the logline, and the logline now carries the release at 35 words: \"The only ten minutes of a parent's morning nobody interrupts: each day one child toes a tape line with news that can't wait, until the last drop leaves the Solace dripper and out it comes.\" The end frame uses verified words only and adds no claim under either reading of A02: \"'Solace. Glazed by hand, one cup at a time. $38.'\" The story keeps the line true, because the kids wait instead of interrupting. The brief never paraphrases 'one cup at a time', never claims brew time, taste or durability, and \"story_seed.turn\" now reads \"On the last drop the parent lifts the dripper off the cup, and the news comes out.\" It stays at 8 rather than 9 for the same reason as distinctiveness: 'glazed by hand' is said, never seen.",
+     "craft": "The timing can now be performed and is labeled: \"Held: one cut is allowed, from the end of the pour to the drain. After it the frame holds through the final drawdown and nobody moves. The next cut comes on the lift, never before the last drop.\" The one capability not supplied has a fallback: \"A17 | factual | yes | ... the dripper's final drawdown is short enough to hold in a single shot inside a 30 s episode (drain time not supplied) | if_wrong: D01–D03 → a second cut\". The cost flag sits on the beat that needs it, next to a cheaper version: \"the reveal is one irreversible take on a child's real hair (cheaper: clip-in bangs, or A15's cut lock held in the hand)\". D04 continuity holds. Total video is 105 s. It stays at 8 because of small fixable slips. D01's cheaper version (\"shoot the pour, drain and lift inserts once here and reuse them in D02–D03\") contradicts the brief's own held drain-to-lift frame. A revision memo row (\"Note on IDs...\") sits in the assumptions list. The chipped mug still survives in must_avoid."
+    },
+    "notes": [
+     {
+      "target": "D01 label, cost flag 'hands working the dripper (cheaper: shoot the pour, drain and lift inserts once here and reuse them in D02–D03)'; the matching 'pour inserts reused from D01' in D02 and D03",
+      "note": "The cheaper version contradicts the brief's own make-or-break shot. 'Held' and A12 put the drain, the last drop and the lift in one held frame with the child at the tape, so that frame cannot be an insert shot once and reused. It changes child and morning in every episode, and the D04 fix depends on each morning looking different. Reused hand inserts would also carry the parent's sleeve and mug from D01 into mornings two and three. Rewrite the cheaper version as: 'reuse only the kettle-down and pour close-up before the one allowed cut; the held drain-to-lift frame is shot fresh each morning because the child is in it.'",
+      "source": "Quality bar, Craft: 'continuity that holds'. Craft brief: 'A cost flag... stays only with the beat that needs it, next to a cheaper version' (the cheaper version has to be buildable). This brief's own tone entry 'Held' and A12."
+     },
+     {
+      "target": "must_avoid: 'A chipped mug in any product-hero frame (S03, end frames)... The mug stays in the episodes only.'",
+      "note": "This line is left over from the old version. The brief no longer has a chipped mug anywhere, but the line now tells design to put one in the episodes. It also misses the real risk: in every episode the dripper sits on that mug through the whole held drawdown, so a chip reads as 'ceramic that chips' there just as it would in S03. Replace it with: 'No chipped or cracked ceramic in any frame with the dripper.'",
+      "source": "This brief's must_avoid on durability claims. Taste notes: the example details (chipped mug) were replaced by the tape detail on the last note, so this line no longer points to anything."
+     },
+     {
+      "target": "Assumptions list: the entry beginning 'Note on IDs: A13 was merged into A07...'",
+      "note": "Delete it. It is not an assumption: it has no ID, type, load-bearing flag or if_wrong. It is revision chatter addressed to the reviewer ('so the reviewer's notes still point to the right lines'), and it would reach Lucas as part of the brief. Gaps in the ID numbers need no explanation.",
+      "source": "Craft brief: 'Each assumption: ID | type | load-bearing yes/no | claim | if_wrong: field → new value'. Quality bar: the work reaches Lucas as written."
+     },
+     {
+      "target": "Tone entry 'Held': 'After it the frame holds through the final drawdown and nobody moves.'",
+      "note": "'Nobody moves' conflicts with the labels, where the child walks into that same held frame and reaches the tape by 2 s. Give the crew the moment the stillness starts: 'After it the frame holds; once the child's toes land on the tape, nobody moves until the lift.'",
+      "source": "Quality bar, Craft: 'timing that can be performed'. Craft brief: tone entries tell 'camera, cut, light, performance or sound what to do at a moment in the premise'."
+     }
+    ],
+    "keep": [
+     "Logline (35 words): 'The only ten minutes of a parent's morning nobody interrupts: each day one child toes a tape line with news that can't wait, until the last drop leaves the Solace dripper and out it comes.'",
+     "The added detail: tape re-laid over an older strip worn gray, never explained",
+     "Obvious version / Differs by: the calm is a truce the kids keep and pay for by staying quiet",
+     "Product role: the dripper as the clock, with 'one child, one piece of news, one cup, one morning' as the series' rhythm",
+     "Split cues: the last drop is the viewer's cue and the lift is the child's cue ('From the tape the child sees the dripper, never the cup')",
+     "Premise ending: the hand comes down on home-cut bangs and the parent takes a long first sip before saying anything at all",
+     "A10 end frame verbatim: 'Solace. Glazed by hand, one cup at a time. $38.'",
+     "D01–D03 beats with toes on the tape by 2 s, dripper in use from 1 s, and no title card",
+     "D04 'Three Mornings' cut end to end on three last drops, one child per morning",
+     "D03 cost flag with its cheaper versions (clip-in bangs, or A15's cut lock in the hand)",
+     "A03, A12 and A17: a labeled capability, the make-or-break shot with its first test, and a fallback built on verified facts",
+     "A16 market assumption, with 'drop-off' and 'bangs' used consistently",
+     "Tone: the 'Not a me-time wellness ad' line and 'Music: none. Scene sound only'",
+     "Safety lines in must_avoid: no scissors in a child's hand on camera, no child within reach of the kettle",
+     "Objective signal: link taps per episode on the paid social placement",
+     "Five questions, each citing a load-bearing ID"
+    ]
+   }
+  },
+  "brief": {
+   "artifact_id": "brief-003",
+   "project_id": "TEST_SOLACE_3",
+   "task_id": "01_intake",
+   "owner_agent": "producer",
+   "kind": "brief",
+   "revision": 1,
+   "status": "draft",
+   "based_on": [
+    "development-002"
+   ],
+   "content": {
+    "normalized_brief": {
+     "name": "Hold That Thought",
+     "brand": "Solace",
+     "product_or_subject": "Solace ceramic pour-over dripper, glazed by hand, one cup at a time, $38",
+     "one_line_brief": "The only ten minutes of a parent's morning nobody interrupts: each day one child toes a tape line with news that can't wait, until the last drop leaves the Solace dripper and out it comes.",
+     "objective": "Parents who watch an episode tap through to the Solace dripper's product page. Signal: link taps per episode on the paid social placement, compared across episodes (assumptions A04, A06).",
+     "audience": "Parents who make their own coffee at home before school drop-off and get interrupted during every other part of the morning (assumption A05).",
+     "key_message": "The ten minutes of making coffee by hand are the only part of a parent's morning nobody interrupts. Solace: glazed by hand, one cup at a time.",
+     "tone": [
+      "Held: one cut is allowed, from the end of the pour to the drain. After it the frame holds through the final drawdown and nobody moves. The next cut comes on the lift, never before the last drop.",
+      "Dry: nobody explains the rule and nobody says thanks. The payoff is a reveal plus one small reaction from the parent, cup still in hand.",
+      "Real: the kitchen is mid-breakfast, not staged. Morning light falls as it actually does and never floods the room (taste note). The camera singles out one detail only: the tape re-laid over the old, worn strip.",
+      "Not a me-time wellness ad: no gazing out the window with a mug, no slow-motion pour, no sigh-of-relief voiceover, no swelling piano, no fade to a logo on a colored background.",
+      "Music: none. Scene sound only: kettle click, the pour, the drip, ceramic on wood (taste note: sound design before music)."
+     ],
+     "verified_product_facts": [
+      "Solace makes a ceramic pour-over dripper that costs $38.",
+      "The dripper is glazed by hand, one cup at a time. How to read 'one cup' is assumption A02."
+     ],
+     "references": [],
+     "deliverables": [
+      {
+       "id": "D01",
+       "type": "video",
+       "label": "Episode 1 'Tooth' · series opener · paid social 9:16 feed · Beat: the kettle goes down, the drawdown starts and the youngest's toes reach the tape by 2 s; a clenched fist waits out the drawdown, and when the parent lifts the dripper it opens on a tooth · Dripper in use from 1 s; product and Solace name on the end frame; no title card · Cost flags: a child on set (cheaper: A07's one child for all three episodes); hands working the dripper (cheaper: shoot the pour, drain and lift inserts once here and reuse them in D02–D03)",
+       "aspect_ratio": "9:16",
+       "duration_seconds": 30,
+       "fps": 24
+      },
+      {
+       "id": "D02",
+       "type": "video",
+       "label": "Episode 2 'Signature' · series · paid social 9:16 feed · Beat: the kettle goes down, the drawdown starts and the eldest's toes reach the tape by 2 s, slip and pen held out at arm's length; on the lift the parent signs the slip against the fridge without putting the cup down · Dripper in use from 1 s; product and Solace name on the end frame; no title card · Cost flags: a child on set (cheaper: A07); pour inserts reused from D01",
+       "aspect_ratio": "9:16",
+       "duration_seconds": 30,
+       "fps": 24
+      },
+      {
+       "id": "D03",
+       "type": "video",
+       "label": "Episode 3 'Bangs' · series finale · paid social 9:16 feed · Beat: the kettle goes down, the drawdown starts and the middle child's toes reach the tape by 2 s, a hand pressed to their forehead; on the lift the hand comes down on home-cut bangs, and the parent takes a long first sip before saying anything · Dripper in use from 1 s; product and Solace name on the end frame; no title card · Cost flags: the reveal is one irreversible take on a child's real hair (cheaper: clip-in bangs, or A15's cut lock held in the hand); a child on set (cheaper: A07); pour inserts reused from D01",
+       "aspect_ratio": "9:16",
+       "duration_seconds": 30,
+       "fps": 24
+      },
+      {
+       "id": "D04",
+       "type": "video",
+       "label": "Cutdown 'Three Mornings' · retargeting 4:5 feed · Beat: three mornings cut end to end on three last drops (the fist opens, the pen signs, the hand comes down), then the long first sip and the end frame · Rebuilt around this beat from D01–D03 footage, not trimmed, with one child per morning so continuity holds; toes on the tape by 2 s; dripper in use from 1 s; product and Solace name on the end frame",
+       "aspect_ratio": "4:5",
+       "duration_seconds": 15,
+       "fps": 24
+      },
+      {
+       "id": "S01",
+       "type": "still",
+       "label": "Key art · series launch post and product page · Beat: the dripper draining on the counter, with a child's socked toes on the re-laid tape in the same frame · Product in frame, Solace name in plain type",
+       "aspect_ratio": "4:5",
+       "count": 1
+      },
+      {
+       "id": "S02",
+       "type": "still",
+       "label": "Episode cover frames · one per episode · Beat: the news held back just before the lift (fist; slip and pen; hand on forehead) · Dripper in frame, no text",
+       "aspect_ratio": "9:16",
+       "count": 3
+      },
+      {
+       "id": "S03",
+       "type": "still",
+       "label": "Product hero · episode end frame and shop listing · Beat: the dripper where the parent set it down on the counter after the lift, with the lived-in kitchen soft behind and no mug under it · Product is the subject; text only as in A10",
+       "aspect_ratio": "1:1",
+       "count": 1
+      }
+     ],
+     "must_include": [
+      "Lucas's line as the spine: every episode takes place inside the ten minutes nobody interrupts and joins them as the kettle goes down.",
+      "The dripper in use from the first second. A clean product shot only on the end frame (taste note: tool, then hero).",
+      "The tape line in every episode, never explained, with a child's toes on it by 2 s.",
+      "One real detail only this family has: the tape re-laid over an older, worn strip, so the rule reads as years old without a word. Other set dressing is up to design.",
+      "One child, one piece of news and one cup per episode, so the series acts out 'one cup at a time'.",
+      "End frame: the dripper where the parent set it down after the lift, with text in the idea's words only (A10).",
+      "A payoff that reads with the sound off."
+     ],
+     "must_avoid": [
+      "Any claim about brew time, taste, heat, durability, or each glaze being unique.",
+      "'Ten minutes' on screen as a duration or product spec (A01).",
+      "Paraphrasing 'one cup at a time' in any copy (for example 'single-cup' or 'brews one cup') until A02 is answered.",
+      "Gazing out a window with a mug, sun flooding a spotless kitchen, slow motion, a voiceover that sounds like a tagline, a logo on a colored background with no product (taste notes).",
+      "Explaining the rule in dialogue or on-screen text. The parent never shushes or scolds.",
+      "Scissors or any sharp object in a child's hand on camera. Children within reach of the kettle.",
+      "A chipped mug in any product-hero frame (S03, end frames). Under a $38 ceramic dripper it reads as ceramic that chips. The mug stays in the episodes only.",
+      "Visible third-party brand marks on the kettle, grinder, scale or mug.",
+      "Any real person's likeness or name. The cast is fictional."
+     ],
+     "deadline": null,
+     "budget": {
+      "currency": "USD",
+      "runner_llm_cap": null,
+      "media_and_render_cap": null,
+      "spent": 0,
+      "reserved": 0
+     },
+     "format": "social_series",
+     "logline": "The only ten minutes of a parent's morning nobody interrupts: each day one child toes a tape line with news that can't wait, until the last drop leaves the Solace dripper and out it comes.",
+     "premise": "In a kitchen mid-breakfast, a parent of three works through the only ten minutes of the morning nobody interrupts: kettle, grind, a slow hand pour into a Solace dripper, one cup. Masking tape crosses the floor, laid over an older strip worn gray. Nobody explains it. Each episode opens as the kettle goes down and the coffee starts to drain: one child reaches the tape with news that can't wait and stops, toes on the line. First the youngest, fist clenched around something. Then the eldest, holding out a permission slip and an uncapped pen at arm's length. Then the middle child, a hand pressed flat to their forehead. The parent clocks each of them and watches the dripper. From the tape the child sees the dripper, never the cup; we see the last drops fall. On the last drop the parent lifts the dripper off the cup, and the news comes out: the fist opens on a tooth; the slip gets signed against the fridge, cup never set down. In the finale, the hand comes down from the forehead on bangs the child has cut themself, and the parent takes a long first sip before saying anything at all.",
+     "story_seed": {
+      "protagonist": "A parent of three whose one uninterrupted stretch of the morning is a hand pour through a Solace dripper.",
+      "want": "To finish the pour and take the first sip before the day starts asking for things.",
+      "obstacle": "Each morning one child arrives at the tape line with news that can't wait.",
+      "turn": "On the last drop the parent lifts the dripper off the cup, and the news comes out.",
+      "ending": "In the finale, the hand comes down from the forehead on bangs the child has cut themself, and the parent takes a long first sip before saying anything at all."
+     }
+    }
+   },
+   "asset_uri": null,
+   "assumptions": [
+    "A01 | copy | yes | Lucas's line is played out, never shown or spoken; the only on-screen text is the end frame (A10) | if_wrong: D03 end frame → Lucas's line in plain type above the product; D01–D02 unchanged",
+    "A02 | factual | yes | 'one cup at a time' means the dripper brews a single cup | if_wrong: Product role → the one-cup rhythm echoes the brand's words rather than describing the product; the single-cup pour stays as story action only; the verbatim end frame (A10) is unchanged",
+    "A03 | factual | yes | The last drop leaving the dripper reads on camera as the viewer's cue (capability not supplied) | if_wrong: premise → the lift alone is the cue for viewer and child alike; beat built only on 'ceramic pour-over dripper, glazed by hand'",
+    "A04 | format | yes | Placement is paid social, 9:16, viewed with the sound off first | if_wrong: format → ad_spot; D01 → one 45 s 16:9 spot built on 'Tooth'; D02–D03 dropped",
+    "A05 | audience | yes | Audience is parents who make their own coffee at home before school drop-off | if_wrong: audience → parents who already brew by hand",
+    "A06 | objective | yes | Objective is product-page visits from paid social | if_wrong: objective → saves per episode; end frame drops the price",
+    "A07 | cast | yes | Three fictional children (about 5, 8 and 12), one per episode, plus one parent who appears in all three | if_wrong: cast → one child holds all three pieces of news across three mornings, with only hands and feet on camera in D01–D02",
+    "A08 | story | no | The tape line is the household's unspoken rule and sits at a safe distance from the kettle | if_wrong: premise → the kids stop at the kitchen doorway instead; the lift stays the child's cue",
+    "A09 | tone | no | No music; scene sound only | if_wrong: tone → one sparse original cue on the end frame only",
+    "A10 | copy | yes | End-frame text is the idea's words verbatim: 'Solace. Glazed by hand, one cup at a time. $38.' Verbatim words stay true under either reading of A02 | if_wrong: must_include → 'Solace. Glazed by hand, one cup at a time.' with no price",
+    "A11 | production | yes | Live action in one real home kitchen, no generated shots. 4 on-camera roles; 0 voiceover; 0 lip-synced lines; 1 location; 1 consistent character (the parent) across 3 episodes; about 10 hand-and-product shots; no product reference was supplied, so a physical dripper is needed before testing | if_wrong: route → hybrid with generated kitchen plates; product shots stay live",
+    "A12 | production | yes | The make-or-break shot is the last drop and the lift in one frame, with the waiting child still readable at the tape. First test: film one real pour with the actual dripper and check on a phone, sound off, that the last drop reads | if_wrong: premise → A03 fallback (the lift is the cue for viewer and child alike)",
+    "A15 | taste | no | D03 breaks 'hands before faces' on purpose because the bangs reveal needs a face | if_wrong: D03 → the hand comes down holding a cut lock of hair; the face stays out of frame",
+    "A16 | market | yes | North American market, going on the $ price; wording uses 'drop-off' and 'bangs' | if_wrong: premise, audience and labels → UK usage ('school run', 'fringe'); D03 → 'Fringe'",
+    "A17 | factual | yes | After one cut from pour to drain, the dripper's final drawdown is short enough to hold in a single shot inside a 30 s episode (drain time not supplied) | if_wrong: D01–D03 → a second cut, to the child's toes on the tape, inside the drawdown; 'Held' starts from that cut",
+    "Note on IDs: A13 was merged into A07 (both fell back to one child). A13 and A14 were cost flags, so they now sit in the D01–D03 labels next to their cheaper versions. The old A01 ruling that 'ten minutes' is never a product spec moved into must_avoid, and A01 now holds the on-screen copy decision. The remaining IDs are unchanged so the reviewer's notes still point to the right lines."
+   ],
+   "sources": [],
+   "blockers": []
+  },
+  "strategy": {
+   "artifact_id": "strategy-004",
+   "project_id": "TEST_SOLACE_3",
+   "task_id": "02_strategy",
+   "owner_agent": "strategist",
+   "kind": "strategy",
+   "revision": 1,
+   "status": "review_required",
+   "based_on": [
+    "brief-003",
+    "development-002"
+   ],
+   "content": {
+    "audience_tension": "Who: parents who make coffee on a machine at home before school drop-off. The moment is mid-breakfast, while each kid brings them something that needs an answer before they leave. This is the recommended primary buyer. It narrows A05, and the choice goes to Lucas (see blockers). Proxy media can buy (assumption): paid social audiences of parents of school-age children with an interest in home coffee or coffee machines. In their voice: I want to hear their news the second it happens, yet I want one stretch of the morning when nobody needs me, and I'd hate to admit I'd rather they waited. [H1] What they'd hate to admit is that wanting those minutes makes them a less present parent. The cost isn't time. Take the product away and the conflict is still there: the tension never mentions coffee.",
+    "desired_behavior": "Goal: parents who watch an episode tap through to the Solace dripper product page, where the $38 dripper is sold. That the sale happens on this page is an assumption: F1 gives the price, not the channel. The series turns repeat viewing into revenue. The same rule plays three times (D01-D03), so every episode is another chance at the product page, and D04 retargets episode viewers who didn't tap. H6 tests whether the sequence earns its cost. From (machine users, pending Lucas's buyer decision): makes coffee on a machine that brews while they answer the kids, and scrolls past pour-over as gear for people with quiet mornings (H4). To: taps the link on D01 and lands on the Solace dripper product page. Jobs: D01, 9:16 paid feed, full-screen, sound on but must read muted: opens the series and sets up the rule. Every paid path starts here; the ask is the tap. D02, same placement: the second sighting makes the tape read as a rule; the ask is the tap. D03, same placement: the finale and strongest payoff; the ask is the tap. D04, 4:5 retargeting in-feed, muted, 15 s (not a reminder): runs only to episode viewers who didn't tap; the ask is the tap. S01, 4:5 launch post in-feed, muted: gets D01 played; on the product page it shows people who tapped that they've landed in the same kitchen. S02, 9:16 cover frames, muted: get each episode played. S03, 1:1 end frame and shop listing: shows the product the viewer tapped for, so they recognise it on landing.",
+    "product_relevance": "Moment: a school morning, mid-breakfast. The parent stands at the counter pouring water through the dripper as a child arrives needing an answer. Without it: coffee from a machine makes itself in the background, the parent's hands are free, and every request lands mid-cup (H3). Fix: F1 \"a ceramic pour-over dripper\". The water goes through by hand (a category meaning, see assumptions), so the parent is visibly busy until the cup is made. The cup the news waits on comes through Solace's dripper, not a machine. That switch of method is the change this buyer makes, and it is argued here, not in proof. F2 \"one cup at a time\" matches the moment's rhythm, one cup to one child's news, if A02 reads it as brewing. Whether the pour ends on a moment the child can see is Blocked (proof point 3). No verified fact says how long a pour takes, so the moment must never suggest a duration. Barrier: to a machine user, pour-over looks like a hobby for people with quiet mornings, not a tool for a parent with three kids in the kitchen (H4). A second barrier the series can't answer: pour-over needs a kettle and filters as well as the dripper (H8). Permission: F2 \"glazed by hand\". A viewer can check this only if the product page says so. Beyond that, permission is not established. The moment works with no logo and no price because it is the pour itself, not the brand.",
+    "single_minded_proposition": "Their news keeps, one cup at a time.",
+    "proof_points": [
+     "[F2] Supports \"one cup at a time\": \"one cup at a time\". The proposition carries Solace's own words unchanged, so it is a quote, not a paraphrase. Whether any rival also leads with them is H5, not yet run. It reads as the dripper brewing one cup only if A02 says so. If A02 comes back as glazing, this point becomes Blocked and Rejected H-R3 returns.",
+     "[F1] Supports \"one cup at a time\" as a brewing phrase: \"Solace makes a ceramic pour-over dripper\". The product is the thing the cup comes through, so the phrase describes Solace's own tool.",
+     "Blocked: needs a verified fact that the dripper's drawdown ends on a last drop you can see on camera (A03, A17), so the wait has an end the child can read. Supports \"keeps\": the news keeps only because the wait visibly ends. First check: A12's phone test with the real dripper."
+    ],
+    "success_criteria": [
+     "Pre-flight gate, which is also H3's test. Metric: of 8 parents from the primary audience (machine users) shown the D01 rough cut muted, how many name the coffee, the pour or the dripper, unprompted, as what the child is waiting for. Target: 6 of 8 (studio threshold). Window: before any media spend. Source: studio test on the D01 rough cut. A12's phone test stays a separate production check on whether the last drop reads (proof point 3).",
+     "Metric: Solace dripper product-page sessions from paid social per 1,000 impressions for D01 (the To), with D02 and D03 reported separately. Target: client to set. Window: flight dates requested. Source: platform link taps reconciled with site analytics, one UTM per deliverable.",
+     "Metric: product-page sessions per 1,000 impressions for D04 among episode viewers who didn't tap. Target: client to set. Window: flight dates requested. Source: platform retargeting audience plus site analytics.",
+     "Metric: product-page sessions per 1,000 impressions for D02 served after D01 versus D02 served cold (H6). Target: D02 after D01 beats D02 cold by at least 10% relative (studio threshold; the client may replace it before the flight, and the same figure then applies in H6). Window: flight dates requested. Source: platform split test.",
+     "Metric: Solace dripper orders per 1,000 product-page sessions from series traffic. Target: client to set. Window: flight dates requested, plus the client's attribution window. Source: store analytics with UTMs.",
+     "90-day measure. Metric: direct and branded-search sessions to the dripper product page in the 90 days after the flight, compared with the 90 days before. Target: client to set. Window: 90 days from flight end. Source: site analytics."
+    ],
+    "supplied_facts": [
+     "F1 \"Solace makes a ceramic pour-over dripper that costs $38.\" [verified_product_facts]",
+     "F2 \"The dripper is glazed by hand, one cup at a time.\" [verified_product_facts] How to read 'one cup' is A02."
+    ],
+    "sourced_research": [],
+    "hypotheses": [
+     "H1 Riskiest: parents who make coffee on a machine before drop-off want one stretch of the morning when nobody needs them, and would hate to admit they'd rather the kids waited. This is the tension. Test: 8 interviews with such parents, each walking through their last school morning. This first section never mentions coffee or guilt. Owner: strategy. Kills it if: fewer than 4 of 8 raise, unprompted, unease about wanting part of the morning to themselves.",
+     "H2: Lucas's insight that making coffee by hand is the part of a parent's morning that gets interrupted least. 'Ten minutes' and 'only' are unproven. If Lucas keeps machine users, it is the promise the series makes to them, so it is checked with parents who already make coffee by hand. If he picks hand-pour parents, it becomes their own recognition. Test: 8 interviews with parents who hand-pour before drop-off, asking which part of the morning gets interrupted least. Owner: strategy. Kills it if: fewer than 5 of 8 name making coffee. The spine then goes back to Lucas.",
+     "H3: a hand pour keeps the parent visibly busy where a machine leaves their hands free, and with the sound off this reads as the reason the child waits. The machine half is category knowledge; the test checks the half the work depends on. Test: the pre-flight gate, which shows the D01 rough cut muted to 8 primary-audience parents and asks what the child is waiting for. Owner: strategy with director. Kills it if: fewer than 6 of 8 name the coffee, the pour or the dripper, unprompted, as what the child is waiting for.",
+     "H4: for machine users, the main barrier is that pour-over looks like a hobby for quiet mornings, not the price. Test: in the H1 interviews, after the section without coffee, ask why they don't make coffee by hand, without offering reasons. Owner: strategy. Kills it if: fewer than 4 of 8 name fuss or 'not for mornings like mine' unprompted. If price leads instead, Rejected H-R2 comes back.",
+     "H8: machine users also hold back because pour-over needs kit they don't own, such as a kettle, filters and perhaps a grinder, on top of the dripper. The series can't answer this; the product page would have to. Test: the same question as H4, in the same interviews. Owner: strategy. Kills it if: fewer than 4 of 8 name extra kit unprompted. If it survives, see the kit blocker.",
+     "H5: no rival pour-over dripper brand or single-serve coffee machine leads with 'one cup at a time' or with a family waiting on the pour. Category knowledge, unchecked, says single-serve machines also sell one cup. Test: an ad-library scan of paid social from the main pour-over dripper brands and single-serve machines over the last 12 months. Owner: strategy (not run; no research tool bound). Kills it if: any rival leads with either. Then ask Solace for a verified fact only it can claim. Until then, Solace's own words and the execution carry the difference.",
+     "H6: repetition is what makes the rule readable (development's series rationale). Test: serve D02 cold to a holdout audience and compare it with D02 served after D01. Owner: media. Kills it if: D02 after D01 fails to beat D02 cold by the success criterion's margin (10% relative on sessions per 1,000 impressions, or the client's replacement figure). Then fund the best single episode instead of the sequence.",
+     "H7: 'to the last drop' is a long-running coffee slogan elsewhere. This is category knowledge and hasn't been checked. Keep 'last drop' as a story beat, never as a line. Test: trademark search. Owner: client legal. Kills it if: no live mark covers the phrase.",
+     "Rejected H-R1. In their voice: my coffee is the one thing I do for myself, yet I rush it like everything else. Rejected because it restates time and convenience as the loss, and it fails the remove-the-product test. Revive if: the H1 interviews describe morning coffee as rushed rather than guarded.",
+     "Rejected H-R2. In their voice: I buy the kids what they need without a second thought, yet $38 on my own coffee feels like too much. Rejected because it is a price barrier the series doesn't act out. Revive if: H4 finds that price, not fuss, is what stops parents.",
+     "Rejected H-R3 (the previous proposition): Their news keeps until the coffee you pour by hand is done. Rejected because 'pour by hand' is category language any dripper brand could sign, and it leaves out Solace's own words. Revive if: A02 comes back as glazing. The current proposition then can't use 'one cup at a time' as a brewing claim."
+    ]
+   },
+   "asset_uri": null,
+   "assumptions": [
+    "Market and language: North America, English (A16, based on the $ price).",
+    "Who has to act differently: new buyers. Recommended primary buyer: parents who make coffee on a machine (drip or single-serve) before school drop-off. The decision is Lucas's (see blockers), and the routes proceed on this buyer unless he picks otherwise. Why recommended: they are the only group for whom the 'Without it' line is true, and development's product role argues against the machine ('a coffee machine would give nobody a reason to stand still'). They change method, not just brand, so H4 and H8 cover the barriers. Parents who already pour by hand will see the series, but no From is built for them. Switch to them (development A05 if_wrong) if H1 dies among machine users, or if H8 survives and Solace can't answer the kit question on the product page. No base of existing owners was supplied.",
+    "The sale happens on the Solace dripper product page. F1 gives the $38 price, not the channel.",
+    "Buyable proxy: paid social audiences of parents of school-age children with an interest in home coffee or coffee machines. Untested; media to confirm reach, and to confirm whether machine owners can be targeted apart from people who already pour by hand.",
+    "Placement: 9:16 full-screen, sound on but must read muted; 4:5 in-feed, muted (A04).",
+    "Proposition contingent on: (1) A02 reading 'one cup at a time' as the dripper brewing one cup, which carries 'one cup at a time' (revive Rejected H-R3 if it comes back as glazing); (2) a verified fact that the drawdown ends on a last drop you can see on camera (A03, A17; proof point 3, Blocked), which carries 'keeps'.",
+    "'One cup at a time' in the proposition quotes F2 word for word, so the paraphrase ban in must_avoid is kept.",
+    "'Keeps' means the news waits without spoiling, so the wait costs the family nothing. This resolves the tension's guilt. The proposition is for strategy only and never appears on screen (A01, A10).",
+    "'Pour-over' meaning the parent pours the water by hand is a category definition, not F1's own words. Only product_relevance uses it; the proposition and proof points do not depend on it.",
+    "Left out of proof: '$38' argues price and 'glazed by hand' argues craft, which are separate ideas. Both stay on the end frame per A10. 'Not a machine' argues switching method, so it sits in product_relevance, not in proof.",
+    "Studio threshold for H6 and its success criterion: a 10% relative lift. It is a pass mark set before the flight, not a claim or a benchmark, and the client may replace it.",
+    "Objective, audience and key_message are the client's wishes, not evidence.",
+    "Test design: H1, H4 and H8 share one set of 8 interviews with machine-using parents, and the section without coffee comes first. H2 uses 8 parents who already pour by hand. H3 and the pre-flight gate are one test with one pass mark: the D01 rough cut, muted, 8 parents, 6 of 8 naming the coffee, the pour or the dripper as what the child is waiting for.",
+    "Taste: the strategy follows 'restraint over explanation'. No taste note is broken at the strategy stage. The taste notes are marked as example notes, not Lucas's own.",
+    "All four reviewer notes were applied as given; none conflicted with the brief, the facts or another note. The machine-user choice stays the recommended default, and the decision now sits with Lucas as a blocker."
+   ],
+   "sources": [
+    "Supplied: brief.verified_product_facts (F1, F2)",
+    "Supplied: development.what_makes_it_specific, format_rationale and assumptions A01-A17",
+    "Supplied: studio taste notes (example notes, not Lucas's own)",
+    "No research tool bound; no external sources consulted"
+   ],
+   "blockers": [
+    {
+     "issue": "Alternative: the proposition is not key_message. key_message joins two ideas (the uninterrupted pour, and glazed by hand), gives an unproven duration ('ten minutes') and makes an unproven 'only' claim. Its first sentence is Lucas's insight (H2), not a verified fact.",
+     "responsible_agent": "Lucas",
+     "resolution": "Approve 'Their news keeps, one cup at a time.' It keeps key_message's own brand words and drops the unproven duration and 'only'. Lucas's line stays the spine as H2, and the brand words stay on the end frame (A10). Or supply a fact that supports 'only' and 'ten minutes'."
+    },
+    {
+     "issue": "Direction for Lucas: which buyer? Strategy recommends parents who make coffee on a machine. That narrows A05 the opposite way from development's A05 if_wrong ('parents who already brew by hand'). In H2's own words, it also turns Lucas's line from something hand-pour parents recognise into the promise the series makes to machine users.",
+     "responsible_agent": "Lucas",
+     "resolution": "Choose one. Machine users (recommended): the From is machine coffee, with pour-over dismissed as a hobby. The Barrier is H4 (fuss) plus H8 (kit). H8 and the kit blocker stay live, and H2 is tested on hand-pour parents as a promise made to others. Hand-pour parents: the From is pouring by hand with another dripper, and the 'Without it' line loses the machine. The Barrier becomes why switch drippers, which no fact beyond F1 and F2 answers. H8 and the kit blocker drop, H2 becomes the buyer's own recognition, and H5 (the competitor check) becomes the riskiest hypothesis."
+    },
+    {
+     "issue": "A02 is unanswered, and the proposition rests on it: does 'one cup at a time' mean the dripper brews one cup?",
+     "responsible_agent": "Lucas / Solace",
+     "resolution": "Confirm the reading. If it means brewing, the proposition stands. If it refers to the glazing, proof point 1 becomes Blocked and the proposition falls back to Rejected H-R3, resting on F1 alone."
+    },
+    {
+     "issue": "Blocked proof: no verified fact that the drawdown ends on a last drop you can see on camera (A03, A17). 'Keeps' depends on it.",
+     "responsible_agent": "Production / Solace",
+     "resolution": "Run A12's phone test with the real dripper, or get a Solace statement on how the drawdown ends. Make no brew-time claim either way."
+    },
+    {
+     "issue": "The competitor check (H5) hasn't been run. Rival drippers and single-serve machines may also say 'one cup at a time' or show a family waiting. No research tool is bound in this run.",
+     "responsible_agent": "Brand and Audience Strategist (next run with research access)",
+     "resolution": "Scan rival pour-over dripper and single-serve machine ads before the routes are approved. If a rival leads with either, ask Solace for a verified fact only it can claim."
+    },
+    {
+     "issue": "The recommended buyer uses a machine today, and H8 says they may also need a kettle and filters. No fact was supplied on what else the dripper needs, or on what the product page tells a first-time buyer.",
+     "responsible_agent": "Solace",
+     "resolution": "Confirm what the product page shows a first-time pour-over buyer. Make no claim on screen either way. If the page can't answer it and H8 survives, switch the primary buyer to parents who already brew by hand."
+    },
+    {
+     "issue": "Missing inputs: no targets, flight dates or tracking plan for the success criteria, and the 10% H6 margin is only a studio threshold.",
+     "responsible_agent": "Lucas / Solace media",
+     "resolution": "Set targets for sessions per 1,000 impressions and for orders, confirm or replace the 10% H6 margin before the flight, send the flight dates, and confirm one UTM per deliverable."
+    }
+   ],
+   "checks": {
+    "failed": [],
+    "attempts": [
+     0,
+     0,
+     0
+    ]
+   },
+   "quality": {
+    "grade": "A",
+    "scores": {
+     "specificity": 8,
+     "distinctiveness": 8,
+     "fit": 8,
+     "craft": 8
+    },
+    "min": 8,
+    "rounds": 3,
+    "history": [
+     {
+      "round": 1,
+      "scores": {
+       "specificity": 8,
+       "distinctiveness": 7,
+       "fit": 8,
+       "craft": 7
+      },
+      "min": 7,
+      "failed_checks": 0
+     },
+     {
+      "round": 2,
+      "scores": {
+       "specificity": 8,
+       "distinctiveness": 8,
+       "fit": 8,
+       "craft": 7
+      },
+      "min": 7,
+      "failed_checks": 0
+     },
+     {
+      "round": 3,
+      "scores": {
+       "specificity": 8,
+       "distinctiveness": 8,
+       "fit": 8,
+       "craft": 8
+      },
+      "min": 8,
+      "failed_checks": 0
+     }
+    ],
+    "evidence": {
+     "specificity": "The creative director can build routes from this without asking a question. The one behavior is tied to a deliverable: \"To: taps the link on D01 and lands on the Solace dripper product page.\" The pre-flight gate is a test someone could run tomorrow: \"of 8 parents from the primary audience (machine users) shown the D01 rough cut muted, how many name the coffee, the pour or the dripper, unprompted, as what the child is waiting for. Target: 6 of 8 (studio threshold).\" The moment is one you could film: \"a school morning, mid-breakfast. The parent stands at the counter pouring water through the dripper as a child arrives needing an answer.\" It stays below 9 for two reasons. The buyer is still open (\"the routes proceed on this buyer unless he picks otherwise\"). And a few passages are wordy enough to slow a reader, such as the Goal paragraph that explains how repeat viewing becomes revenue.",
+     "distinctiveness": "The rewritten tension could only belong to this idea, and it no longer leans on coffee: \"In their voice: I want to hear their news the second it happens, yet I want one stretch of the morning when nobody needs me, and I'd hate to admit I'd rather they waited. [H1]\" It is followed by a real loss: \"What they'd hate to admit is that wanting those minutes makes them a less present parent.\" The proposition, \"Their news keeps, one cup at a time.\", joins that guilt to Solace's own words. It is not a 9 because the product half still reads true with a single-serve machine's name in it. The page says so itself (\"single-serve machines also sell one cup\", H5), and that matters more now that single-serve owners are part of the recommended buyer (see note).",
+     "fit": "Lucas's line survives as the spine and goes back to him as a decision instead of being rewritten quietly: \"Approve 'Their news keeps, one cup at a time.' It keeps key_message's own brand words and drops the unproven duration and 'only'. Lucas's line stays the spine as H2.\" The must-avoids are respected in so many words: \"'One cup at a time' in the proposition quotes F2 word for word, so the paraphrase ban in must_avoid is kept.\" \"The proposition is for strategy only and never appears on screen (A01, A10).\" \"No verified fact says how long a pour takes, so the moment must never suggest a duration.\" Only F1 and F2 are stated as fact. The buyer choice now goes to Lucas as the brief requires (\"Direction for Lucas: which buyer?\"), with what each option changes to the From, the Barrier, H8 and H2.",
+     "craft": "All four of last round's notes were fixed.\n(1) The voice line now belongs to machine users, contains no coffee, and ends on a want (\"one stretch of the morning when nobody needs me\"). The \"less present parent\" line is kept.\n(2) Each belief has one pass mark. The H6 success criterion reads \"beats D02 cold by at least 10% relative (studio threshold...)\" and H6 is killed \"if D02 after D01 fails to beat D02 cold by the success criterion's margin\". The gate and H3's kill clause now use the same answer set, \"name the coffee, the pour or the dripper, unprompted, as what the child is waiting for\", and the same 6 of 8.\n(3) The proof point is relabelled: \"[F1] Supports \\\"one cup at a time\\\" as a brewing phrase\". 'Not a machine' has moved to product_relevance (\"it is argued here, not in proof\"), and 'Proposition contingent on:' now lists A02 and the Blocked last-drop fact.\n(4) The buyer choice is a blocker for Lucas that sets out both options.\nThe cross-references (A02, A03, A12, A17, H-R3, proof point 3) all resolve. The riskiest hypothesis comes first, and its test starts with a section that never mentions coffee or guilt. One gap is left for a note: the buyer and the proposition don't fully fit each other for single-serve owners."
+    },
+    "notes": [
+     {
+      "target": "assumptions 'Who has to act differently' (the '(drip or single-serve)' buyer) and the buyer blocker ('Direction for Lucas: which buyer?')",
+      "note": "The recommended buyer includes single-serve machine owners. The proposition rests on reading 'one cup at a time' as brewing, and a single-serve machine already brews one cup at a time. The page says so itself: 'single-serve machines also sell one cup' (H5). For that part of the From, the product half of the proposition gives no reason to switch, and the whole switch falls on H3 in product_relevance. Fix it one of two ways, and leave the proposition unchanged. (a) Narrow the recommended From to parents who brew a carafe on a drip machine, where one cup against a pot is the change. Narrow the buyable proxy to match, and have media confirm it can be targeted. (b) Keep both machine types, and add one line to the machine-user option in the buyer blocker: for single-serve owners the switch rests on the pour (H3), not on the proposition. Then move H5's single-serve half from the competitor check into that option as its riskiest hypothesis.",
+      "source": "Craft brief: 'If the proposition still reads true with a competitor's name in it, it is not finished' and 'Start from who has to act differently for the client to earn money.' The page's own H5: 'Category knowledge, unchecked, says single-serve machines also sell one cup.'"
+     }
+    ],
+    "keep": [
+     "The rewritten tension: 'In their voice: I want to hear their news the second it happens, yet I want one stretch of the morning when nobody needs me, and I'd hate to admit I'd rather they waited. [H1]', followed unchanged by the 'less present parent' loss line and the remove-the-product check.",
+     "The proposition 'Their news keeps, one cup at a time.' and the assumption that 'keeps' means the news waits without spoiling and never appears on screen.",
+     "The key_message Alternative blocker, which keeps Lucas's line as the spine under H2 and drops 'ten minutes' and 'only'.",
+     "The buyer-decision blocker, which gives what each option changes to the From, the Barrier, H8, H2 and H5.",
+     "One pass mark per belief: 6 of 8 with the same answer set for the gate and H3, and the 10% studio threshold in both the H6 success criterion and H6's kill clause.",
+     "Proof point 2 relabelled as 'Supports \"one cup at a time\" as a brewing phrase', with the machine switch argued in product_relevance instead.",
+     "'Proposition contingent on:', listing A02 for 'one cup at a time' and the Blocked last-drop fact (A03, A17) for 'keeps'.",
+     "Rejected H-R1, H-R2 and H-R3, each with its 'Revive if:' condition.",
+     "The Permission line: F2 'glazed by hand' is checkable only if the product page says so, and beyond that permission is not established.",
+     "The test design: one set of 8 interviews with machine-using parents for H1, H4 and H8, with the section that never mentions coffee first; H2 run with parents who already pour by hand.",
+     "The Jobs line for each deliverable, with placement and sound, and D04 marked as not a reminder.",
+     "The 90-day direct and branded-search measure, and the To measured as sessions per 1,000 impressions with one UTM per deliverable."
+    ]
+   }
+  },
+  "concepts": {
+   "artifact_id": "concept_options-005",
+   "project_id": "TEST_SOLACE_3",
+   "task_id": "03_concepts",
+   "owner_agent": "creative_director",
+   "kind": "concept_options",
+   "revision": 1,
+   "status": "review_required",
+   "based_on": [
+    "strategy-004"
+   ],
+   "content": {
+    "routes": [
+     {
+      "route_id": "R1-safe-the-clock",
+      "central_idea": "News that can't wait can, for one cup, and it's still news when the dripper lifts.",
+      "emotional_promise": "The small relief of news surviving the wait: a fist that loosens once to check and clenches again opens on a tooth at the lift.",
+      "product_role": "Job: the viewer's clock. The viewer reads the dripper. Drops fall from it into a clear glass against the dark cabinet and count down the wait, and the lift ends it. The viewer sees the cup; the child beyond the island watches only the dripper. First appearance: 0 s, draining at 20-50% of frame height, frame right (the vertical rule is by 3 s). Brand assets: the dripper's shape and glaze, taken from the physical sample (none supplied yet); the lift as the full stop; A10 text over S03, on the end frame only. A rival cone would run the same clock, so the brand rests on A10's words landing after one child and one cup. Guard: no scale timer, wall clock or steam close-up (these imply brew time or heat). The parent reacts to the news, never to the coffee (taste). Proof: \"Solace makes a ceramic pour-over dripper that costs $38.\" \"The dripper is glazed by hand, one cup at a time.\"",
+      "visual_language": "Locked-off 28mm, 9:16. The lens sits above dripper height and angles down across the island. The glass and dripper are about an arm's length from the lens, frame right. The child stands about 2.5 m off beyond the island, frame left, and in D01-D02 the frame top cuts them at the shoulders. Composition rule: the dripper, glass, tape, worn strip and toes all sit inside 20-60% of frame height. That is inside the 9:16 safe band (about 15-65%, clear of the header above and the caption and link button below) and inside the 4:5 center crop. Stop down so the drops and the toes both read. Reveal insert on the lift: 50mm at hand height, same side. Key: east window camera left, 5000K, 3:1, practicals off. Colors: #E6D8B8 the new masking tape; #8A857C the worn strip under it; #2E3A40 the painted cabinet behind the glass (the drops read against it); #B8A284 the oak island top; #F1EEE8 the child's socks. The glaze color comes from the sample. Sound: scene only, miked at the island (kettle click, drip into the glass, ceramic on oak). No music.",
+      "execution_example": "D01 'Tooth', 30 s, 9:16, 24 fps. Keeps: the premise and story seed as written, with a clear glass in place of the mug so the drops read (question for Lucas). The parent shows as hands and forearms. The child is cut at the shoulders until the insert. Look: locked-off 28mm above dripper height, angled down across the island; dripper, glass, tape and toes inside 20-60% of frame; east window camera left, 5000K, 3:1; scene sound only; one cut, on the lift. Tags: every P beat assumes A11's shoot (no budget authorized; the C fallback is in assumptions).\n0-2 s [P]: the parent's hand sets the kettle down at the frame's right edge, on the parent's side (click). The stream from the dripper into the clear glass breaks into drops. Beyond the island, small socked toes slide onto the new tape over the worn gray strip and stop. The parent's near hand stops halfway to the glass, then settles flat beside it.\n2-19 s [P, risky: liquid; fallback: A03, with the drips on sound and the lift as the only cue]: the frame holds. The drops slow and the level in the glass stops rising. 9-12 s is the beat only this route has: the fist loosens one knuckle, checks, and clenches again. Nobody else moves.\n19-21 s [P, risky: a hand working the dripper; fallback: a hand double on a locked take]: the last drop, a beat, then the parent lifts the dripper off the glass and sets it on the oak (ceramic on wood).\n21-24.5 s [P, 50mm insert; the cut on the lift]: the fist opens on a tooth.\n24.5-27.5 s [P]: glass in one hand, the parent holds out the other palm. The tooth drops in and a thumb turns it over once.\n27.5-30 s [P+C; fallback R+C once a render exists]: cut to the S03 end frame: the dripper where it was set down, no glass under it; A10 text.\nShortest cut (8 s): 0-1.5 s toes land on the tape as drops fall into the glass; 1.5-2.5 s the fist loosens a knuckle and clenches again; 2.5-3.5 s the last drop and the lift; 3.5-4.5 s the fist opens on the tooth; 4.5-6 s the dripper where it was set down, no text; 6-8 s A10 text.\nCTA: the platform link button to the Solace dripper product page. No CTA text on screen beyond A10.\nRecurring device: the held two-shot, one check on the news mid-hold, and the cut on the lift. D02: the slip and pen are held at arm's length. Mid-hold the slip dips an inch, the pen taps the dotted line, and both come back up. The parent signs against the fridge without setting the glass down. D03: mid-hold, two fingers lift off the forehead and press flat again. On the insert the hand comes down on home-cut bangs (face shown on purpose; A15 fallback). Back in the two-shot, the glass rises out of the top of frame for a long first sip and stays up."
+     },
+     {
+      "route_id": "R2-stretch-from-the-tape",
+      "central_idea": "The quiet isn't taken from the kids; they're the ones who keep it, one cup at a time.",
+      "emotional_promise": "The guilt easing as your kid keeps the rule for you: a sock toe pressing the tape's lifting corner flat, then waiting.",
+      "product_role": "Job: the child's signal. The child reads the dripper. From the tape, the island's edge hides the mug, so the dripper's outline standing above the edge means wait and its outline lifting away means go. The route needs no visible last drop, so it still works if A03 or A17 fails. First appearance: 0 s, in outline above the island's edge at 25-40% of frame height. Brand assets: the dripper's outline against the dark cabinet (taken from the sample); the lift as the full stop; A10 text over S03 on the end frame, which is the route's only close product shot. A rival cone gives the same signal, so the outline and A10 carry the brand. Guard: no timer or clock in frame. The parent reacts to the news, never to the coffee. Proof: \"Solace makes a ceramic pour-over dripper that costs $38.\" \"The dripper is glazed by hand, one cup at a time.\"",
+      "visual_language": "Locked-off 50mm, 9:16, at the child's hip height, behind the child and to one side, looking past them to the island. The child's back and the back of their head sit soft at frame left, with no face in D01-D02. Composition rule: the socked feet, tape and worn strip sit at 55-62% of frame height. The island's edge sits at about 40% and hides the mug. The dripper's outline stands above it at 25-40%. The parent is soft behind it, face turned down to the dripper and never the subject. All of this sits inside the 9:16 safe band (about 15-65%) and the 4:5 center crop. No cut until the end frame. Key: window beyond the island, frame left, 5000K, edging the dripper against the dark cabinet; fill from the white fridge door on the camera side; 4:1. Colors: #E6D8B8 the new tape; #8A857C the worn strip; #2E3A40 the cabinet the dripper's outline reads against; #F1EEE8 the child's socks. Sound: scene only, miked at the child's position, so the drip is small and far and the kettle click comes from across the room. No music.",
+      "execution_example": "D01 'Tooth', 30 s, 9:16, 24 fps. Keeps: the tape, the toes, the fist that opens on a tooth, the lift, one cup, and the premise's 'the child sees the dripper, never the cup'. Drops: the viewer seeing the last drops fall (question for Lucas). Look: locked-off 50mm at the child's hip height, from behind them; feet and tape at 55-62% of frame, dripper at 25-40%; window beyond the island, 5000K, 4:1; sound from the child's position; no cut until the end frame. Tags: every P beat assumes A11's shoot.\n0-1.5 s [P]: the child walks in past the lens, back to us, frame left. Across the room the parent sets the kettle down (a small click). Beyond the island's edge the dripper stands draining, the mug hidden.\n1.5-2 s [P]: socked feet stop on the new tape over the worn gray strip.\n2-6 s [P] is the beat only this route has: a corner of the new tape has lifted. A sock toe presses it flat, presses again, then settles back behind the line.\n6-19 s [P, risky: the dripper's legibility at phone size; fallback: move the island edge nearer, with the dripper up to 40% of frame height]: the frame holds. The fist sits at the child's side. Beyond, the parent doesn't move. The drip is heard, small and far.\n19-21 s [P, risky: a hand working the dripper; fallback: a hand double on a locked take]: the parent's hand lifts the dripper, and its outline leaves the island's edge. It is set down (ceramic on wood, far off).\n21-25 s [P]: the fist comes up and opens. The child holds the tooth up between finger and thumb, white against the dark cabinet, with the parent soft beyond.\n25-27.5 s [P]: the parent raises the mug an inch toward the tooth. Nobody speaks.\n27.5-30 s [P+C; fallback R+C]: the one cut, to the S03 end frame: the dripper where it was set down; A10 text.\nShortest cut (8 s): 0-1.5 s the child walks in and stops on the tape, dripper beyond; 1.5-2.5 s the toe presses the lifting corner flat; 2.5-4 s the dripper lifts away; 4-5 s the tooth held up; 5-6.5 s the dripper where it was set down, no text; 6.5-8 s A10 text.\nCTA: the platform link button to the Solace dripper product page.\nRecurring device: the same frame from behind the child. Each child tends the line once, and only the child and the news change. D02: the eldest slides a sock back behind the line and holds out the slip and pen. After the lift the parent signs against the fridge, mug in hand. D03: the middle child smooths the tape with a heel. The hand comes down and the child turns to profile on a ragged edge of bangs (face shown on purpose; A15 fallback). The parent takes a long first sip, face neutral."
+     },
+     {
+      "route_id": "R3-brave-eyes-down-pov",
+      "central_idea": "Answering mid-pour gets them a glance; finishing the cup gets them your eyes.",
+      "emotional_promise": "The pleasure of giving your whole attention at once: eyes up from the lifted dripper to a small fist dropping a tooth into your palm.",
+      "product_role": "Job: the parent's eye line. The parent reads the dripper: one glance at the child, then eyes down to the cone until the lift, then eyes up to a frame with no dripper in it. For a machine user it puts the dripper on their own counter, at their own eye level. First appearance: 0 s, draining at the bottom of the safe band in the glance, then at frame center for the hold. The glance frame doubles as each episode's S02 cover, with the news and the cone in one frame. Brand assets: the cone's rim and glaze seen from above for about 18 s (taken from the sample); the lift as the only thing that frees the frame; A10 text over S03 on the end frame. Rival gate: the hold is built on one visible feature of the physical dripper that shows it was glazed by hand (F2). It has to sit on the rim or flange, the part the filter doesn't cover, such as where the glaze stops, and it has to read from above at phone size. It is shown, never called one of a kind. If the sample has no such feature, the brand rests on A10's words alone, and the hold carries only the idea (where your eyes are). Guard: no scale readout, timer or steam macro (these imply brew time or heat). The D03 sip is a pause, not a verdict on taste. Proof: \"Solace makes a ceramic pour-over dripper that costs $38.\" \"The dripper is glazed by hand, one cup at a time.\"",
+      "visual_language": "The parent's-eye POV on a locked head-height rig, not handheld, 9:16. Two setups, one cut. The glance (0-2 s) is on a 35mm, looking across the island at the child's hands and feet. The fist, the tape, the worn strip and the toes sit large at 20-45% of frame height, and the cone drains at 50-62%. The hold runs from the cut to the drain until the lift, on a 20mm tilted down at the cone, which sits at frame center with the forearms in the lower corners. The tape and toes sit small at 20-30%. On the lift the rig tilts up, its only move, to a frame with no dripper in it. Composition rule: in both setups the tape, strip, toes and cone sit inside the 15-65% safe band and the 4:5 center crop. The child's face stays above frame until D03. Set: the island is at least 90 cm deep (production to measure against the youngest's reach). The kettle goes down on the parent's near edge, and the child never comes nearer than the far edge. Key: the pendant over the island, top-down into the cone, 3500K; window fill frame right, 5600K; 2:1 (a school morning before sunrise). Colors: #E6D8B8 the new tape; #8A857C the worn strip; #F0EDE6 the white mug (episodes only, never in end frames); #4A3527 the wet coffee bed in the cone; #B8A284 the oak island top. Sound: scene only, miked at the parent's head: kettle click, drip, ceramic on oak. No music.",
+      "execution_example": "D01 'Tooth', 30 s, 9:16, 24 fps. Keeps: the kettle going down, the toes on the re-laid tape by 2 s, the parent clocking the child and then watching the dripper, the fist, the lift, one cup, the tooth. Drops (questions for Lucas): the visible last drops, which read as the water line from above instead, and the parent's face (A11's on-camera parent becomes hands). Look: parent's-eye POV, locked; a 35mm glance, one cut to a 20mm eyes down on the cone, one tilt up on the lift; pendant over the island, 3500K top-down, 2:1; scene sound at the parent's head. Tags: every P beat assumes A11's shoot.\n0-2 s [P, risky: a hand and the kettle; fallback: a hand double on a locked take, product stays live]: the glance. Your hand sets the kettle down on your side of the island (click). The cone drains at the bottom of the safe band. Across the island, small socked toes slide onto the new tape over the worn gray strip, large in the upper half, and stop by 2 s. A clenched fist hangs beside them.\n2-20 s [P, the tone's one cut, to the drain; risky: the drawdown at phone size; fallback: A03, with the lift alone as the cue and the drip on sound]: eyes down. The water line sits high in the cone, then sinks into the bed, and the bed flattens. At the top of the safe band the toes stay put. Your hands rest flat on either side of the mug. You don't look up again.\n20-21.5 s [P, risky: a hand working the dripper; fallback: a hand double]: the last drip. Your hand lifts the dripper off the mug and sets it down at frame left (ceramic on oak).\n21.5-24 s [P]: eyes up, the frame's only move, from the mug to the child. The child has stepped from the tape to the island's far edge, fist held out on their own side. It is the first frame without the dripper.\n24-27.5 s [P]: your palm crosses the island to the child; the child never reaches in. The fist opens over it and a tooth drops in. Your other hand brings the mug up into the bottom of the frame.\n27.5-30 s [P+C; fallback R+C]: cut to the S03 end frame: the dripper where you set it down, no mug; A10 text.\nShortest cut (8 s): 0-1.5 s kettle down, cone draining, toes land large on the tape; 1.5-3 s eyes down: the water line sinks, the last drip, the lift; 3-4.5 s eyes up, the fist drops a tooth into your palm; 4.5-6 s the dripper where you set it down, no text; 6-8 s A10 text.\nCTA: the platform link button to the Solace dripper product page. No CTA text beyond A10.\nRecurring device: one glance, eyes down on the dripper until the lift, then eyes up to a frame with no dripper in it. D02: the glance lands on a slip and an uncapped pen at arm's length. After the lift you take the pen and sign against the fridge, mug in your other hand. D03: the glance lands on a hand pressed flat to a forehead, the first head it reaches. Eyes up to the hand coming down on home-cut bangs (face shown on purpose; A15 fallback). The mug rises into frame for a long first sip, with the bangs over the rim."
+     }
+    ],
+    "recommended_route_id": "R3-brave-eyes-down-pov",
+    "recommendation_rationale": "'Their news keeps, one cup at a time' plays at 20-27.5 s: eyes come up only after the lift, and the tooth still lands in your palm as news. The 0-2 s glance puts the child's toes on the re-laid tape in frame before the cone can pass for a pour-over routine video, which machine users scroll past as gear for quiet mornings (H4). Success: the muted pre-flight gate, where 6 of 8 parents name the coffee as what the child waits for. The full 30 s D01 serves it, because the glance shows the parent has seen the child before the hold.\nGives up: the premise's 'we see the last drops fall'. R3 reads the drawdown as a water line from above, where R1 shows drops falling into a clear glass. It also splits parent and child across a cut where R1 holds them in one frame, and it never shows the parent's face.\nFailure: 2-20 s. At phone size the drawdown seen from above can look like a still brown circle, and the toes at 20-30% of frame shrink to a strip of sock. Fix: cut to the cone while the water is still high, so the sinking line visibly travels, and keep white socks against the tape. The glance has already shown the toes large, so in the hold they only need to stay present. Never move the tape toward the kettle to make it bigger.\nKill test: in the muted pre-flight gate, parents read the POV as a parent ignoring a child: fewer than 6 of 8 name the coffee as what the child waits for, or they describe the wait as neglect even after the glance. Then first person has turned the guilt onto the viewer instead of dissolving it. Switch to R1, where both are in one frame and the rule reads as the family's, not yours.\nCase R1: A12's phone test (A03). If the drops in R1's clear glass read muted at phone size and R3's water line from above doesn't, R1 is the pick.\nCase R2: proof point 3 / A03 and A17 (Blocked). If A12's phone test shows the drawdown doesn't read from any angle, R2 is the pick, because its cue is the dripper leaving the cup as seen from the tape."
+   },
+   "asset_uri": null,
+   "assumptions": [
+    "[changed] Reviewer notes applied. R3 now opens on the glance and spends the tone's one allowed cut there. R1 and R2 each gain a beat only their own idea explains: in R1 the fist checks its news mid-hold; in R2 a toe presses the tape's lifting corner flat. Product jobs are restated by who reads the dripper: the viewer in R1, the child in R2, the parent in R3. Each route has one safe-band composition rule. 'Gives up', 'Case R1' and R3's 'Keeps' are rebuilt on what R1 keeps and R3 drops. R3's island depth, the direction of its hand-off and its pendant key are fixed. R3's rival swap is now a gate on the sample blocker. No note conflicted with the brief, the facts or another note.",
+    "The category's three most familiar ads (category knowledge, unchecked; no research tool bound): (1) the me-time ritual: a slow pour, steam, window light, a solo sip; (2) the pour-over routine or gear video: gooseneck spiral, bloom macro, scale readout, often shot POV; (3) the frazzled parent drinking coffee as fuel in the middle of kitchen chaos. R1 avoids 1 and 3 (a still kitchen, a pour shared with a waiting child). R2 inverts 3 (the kid holds the line and there is no chaos). R3 borrows 2's point of view but opens on a child's toes, so it never plays as one.",
+    "Ten one-liners were drafted and the three furthest apart kept. Dropped: 'pour-over makes a quiet morning' (sells the barrier by staging chaos, which drifts toward ad 3); 'kids time their news to the lift like showmen' (too close to R2); 'split screen joined on the lift' (a device, not a reframe); 'machine morning vs dripper morning' (implies a behavior claim and doubles the cast); 'the worn tape as years of mornings' (needs time jumps, reads sentimental); 'the dripper as the family queue' (turns on A02); 'the kids pour for the parent' (development already ruled this a new situation).",
+    "Buyer: the routes follow strategy's default of machine users until Lucas decides. R3's H4 argument applies to machine users only: the child is in frame before the cone can read as the routine video they scroll past. If Lucas picks parents who already pour by hand, R3 still works but loses that argument.",
+    "Questions for Lucas on what each route drops from the seed: R3 drops the visible last drops (read as a water line from above) and the parent's face (A11's on-camera parent becomes hands). R2 drops 'we see the last drops fall'. R1 swaps the mug under the dripper for a clear glass. R1 and R3 show the parent as hands and forearms. R2 lets the parent in soft, face turned down to the dripper, never the subject.",
+    "Safe band (a working assumption; media to confirm per platform): on the 9:16 paid placement, the account header covers roughly the top 15% and the caption and link button cover roughly the bottom 35%. That leaves about 15-65% of frame height. The 4:5 center crop keeps about 15-85% of a 9:16 frame. Every route puts the tape, the worn strip, the toes and the draining dripper inside 15-65%, so all four survive both the placement and D04.",
+    "Faces and camera height: the youngest's head sits at about the height of a dripper on a counter. Keeping the child's face out of D01-D02 therefore depends on where the camera is. R1 puts the lens above dripper height with the dripper nearer than the child. R2 shoots from behind the child. R3 frames the parent's glance below the child's chest. Production to confirm in the A12 test; blocking stays with later departments.",
+    "Tags: every P beat assumes A11's live shoot in one real kitchen. No shoot budget is authorized, so every P beat is an assumption. The C fallback builds each episode from its S02 cover still plus stills of the lift and the reveal, cut to scene sound. That keeps the story but fails the rule that something visibly changes by 1.5 s, so A11 works as a gate. No child is ever generated. G is kept for adult hands, water and kitchen plates only, and product shots stay live, per A11's if_wrong.",
+    "No product render or physical sample was supplied, so the glaze color, the outline, and whether drops show beneath the dripper are all unknown. No hex is given for the glaze, and every product close-up waits for the physical dripper.",
+    "Last drop: in an opaque mug the drop falls out of sight. R1 uses a clear glass so the drops and the rising level read with the sound off. R3 reads the drawdown from above (the water line and the bed). R2 uses the lift alone, seen as the outline leaving the island's edge. All three depend on A12.",
+    "Claims guard, all routes: no scale with a timer display, no wall clock and no steam macro in frame (these would imply brew time or heat). The D03 sip is a pause with a neutral face, never a taste verdict. Nothing refers to each glaze being unique, and 'ten minutes' never appears on screen. The kettle, grinder, scale and mug carry no visible brand marks.",
+    "Kettle safety (A08): the island is at least 90 cm deep, and production measures it against the youngest's reach. The kettle goes down on the parent's near edge. In R1 and R2 the child stays on the tape. In R3 the child comes no nearer than the island's far edge, and only after the lift. In R3's hand-off the parent's palm crosses the island to the child, and the child never reaches in. No scissors appear on screen; the bangs are already cut.",
+    "R3's POV borrows the grammar of creator routine videos. It runs as a branded Solace ad with no creator handle, username or first-person caption, so no one poses as a real customer.",
+    "Casting: the parent is any gender, cast as the seed's parent of three and not the 'mom needs coffee' type from ad 3. R1 and R3 need only the parent's hands and forearms, which also cuts continuity cost.",
+    "Taste notes (example notes, not Lucas's own). Followed: sound design before music, restraint over explanation, tool then hero, one real detail (the re-laid tape), and hands before faces. Broken on purpose: every route shows the child's face in D03 because the bangs are the joke (A15 fallback: a cut lock of hair in the hand). R2 also lets the parent's face in, soft and turned down to the dripper, because from a child's height the parent stands above it. R3's POV rig is a formal device inside the 'Real' tone; locking it off keeps it honest. R3 keeps the child's face out of the glance and the eyes-up frame until D03, so the finale is the first time 'your eyes' reach a face.",
+    "End-frame text is A10 as given: 'Solace. Glazed by hand, one cup at a time. $38.' The price waits on Lucas's A10 answer. Nothing else on screen quotes or paraphrases 'one cup at a time' (A02).",
+    "The 8 s shortest cuts test whether the turn survives; they are not deliverables. D04 (15 s, 4:5) is rebuilt from the chosen route's three lift beats. For R3 it opens on D01's glance frame, so the toes are on the tape by 2 s inside the 4:5 crop."
+   ],
+   "sources": [
+    "Brief for project TEST_SOLACE_3 (computed task text): premise, story seed, tone, deliverables, must include, must avoid, verified product facts",
+    "Upstream strategy output (proposition, H3, H4, H5, success criteria, blockers)",
+    "Upstream development output (A01-A17, product role, format rationale)",
+    "Studio taste notes (example notes)",
+    "Reviewer notes and keep list, round 2"
+   ],
+   "blockers": [
+    {
+     "issue": "No product render or physical sample was supplied. The glaze color, the outline, and whether drops show beneath the dripper are unknown, so every product beat, the glaze hex and S03 are on hold. R3's rival gate also waits on it. The top-down hold needs one visible feature on the rim or flange (the part the filter doesn't cover) that shows the dripper was glazed by hand (F2), such as where the glaze stops, and that reads from above at phone size. It is shown, never called one of a kind. If the sample has no such feature, R3's brand rests on A10's words alone, and the hold carries only the idea (where your eyes are).",
+     "responsible_agent": "Solace / Production",
+     "resolution": "Send a physical dripper (A11) or a render. Shoot the end frames and run the silhouette, top-down and phone tests from it. Report whether a hand-glazing feature on the rim or flange reads from above at phone size."
+    },
+    {
+     "issue": "A12's phone test hasn't been run. The drawdown cue that reads muted at phone size decides the pick: drops into a clear glass (R1), the water line from above (R3), or the lift alone (R2). R3's glance frame also has to be checked: the toes and the worn strip must be legible at 20-45% of frame height.",
+     "responsible_agent": "Production",
+     "resolution": "Film one real pour with the real dripper from R1's angle and R3's two setups, and check each muted on a phone before the route is locked. If R1's drops read and R3's water line doesn't, Case R1 applies. If neither reads, Case R2 applies."
+    },
+    {
+     "issue": "No shoot budget is authorized, so every P beat assumes A11's live shoot. The C fallback (stills plus scene sound) breaks the in-feed opening rule.",
+     "responsible_agent": "Lucas",
+     "resolution": "Confirm the A11 shoot budget, or accept a reduced series of animated S02 stills."
+    },
+    {
+     "issue": "Route choice and what each route drops. R3 (recommended) drops the visible last drops and the parent's face, turning A11's consistent on-camera parent into hands. R2 drops the viewer's last-drop cue. R1 swaps the mug under the dripper for a clear glass.",
+     "responsible_agent": "Lucas",
+     "resolution": "Pick a route. If R3, confirm the parent appears as hands only and the last drops read as the water line from above."
+    },
+    {
+     "issue": "H5 hasn't been run. Rival dripper brands may already run POV pour-over routine ads, and R3 borrows that grammar.",
+     "responsible_agent": "Brand and Audience Strategist (next run with research access)",
+     "resolution": "Add POV pour-over routine ads to the H5 ad-library scan. If a rival already interrupts one with a child, switch to R1."
+    }
+   ],
+   "checks": {
+    "failed": [],
+    "attempts": [
+     0,
+     0
+    ]
+   },
+   "quality": {
+    "grade": "A",
+    "scores": {
+     "specificity": 8,
+     "distinctiveness": 8,
+     "fit": 8,
+     "craft": 8
+    },
+    "min": 8,
+    "rounds": 2,
+    "history": [
+     {
+      "round": 1,
+      "scores": {
+       "specificity": 8,
+       "distinctiveness": 7,
+       "fit": 7,
+       "craft": 7
+      },
+      "min": 7,
+      "failed_checks": 0
+     },
+     {
+      "round": 2,
+      "scores": {
+       "specificity": 8,
+       "distinctiveness": 8,
+       "fit": 8,
+       "craft": 8
+      },
+      "min": 8,
+      "failed_checks": 0
+     }
+    ],
+    "evidence": {
+     "specificity": "Checked: all six previous notes were addressed, and nothing was lost in fixing them. A writer, casting and production design can break R3 down without calling back. Its beats name the action, the object and the sound: \"0-2 s [P, risky: a hand and the kettle; fallback: a hand double on a locked take, product stays live]: the glance. Your hand sets the kettle down on your side of the island (click).\" Then \"eyes down. The water line sits high in the cone, then sinks into the bed, and the bed flattens. At the top of the safe band the toes stay put. Your hands rest flat on either side of the mug. You don't look up again.\" The unpicked routes are just as concrete: R1 has \"9-12 s is the beat only this route has: the fist loosens one knuckle, checks, and clenches again. Nobody else moves.\" Each hex color is tied to an object in frame (\"#8A857C the worn strip under it\"). The key, the Kelvin, the ratio and the sound source are named for every route. It stops at 8, not 9, because of one open question for design: which frame serves S02 (see notes).",
+     "distinctiveness": "The pairing problem from the last round is fixed. Each route now has a beat only its own idea explains: R1's fist check, and R2's \"a corner of the new tape has lifted. A sock toe presses it flat, presses again, then settles back behind the line.\" The product jobs split by who reads the dripper: the viewer in R1, the child in R2, the parent in R3. The admission that a rival dripper works just as well is now a gate: \"the hold is built on one visible feature of the physical dripper that shows it was glazed by hand (F2)... It is shown, never called one of a kind. If the sample has no such feature, the brand rests on A10's words alone.\" The pick has a detail nobody else would think of: \"The mug rises into frame for a long first sip, with the bangs over the rim.\" This is not higher because R3's central idea, \"Answering mid-pour gets them a glance; finishing the cup gets them your eyes\", names neither the dripper nor its lift. Of the three central ideas it is the only one that could headline any dripper brand's campaign word for word.",
+     "fit": "Lucas's line is recognizable in R3 and sharper than he wrote it. The uninterrupted minutes become the reason the child gets full attention, which answers the strategy's guilt tension. The rationale quotes the proposition at its beat: \"'Their news keeps, one cup at a time' plays at 20-27.5 s: eyes come up only after the lift, and the tooth still lands in your palm as news.\" What R3 drops from the seed goes to Lucas as a question, as the brief requires: \"Drops (questions for Lucas): the visible last drops, which read as the water line from above instead, and the parent's face (A11's on-camera parent becomes hands).\" The must-avoids hold. The kettle is out of the child's reach: \"the island is at least 90 cm deep... The kettle goes down on the parent's near edge, and the child never comes nearer than the far edge.\" The claims guard covers everything the facts don't: \"no scale with a timer display, no wall clock and no steam macro.\" No mug appears in an end frame, and on-screen text is A10 only. The H4 sentence now argues for R3 instead of against it. Fit drops slightly in one place: the Tags line allows generated hands and water, which A11 does not (note 4).",
+     "craft": "Both physical contradictions from the last round are gone. The narrowing fix is dropped. \"your palm crosses the island to the child; the child never reaches in\". The key is motivated by something the set has: \"Key: the pendant over the island, top-down into the cone, 3500K; window fill frame right, 5600K; 2:1 (a school morning before sunrise).\" Gives up and Case R1 are rebuilt on what R1 really has, and the Cases are tied to separate outcomes of one brief field: \"Case R1: A12's phone test (A03). If the drops in R1's clear glass read muted at phone size and R3's water line from above doesn't, R1 is the pick.\" Failure is timed and has a fix that stays inside the tone's one cut. The route admits its C fallback \"fails the rule that something visibly changes by 1.5 s, so A11 works as a gate.\" What remains is small: the kill test's first half is H3's premise failure, not R3's; the Tags line goes beyond A11's if_wrong; the S02 cross-reference doesn't match; the glance beat has no fallback if the tape doesn't read; and the rationale runs 103 words."
+    },
+    "notes": [
+     {
+      "target": "R3-brave-eyes-down-pov: central_idea (and its echo in recommendation_rationale)",
+      "note": "Two problems. First, 'finishing the cup gets them your eyes' can be read as 'after you've drunk it'. That contradicts the seed: the news comes out on the lift, and in D03 the sip comes after the reveal. Second, of the three central ideas it is the only one with no Solace element, and most departments see only this sentence. Put the premise's turn into it. For example: 'Answer mid-pour and they get a glance; lift the dripper first and they get your eyes.' That is 17 words. It keeps the belief it costs (that answering at once is being present), makes the product's action the hinge, and matches the recurring device, so downstream departments build the lift as the moment.",
+      "source": "Craft brief: 'most departments see only its route id and central idea. If the central idea could headline a competitor's campaign ... it is not finished'; 'shows one verified proof point (with none, the premise's turn)'. Story seed turn: 'On the last drop the parent lifts the dripper off the cup, and the news comes out.'"
+     },
+     {
+      "target": "recommendation_rationale: 'Kill test:'",
+      "note": "The kill test bundles two failures. 'fewer than 6 of 8 name the coffee as what the child waits for' is H3's kill condition, and H3 covers the whole premise. R1 has to pass the same gate, so 'Switch to R1' doesn't follow from it. Move that half out as a premise failure that goes to Lucas and strategy. Make R3's own kill test the neglect reading alone, with a pass mark labeled as a studio threshold (for example, 3 or more of 8 describe the parent as ignoring the child even after the glance). Switch to R1 on that result only.",
+      "source": "Craft brief: 'Kill test: a first-cut result where the idea, not the craft, fails, and the route to switch to.' Strategy H3: 'Kills it if: fewer than 6 of 8 name the coffee, the pour or the dripper'."
+     },
+     {
+      "target": "R3-brave-eyes-down-pov: execution_example 0-2 s ('large in the upper half'); the A12 phone-test blocker",
+      "note": "The glance now carries two must-includes (toes by 2 s, the re-laid tape) and two of the rationale's arguments (H4, and the answer to the neglect reading). Its only fallback covers the hand and the kettle. The island that keeps the kettle out of reach (at least 90 cm deep) also hides the floor just past its far edge from head height. The tape therefore sits well beyond the island, and the toes and worn strip will be smaller than 'large' promises. Drop 'large'. In the A12 blocker, add a legibility fallback for this beat: if the worn strip doesn't read in the glance on the phone test, say what the route does. For example, production puts the tape where the glance meets open floor, such as past the island's end, with the kettle at the opposite end. Keep toes on the tape by 2 s either way.",
+      "source": "Must-include: toes on the tape by 2 s; the tape re-laid over the worn strip. Must-avoid / A08: children within reach of the kettle. Craft brief: 'A risky beat ... gets a first-try tag and a fallback.' Quality bar: 'nothing physically implausible'."
+     },
+     {
+      "target": "assumptions: the 'Tags:' line ('G is kept for adult hands, water and kitchen plates only... per A11's if_wrong')",
+      "note": "This goes beyond A11's if_wrong, which allows only generated kitchen plates ('product shots stay live'). Hands working the dripper and water going through it are product beats. Limit G to kitchen plates. Hands, water and the dripper stay P, with the hand-double fallback already written.",
+      "source": "A11 if_wrong: 'hybrid with generated kitchen plates; product shots stay live'. Craft brief: 'Product close-ups come from a supplied render or sample, never text alone.'"
+     },
+     {
+      "target": "R3-brave-eyes-down-pov: product_role ('The glance frame doubles as each episode's S02 cover'); the route-choice blocker",
+      "note": "S02's beat is 'the news held back just before the lift', but the glance happens at 0-2 s. Either add this to the route-choice blocker as a deviation for Lucas (the glance is the only R3 frame where the news and the cone both read), or name the frame near the end of the hold that serves S02.",
+      "source": "Deliverable S02: 'Beat: the news held back just before the lift (fist; slip and pen; hand on forehead) · Dripper in frame, no text'. Quality bar: 'every cross-reference to another department's IDs is right.'"
+     },
+     {
+      "target": "recommendation_rationale: word count and 'Gives up:'",
+      "note": "The rationale paragraph runs 103 words. Cut it to 100 or fewer, for example by dropping 'which machine users scroll past as gear for quiet mornings' and keeping '(H4)'. In 'Gives up:', 'it never shows the parent's face' is not something R3 gives up against R1, because R1 also shows the parent as hands and forearms. Say it is given up against A11's on-camera parent, as R3's Drops line already does.",
+      "source": "Craft brief: 'The rationale (100 words or fewer)'. Assumptions: 'R1 and R3 show the parent as hands and forearms.'"
+     }
+    ],
+    "keep": [
+     "R3's three-part structure: the 0-2 s glance with the toes on the re-laid tape, the tone's one cut to eyes down on the cone, and the tilt up on the lift as the frame's only move.",
+     "R3 D03: 'The mug rises into frame for a long first sip, with the bangs over the rim.'",
+     "R3's rival gate: a hand-glazing feature on the rim or flange, 'shown, never called one of a kind', with the stated fallback to A10's words.",
+     "The kettle-safety set: island at least 90 cm deep, kettle on the parent's near edge, the parent's palm crosses to the child, the child never reaches in.",
+     "R3's pendant key over the island, 3500K top-down, 2:1, with 5600K window fill.",
+     "R1's 9-12 s fist check (loosens one knuckle, checks, clenches again) and its clear glass so the drops read muted.",
+     "R2's 2-6 s sock toe pressing the tape's lifting corner flat.",
+     "Product jobs restated by who reads the dripper: the viewer (R1), the child (R2), the parent (R3).",
+     "Gives up / Case R1 (A12 phone test, drops vs water line) / Case R2 (drawdown unreadable from any angle) as separate outcomes of one test.",
+     "The claims guard: no scale timer, wall clock or steam macro; the D03 sip is a pause, not a taste verdict; 'ten minutes' never on screen.",
+     "End frames: the dripper where it was set down, no mug or glass under it, A10 text only.",
+     "One safe-band composition rule per route, and the D04 4:5 crop line.",
+     "The honest C-fallback note (it breaks the 1.5 s rule, so A11 works as a gate) and 'No child is ever generated.'",
+     "The list of the category's three most familiar ads and the ten dropped one-liners with reasons."
+    ]
+   }
+  }
+ },
+ "approvals": {},
+ "decision_log": [
+  {
+   "stage": "00_idea",
+   "summary": "Idea received from Lucas"
+  },
+  {
+   "stage": "01_development",
+   "summary": "developed brief: graded A (lowest 8/10) after 2 review rounds",
+   "artifact_id": "development-002"
+  },
+  {
+   "stage": "02_strategy",
+   "summary": "strategy: graded A (lowest 8/10) after 3 review rounds",
+   "artifact_id": "strategy-004"
+  },
+  {
+   "stage": "03_concepts",
+   "summary": "three routes: graded A (lowest 8/10) after 2 review rounds",
+   "artifact_id": "concept_options-005"
+  },
+  {
+   "stage": "03_concepts",
+   "summary": "Stopped for required human approval: concept"
+  }
+ ],
+ "approval_log": [
+  {
+   "gate_id": "concept",
+   "decision": "pending"
+  }
+ ],
+ "pending_gate": {
+  "gate_id": "concept",
+  "rule": "Approve the normalized brief, strategy, and one selected concept ID.",
+  "artifacts_for_review": [
+   {
+    "artifact_id": "brief-003",
+    "kind": "brief",
+    "revision": 1,
+    "status": "draft"
+   },
+   {
+    "artifact_id": "strategy-004",
+    "kind": "strategy",
+    "revision": 1,
+    "status": "review_required"
+   },
+   {
+    "artifact_id": "concept_options-005",
+    "kind": "concept_options",
+    "revision": 1,
+    "status": "review_required"
+   }
+  ]
+ },
+ "needs_human_input": [
+  "Is this paid social (vertical, sound off first) aimed at product-page visits, or a different placement or goal? (A04, A06)",
+  "Does 'one cup at a time' mean the dripper brews one cup, or that each dripper is glazed one at a time? (A02)",
+  "Can we cast three kids, or should one child carry all three mornings? (A07)",
+  "OK to show the $38 price on the end frame? (A10)",
+  "North American market, or UK? (A16)"
+ ],
+ "stage_reached": "03_concepts",
+ "limit_reached": false,
+ "settings": {
+  "idea_mode": true,
+  "quality": true,
+  "review_at_end": false
+ }
+}

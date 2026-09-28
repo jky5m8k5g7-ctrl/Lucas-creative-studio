@@ -1,0 +1,20 @@
+{
+ "direction": [
+  {
+   "id": "LD-01",
+   "note": "Shoot it in a 35mm film style. Every shot reads as 35mm motion-picture film: fine visible grain, soft halation around highlights and practicals, film colour with gentle highlight roll-off and deep but not crushed blacks, and the depth of field and perspective of 35mm-format lenses. Keep the look consistent across every deliverable, the 9:16 cut-down and the stills included, and say how. Footage the audience sees on Venus's phone screen is in-world phone video: decide on purpose whether it stays phone video or is shown as film, and say why.",
+   "departments": [
+    "cinematographer",
+    "storyboard_artist",
+    "generation_supervisor"
+   ],
+   "lucas_words": "I would for it be shot in 35mm film style"
+  }
+ ],
+ "targets": {
+  "cinematographer": {
+   "min": 10,
+   "rounds": 5
+  }
+ }
+}
