@@ -93,6 +93,8 @@ try {
   project('foxtrot', state({ pending_gate: { gate_id: 'concept', blocked_by: ['strategy'] }, stage_reached: '03_concepts' }))
   // Blocked: the package gate can't be approved while work is stale.
   project('hotel', state({ pending_gate: { gate_id: 'production_plan', blocked_by_stale: ['storyboard', 'generation_plan'] } }))
+  // Lucas approved the route; the next run applies it.
+  project('india', state({ pending_gate: { gate_id: 'concept' }, approvals: { concept: { approved: true } }, stage_reached: '03_concepts' }))
   // A new project: an idea and no saved state yet.
   project('golf', undefined, { idea: { idea: 'A short film about a lighthouse keeper who collects lost umbrellas.', hints: {} } })
   // Never listed: test and scratch projects, dot folders, a corrupt state, a folder with nothing in it.
@@ -107,9 +109,9 @@ try {
   ok(a.code === 0 && !!s, 'runs and writes a snapshot: ' + a.stderr.trim())
   ok(s && JSON.stringify(Object.keys(s)) === JSON.stringify(['written_at', 'floor_project', 'building', 'agents_working', 'totals', 'projects', 'production']), 'the snapshot has the studio fields, in order')
   const slugs = s.projects.map(p => p.slug).sort()
-  ok(JSON.stringify(slugs) === JSON.stringify(['alpha', 'bravo', 'charlie', 'delta', 'foxtrot', 'golf', 'hotel']), 'test-, zz-, dot, corrupt and empty folders are not listed: ' + slugs.join(','))
+  ok(JSON.stringify(slugs) === JSON.stringify(['alpha', 'bravo', 'charlie', 'delta', 'foxtrot', 'golf', 'hotel', 'india']), 'test-, zz-, dot, corrupt and empty folders are not listed: ' + slugs.join(','))
   ok(/echo/.test(a.stderr) && /state\.json/.test(a.stderr), 'a corrupt state.json is skipped with a warning')
-  ok(a.stdout.trim().split('\n').length === 1 && /7 projects/.test(a.stdout), 'prints one summary line: ' + a.stdout.trim())
+  ok(a.stdout.trim().split('\n').length === 1 && /8 projects/.test(a.stdout), 'prints one summary line: ' + a.stdout.trim())
   ok(fs.readdirSync(OUT).every(f => !f.endsWith('.tmp')), 'no temp file is left behind')
   const p0 = proj(s, 'alpha')
   ok(JSON.stringify(Object.keys(p0)) === JSON.stringify(['slug', 'title', 'format', 'logline', 'status', 'status_text', 'stage', 'gate', 'package', 'departments', 'open_questions', 'direction', 'next', 'updated_at']), 'each project has the contract fields, in order')
@@ -133,7 +135,7 @@ try {
   ok(dept(pb, 'copywriter').target === 9 && dept(pb, 'copywriter').met_target === true && dept(pb, 'cinematographer').target === 10 && dept(pb, 'cinematographer').met_target === false, 'bars from direction.json that the state has not reviewed against yet: met and missed')
 
   // Waiting.
-  ok(pb.status === 'waiting' && pb.gate && pb.gate.id === 'production_plan' && pb.gate.label && /review/.test(pb.status_text) && /Approval Desk/.test(pb.next), 'waiting at the production_plan gate: ' + JSON.stringify([pb.status, pb.gate, pb.status_text]))
+  ok(pb.status === 'waiting' && pb.gate && pb.gate.id === 'production_plan' && pb.gate.label === 'Package approval' && /review/.test(pb.status_text) && /Approval Desk/.test(pb.next), 'waiting at the production_plan gate: ' + JSON.stringify([pb.status, pb.gate, pb.status_text]))
   ok(pb.gate.since === fs.statSync(path.join(bravo, 'state.json')).mtime.toISOString(), 'the gate is waiting since its state was saved')
   ok(pb.package.grade === 'A' && pb.package.would_approve === 3, 'a package graded A')
 
@@ -146,20 +148,24 @@ try {
   ok(pf.status === 'blocked' && pf.gate && pf.gate.id === 'concept' && /answers/.test(pf.status_text), 'blocked direction needs Lucas: ' + JSON.stringify([pf.status, pf.status_text]))
   const ph = proj(s, 'hotel')
   ok(ph.status === 'blocked' && /2 pieces are out of date/.test(ph.status_text) && /resume hotel/.test(ph.next), 'a package gate with stale work is blocked: ' + ph.status_text)
+  const pi = proj(s, 'india')
+  ok(pi.status === 'in_progress' && pi.gate === null && pi.status_text === 'You approved the route. The next run applies it.', 'a gate decision the next run has yet to apply: ' + pi.status_text)
   const pg = proj(s, 'golf')
   ok(pg.status === 'in_progress' && pg.stage === '00_idea' && pg.title === 'Golf' && /lighthouse/.test(pg.logline) && pg.departments.every(d => d.grade === null), 'a new project with only its idea is listed: ' + JSON.stringify([pg.status, pg.title]))
 
   // The studio: floor, building, totals, order.
   ok(s.floor_project === 'charlie' && s.building === 'charlie' && s.agents_working === 0, 'without --run the floor is the newest journal, and no agents are counted: ' + JSON.stringify([s.floor_project, s.building, s.agents_working]))
-  ok(JSON.stringify(s.totals) === JSON.stringify({ projects: 7, building: 1, waiting_on_you: 3, approved: 1 }), 'totals (blocked and waiting both wait on Lucas): ' + JSON.stringify(s.totals))
-  ok(s.projects[0].slug === 'charlie' && s.projects[s.projects.length - 1].slug === 'alpha', 'the building project comes first, approved work last: ' + s.projects.map(p => p.slug).join(','))
+  ok(JSON.stringify(s.totals) === JSON.stringify({ projects: 8, building: 1, waiting_on_you: 3, approved: 1 }), 'totals (blocked and waiting both wait on Lucas): ' + JSON.stringify(s.totals))
+  const order = s.projects.map(p => p.status)
+  ok(JSON.stringify(order) === JSON.stringify(['waiting', 'blocked', 'blocked', 'building', 'paused', 'in_progress', 'in_progress', 'approved']), 'what waits on Lucas comes first, then the build, approved work last: ' + s.projects.map(p => `${p.slug} ${p.status}`).join(', '))
+  ok(s.projects.every(p => !/;|: /.test(p.status_text) && !/;|: /.test(p.next || '')), 'status lines and next steps are plain sentences, with no colons or semicolons')
   ok(s.production.locked === true && s.production.stages.length === 5 && /spend cap/.test(s.production.reason), 'paid media is locked')
 
   // --run: the floor's snapshot supplies the agents working on the building project.
   const runFile = path.join(tmp, 'run.json')
   fs.writeFileSync(runFile, JSON.stringify({ project: 'charlie', phase: 'Camera', finished: null, calls: { started: 10, done: 6, running: 4 } }))
   const r = feed('--run', runFile).snap
-  ok(r.floor_project === 'charlie' && r.agents_working === 4 && proj(r, 'charlie').status_text === 'Building now: Camera.', '--run supplies the agents working and the phase: ' + JSON.stringify([r.agents_working, proj(r, 'charlie').status_text]))
+  ok(r.floor_project === 'charlie' && r.agents_working === 4 && proj(r, 'charlie').status_text === 'Building now, at the camera stage.', '--run supplies the agents working and the phase: ' + JSON.stringify([r.agents_working, proj(r, 'charlie').status_text]))
   fs.writeFileSync(runFile, JSON.stringify({ project: 'alpha', phase: 'Approved', finished: 'Approved', calls: { started: 9, done: 9, running: 0 } }))
   const r2 = feed('--run', runFile).snap
   ok(r2.floor_project === 'alpha' && r2.building === 'charlie' && r2.agents_working === 0, 'a --run for another project names the floor but counts no agents on the building one')

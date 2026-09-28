@@ -5,7 +5,7 @@ export const DEPTS = [
   ['development_producer', 'Development', 'Develops the idea into a brief'],
   ['strategist', 'Strategy', 'The audience and the one thing to say'],
   ['creative_director', 'Routes', 'Three creative routes, one recommended'],
-  ['copywriter', 'Script', 'The pilot outline and the build sequence'],
+  ['copywriter', 'Script', 'The script, beat by beat'],
   ['casting_director', 'Casting', 'Who plays everyone, and how'],
   ['production_designer', 'World', 'Every location and prop'],
   ['director', "Director's treatment", 'How it plays and feels'],

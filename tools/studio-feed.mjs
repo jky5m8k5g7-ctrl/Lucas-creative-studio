@@ -47,7 +47,9 @@ const clip = (s, n) => { s = String(s == null ? '' : s).replace(/\s+/g, ' ').tri
 const isObj = x => !!x && typeof x === 'object' && !Array.isArray(x)
 const hidden = name => name.startsWith('.') || name.startsWith('test-') || name.startsWith('zz-')
 
-const GATE_LABEL = { concept: 'Route choice', production_plan: 'Package review', visual_lock: 'Visual lock', final_cut: 'Final cut' }
+const GATE_LABEL = { concept: 'Route choice', production_plan: 'Package approval', visual_lock: 'Visual lock', final_cut: 'Final cut' }
+// What Lucas approved at each gate, for a decision the next run has yet to apply.
+const GATE_NOUN = { concept: 'route', production_plan: 'package', visual_lock: 'reference stills', final_cut: 'cut' }
 const STAGE = {
   '00_idea': 'the idea', '01_intake': 'the brief', '01_development': 'development', '02_strategy': 'strategy',
   '03_concepts': 'the routes', '04_script_cast_world': 'script, cast and world', '05_direction_style_sound': 'direction, style and sound',
@@ -120,15 +122,15 @@ function departments(s, targets) {
   })
 }
 
-// Where a running build stops for Lucas next. A build running from the route choice may be
-// applying his pick (then the package is next) or his notes (then the routes come back), so that
-// case names neither.
+// Where a running build stops for Lucas next (the page shows it after a "Next" label). A build
+// running from the route choice may be applying his pick (then the package is next) or his notes
+// (then the routes come back), so that case names neither.
 function nextStop(s, idea) {
   const gatesMode = s ? !(s.settings && s.settings.review_at_end) : !!(idea && idea.run_options && idea.run_options.review === 'gates')
   const routePicked = !!(s && s.approvals && s.approvals.concept && s.approvals.concept.approved)
-  if (!gatesMode || routePicked) return 'Next stop: the whole package comes to you on the Approval Desk'
+  if (!gatesMode || routePicked) return 'The whole package comes to you on the Approval Desk'
   if (s && s.pending_gate && s.pending_gate.gate_id === 'concept') return 'When it stops, whatever needs you shows on the Approval Desk'
-  return 'Next stop: you pick the route on the Approval Desk'
+  return 'You pick the route on the Approval Desk'
 }
 
 function project(slug) {
@@ -172,7 +174,7 @@ function project(slug) {
   const atGate = label => ({ id: g.gate_id, label, since: iso(stateAt) })
   if (lr && !lr.finished && lr.activeAt != null && NOW - lr.activeAt <= FRESH_MS) {
     status = 'building'
-    text = onFloor && !onFloor.finished && onFloor.phase ? `Building now: ${onFloor.phase}.` : 'Building now.'
+    text = onFloor && !onFloor.finished && onFloor.phase ? `Building now, at the ${onFloor.phase.toLowerCase()} stage.` : 'Building now.'
     next = nextStop(s, idea)
   } else if (lr && !lr.finished) {
     status = 'paused'
@@ -184,13 +186,13 @@ function project(slug) {
   } else if (g && !gateDecided && Array.isArray(g.blocked_by) && g.blocked_by.length) {
     status = 'blocked'
     const what = g.blocked_by.map(k => ({ strategy: 'strategy', concepts: 'routes', development: 'development' }[k] || k)).join(' and ')
-    text = `The ${what} couldn't be finished from your idea alone; the studio needs your answers.`
+    text = `The ${what} couldn't be finished from your idea alone. The studio needs your answers.`
     next = 'Answer the questions as notes on the Approval Desk and the studio carries on'
     gate = atGate('Your answers')
   } else if (g && !gateDecided && Array.isArray(g.blocked_by_stale) && g.blocked_by_stale.length) {
     status = 'blocked'
     const n = g.blocked_by_stale.length
-    text = `The package is at your gate but can't be approved yet: ${n} piece${n === 1 ? ' is' : 's are'} out of date.`
+    text = `The package is at your gate, but ${n} piece${n === 1 ? ' is' : 's are'} out of date, so it can't be approved yet.`
     next = `${resume} to rebuild the out-of-date work`
     gate = atGate(GATE_LABEL[g.gate_id] || g.gate_id)
   } else if (g && !gateDecided) {
@@ -217,21 +219,21 @@ function project(slug) {
   } else if (s.production_plan_applied && approvals.production_plan && approvals.production_plan.approved) {
     status = 'approved'
     text = 'You approved the package.'
-    next = 'Enhancement: full script, or paid media once you set a spend cap'
+    next = 'The enhancement phase, with a full script or paid media once you set a spend cap'
   } else if (!g && lastLog && lastLog.blocked && lastLog.stage === '01_development') {
     status = 'blocked'
     text = "The idea couldn't be developed into a brief this run."
     next = openQuestions(s) ? `Answer the studio's questions, or ${resume.charAt(0).toLowerCase() + resume.slice(1)} to retry` : `${resume} to retry`
   } else if (g && gateDecided) {
     status = 'in_progress'
-    text = `Your ${(GATE_LABEL[g.gate_id] || g.gate_id).toLowerCase()} decision is in; the next run applies it.`
+    text = `You approved the ${GATE_NOUN[g.gate_id] || `${g.gate_id} gate`}. The next run applies it.`
   } else if (s.limit_reached) {
     status = 'in_progress'
-    text = `Between runs: the last run used its call budget at ${stageName}.`
+    text = `Between runs. The last run used its call budget at ${stageName}.`
     next = `${resume} to continue`
   } else {
     status = 'in_progress'
-    text = `Between runs, last saved at ${stageName}.`
+    text = `Between runs. Last saved at ${stageName}.`
     next = `${resume} to continue`
   }
 
@@ -274,7 +276,8 @@ for (const slug of names) {
   }
 }
 
-const ORDER = { building: 0, waiting: 1, blocked: 2, paused: 3, in_progress: 4, approved: 5 }
+// What needs Lucas first, then what is running, then the rest; newest first within each.
+const ORDER = { waiting: 0, blocked: 1, building: 2, paused: 3, in_progress: 4, approved: 5 }
 found.sort((a, b) => ORDER[a.row.status] - ORDER[b.row.status] || String(b.row.updated_at).localeCompare(String(a.row.updated_at)) || a.slug.localeCompare(b.slug))
 const newest = list => list.filter(p => p.activeAt != null).sort((a, b) => b.activeAt - a.activeAt)[0] || null
 const building = newest(found.filter(p => p.row.status === 'building')) || found.find(p => p.row.status === 'building') || null
@@ -295,7 +298,7 @@ const snap = {
   production: {
     locked: !producing,
     reason: producing
-      ? 'A generation tool is connected and a spend cap is set; paid media runs after your visual lock.'
+      ? 'Paid media has started on a project.'
       : 'Paid media stays locked until a generation tool is connected and you set a spend cap.',
     stages: PRODUCTION_STAGES,
   },
