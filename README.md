@@ -167,11 +167,20 @@ desk. A decision or idea can be undone on the desk until Claude picks it up.
 
 ### Watching a build live
 
-While a build runs, the **Studio Floor** page (<https://claude.ai/artifact/VWMtWdSNWitVoFXigsGHg3>)
-shows each department's status, every review round's scores, the reviewer's latest notes and a
-log of recent events. `tools/live-feed.mjs` turns the running workflow's journal into a snapshot
+The **control room** (<https://claude.ai/artifact/VWMtWdSNWitVoFXigsGHg3>, which replaced the
+Studio Floor page at the same link) shows the whole studio on one page. The top is the overview:
+every project, the stage it has reached, what is waiting on Lucas and since when, the department
+grades and his bars, the package panel, and how many agents are working now.
+`tools/studio-feed.mjs` writes it (`node tools/studio-feed.mjs --out <file> [--projects <dir>]
+[--run <run snapshot>]`), reading each project's `state.json` and `.live-run`; `test-` and `zz-`
+projects are never listed. A project reads as building while its run's journal has changed in the
+last 45 minutes, and paused when a run stopped without finishing.
+
+Below it is the floor, one room per department that lights up while its agent works.
+`tools/live-feed.mjs` turns the running workflow's journal into a snapshot of each department's
+status, every review round's scores, the reviewer's latest notes and a log of recent events
 (`node tools/live-feed.mjs <slug> --out <file> [--wait <seconds>]`, reading the journal named in
-`projects/<slug>/.live-run`), and Claude writes each snapshot to the page. The page is read-only;
+`projects/<slug>/.live-run`). Claude writes both snapshots to the page. The page is read-only;
 decisions still happen on the Approval Desk.
 
 ### Tests
@@ -184,4 +193,6 @@ decisions still happen on the Approval Desk.
   saved state split into part scripts.
 - `node tests/live-feed.test.mjs`: the live feed against synthetic journals (kept versions,
   bars, resumed runs).
+- `node tests/studio-feed.test.mjs`: the studio overview against a scratch projects folder
+  (each status, grades and bars, hidden test projects, a corrupt state, the agents working).
 - `tests/results/`: records of the real runs.

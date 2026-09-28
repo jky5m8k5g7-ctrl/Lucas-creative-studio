@@ -42,7 +42,7 @@ const NOW = Date.now()
 const warn = m => console.error(`studio-feed: ${m}`)
 const readJson = f => { try { return JSON.parse(fs.readFileSync(f, 'utf8')) } catch { return null } }
 const mtimeMs = f => { try { return fs.statSync(f).mtimeMs } catch { return null } }
-const iso = ms => (ms == null ? null : new Date(ms).toISOString())
+const iso = ms => (ms == null ? null : new Date(Math.round(ms)).toISOString())
 const clip = (s, n) => { s = String(s == null ? '' : s).replace(/\s+/g, ' ').trim(); return s.length > n ? s.slice(0, n - 1).trimEnd() + '…' : s }
 const isObj = x => !!x && typeof x === 'object' && !Array.isArray(x)
 const hidden = name => name.startsWith('.') || name.startsWith('test-') || name.startsWith('zz-')
@@ -120,11 +120,15 @@ function departments(s, targets) {
   })
 }
 
-// Where a running build stops for Lucas next.
+// Where a running build stops for Lucas next. A build running from the route choice may be
+// applying his pick (then the package is next) or his notes (then the routes come back), so that
+// case names neither.
 function nextStop(s, idea) {
   const gatesMode = s ? !(s.settings && s.settings.review_at_end) : !!(idea && idea.run_options && idea.run_options.review === 'gates')
   const routePicked = !!(s && s.approvals && s.approvals.concept && s.approvals.concept.approved)
-  return gatesMode && !routePicked ? 'Next stop: you pick the route on the Approval Desk' : 'Next stop: the whole package comes to you on the Approval Desk'
+  if (!gatesMode || routePicked) return 'Next stop: the whole package comes to you on the Approval Desk'
+  if (s && s.pending_gate && s.pending_gate.gate_id === 'concept') return 'When it stops, whatever needs you shows on the Approval Desk'
+  return 'Next stop: you pick the route on the Approval Desk'
 }
 
 function project(slug) {
