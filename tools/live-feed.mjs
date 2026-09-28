@@ -15,22 +15,8 @@
 // feed is alive) or "finished" (the run is over).
 import fs from 'node:fs'
 import path from 'node:path'
+import { DEPTS, NAME, KEY } from './studio-depts.mjs'
 
-const DEPTS = [
-  ['development_producer', 'Development', 'Develops the idea into a brief'],
-  ['strategist', 'Strategy', 'The audience and the one thing to say'],
-  ['creative_director', 'Routes', 'Three creative routes, one recommended'],
-  ['copywriter', 'Script', 'The pilot outline and the build sequence'],
-  ['casting_director', 'Casting', 'Who plays everyone, and how'],
-  ['production_designer', 'World', 'Every location and prop'],
-  ['director', "Director's treatment", 'How it plays and feels'],
-  ['stylist', 'Style', 'Wardrobe, hair and makeup'],
-  ['sound_designer', 'Sound', 'Music, silence and every sound cue'],
-  ['cinematographer', 'Camera', 'Every shot: framing, lens, timing'],
-  ['storyboard_artist', 'Storyboard', 'Panels, continuity and risk'],
-  ['generation_supervisor', 'Generation plan', 'How each shot gets made'],
-]
-const NAME = Object.fromEntries(DEPTS.map(([d, n]) => [d, n]))
 const LENS = { creative_director: 'Creative director', film_director: 'Film director', commissioner: 'Commissioner', client: 'Client' }
 
 const args = process.argv.slice(2)
@@ -112,7 +98,6 @@ function snapshot() {
   // When a review cycle picks up where the saved state left it, the rounds it already had count
   // toward a bar's limit, as in the workflow: a paused review keeps its base; reviewed work a new
   // bar sends back starts from the rounds it had.
-  const KEY = { development_producer: 'development', strategist: 'strategy', creative_director: 'concepts', copywriter: 'script', casting_director: 'casting_bible', production_designer: 'world_bible', director: 'directors_treatment', stylist: 'style_bible', sound_designer: 'sound_plan', cinematographer: 'camera_plan', storyboard_artist: 'storyboard', generation_supervisor: 'generation_plan' }
   // The saved state may be the one the cycle resumed from, or (once that run was saved) the one it
   // ended in; a state that already holds this round is the latter.
   const savedQuality = dept => {
